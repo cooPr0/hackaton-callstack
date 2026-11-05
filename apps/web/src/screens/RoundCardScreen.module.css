@@ -1,0 +1,56 @@
+/* A paint-sample card: the colour on top, its "name" (the clues) on a dark strip. */
+.card {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  margin: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+}
+
+.swatch {
+  flex: 1;
+  min-height: 120px;
+}
+
+.strip {
+  flex: none;
+  padding: 18px 22px 22px;
+  background: var(--ink);
+  color: var(--on-ink);
+}
+
+.meta {
+  margin: 0 0 8px;
+  font-size: 14px;
+  color: var(--on-ink-muted);
+}
+
+.clues {
+  margin: 0;
+  font-size: clamp(26px, 8.5cqw, 36px);
+  line-height: 1.02;
+}
+
+.clue {
+  display: block;
+  overflow-wrap: anywhere;
+}
+
+.headline {
+  margin-top: 32px;
+  font-size: clamp(40px, 13cqw, 56px);
+  line-height: 0.98;
+}
+
+.sub {
+  margin: 12px 0 0;
+  font-size: 16px;
+  color: var(--header-fg);
+}
+
+.scores {
+  margin-top: 28px;
+}

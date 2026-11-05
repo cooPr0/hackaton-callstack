@@ -3,6 +3,7 @@ import type { ScreenId, ScreenProps } from "../app/types";
 import { GrokSecretScreen } from "./GrokSecretScreen";
 import { HandoffFoldScreen, HandoffUnfoldScreen, PassScreen } from "./HandoffScreens";
 import { Placeholder } from "./Placeholder";
+import { RoundCardScreen } from "./RoundCardScreen";
 import { SecretScreen } from "./SecretScreen";
 
 /**
@@ -18,6 +19,6 @@ export const registry: Record<ScreenId, ComponentType<ScreenProps>> = {
   "handoff-fold": HandoffFoldScreen,
   "handoff-unfold": HandoffUnfoldScreen,
   table: Placeholder,
-  "round-card": Placeholder,
+  "round-card": RoundCardScreen,
   "game-over": Placeholder,
 };
