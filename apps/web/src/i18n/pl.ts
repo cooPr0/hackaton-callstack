@@ -25,6 +25,15 @@ export const pl = {
     localToggle: { local: "Jeden telefon", online: "Każdy na swoim" },
     startLocal: (name: string) => `Losuj odcień · zaczyna ${name}`,
     startOnline: "Utwórz pokój",
+    demo: "Wersja demo bez serwera",
+    modeGroup: "Tryb gry",
+    playGroup: "Sposób gry",
+    fewerRounds: "Mniej rund",
+    moreRounds: "Więcej rund",
+    playerName: (i: number) => `Imię gracza ${i}`,
+    removePlayer: (name: string) => `Usuń: ${name}`,
+    needOne: "Potrzebny jest co najmniej jeden gracz.",
+    needTwo: "Stół potrzebuje co najmniej dwóch graczy.",
   },
 
   join: {
@@ -150,4 +159,6 @@ export const pl = {
   },
 
   notFound: { title: "Nie ma takiej strony", back: "Nowa partia" },
+
+  lang: { label: "Język", pl: "PL", en: "EN" },
 } as const;

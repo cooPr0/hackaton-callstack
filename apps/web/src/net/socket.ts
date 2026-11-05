@@ -6,7 +6,7 @@ import {
   ServerMessage as ServerMessageSchema,
 } from "@tint/protocol";
 import type { ConnState } from "../app/types";
-import { ApiError, fromCode, networkError } from "./errors";
+import { type ApiError, fromCode, networkError } from "./errors";
 
 /** The subset of the browser WebSocket we use — injectable for tests and the mock. */
 export interface WSLike {
@@ -127,7 +127,7 @@ export class RoomSocket implements RoomConnection {
     return new Promise<void>((resolve, reject) => {
       const timer = setTimeout(() => {
         this.pending.delete(cid);
-        reject(new ApiError("TIMEOUT", "Serwer nie odpowiedział."));
+        reject(fromCode("TIMEOUT"));
       }, this.o.ackTimeoutMs);
       this.pending.set(cid, { resolve, reject, timer });
       ws.send(JSON.stringify({ ...msg, cid }));

@@ -7,7 +7,7 @@ import {
   JoinRoomResponse,
 } from "@tint/protocol";
 import type { z } from "zod";
-import { ApiError, fromCode, networkError } from "./errors";
+import { fromCode, networkError } from "./errors";
 
 type Fetch = typeof fetch;
 const TIMEOUT_MS = 8_000;
@@ -36,8 +36,7 @@ export function createApi(base: string, fetchImpl: Fetch = (...a) => fetch(...a)
       throw fromCode(err.success ? err.data.code : "INTERNAL", res.status);
     }
     const parsed = schema.safeParse(json);
-    if (!parsed.success)
-      throw new ApiError("BAD_RESPONSE", "Serwer odpowiedział w nieznanym formacie.", res.status);
+    if (!parsed.success) throw fromCode("BAD_RESPONSE", res.status);
     return parsed.data;
   }
 

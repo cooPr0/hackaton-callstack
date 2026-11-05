@@ -26,9 +26,9 @@ describe("setup helpers", () => {
   });
 
   it("validates player counts per mode", () => {
-    expect(validate("stol", [{ name: "Kuba", kind: "human" }])).toMatch(/dwóch/);
+    expect(validate("stol", [{ name: "Kuba", kind: "human" }])).toBe("needTwo");
     expect(validate("ty", [{ name: "Kuba", kind: "human" }])).toBeNull();
-    expect(validate("grok", [])).toMatch(/co najmniej jeden/);
+    expect(validate("grok", [])).toBe("needOne");
   });
 
   it("builds a protocol-ready form", () => {

@@ -3,7 +3,8 @@ import { MAX_ROUNDS, MIN_ROUNDS } from "@tint/protocol";
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { Logo } from "../components/Logo";
-import { pl } from "../i18n/pl";
+import { useCopy } from "../i18n";
+import { LangToggle } from "../i18n/LangToggle";
 import { hexAt, rows } from "../palette/palette";
 import { startDemo, useGame } from "../store";
 import s from "./SetupPage.module.css";
@@ -50,6 +51,7 @@ function Stones({ mode }: { mode: Mode }) {
 }
 
 export function SetupPage() {
+  const t = useCopy();
   const navigate = useNavigate();
   const createRoom = useGame((st) => st.createRoom);
   const [mode, setMode] = useState<Mode>("stol");
@@ -67,17 +69,19 @@ export function SetupPage() {
   const add = () =>
     setPlayers((ps) => [
       ...ps.filter((p) => p.kind === "human"),
-      withId({ name: `Gracz ${humans.length + 1}`, kind: "human" }),
+      withId({ name: t.setup.playerPlaceholder(humans.length + 1), kind: "human" }),
       ...ps.filter((p) => p.kind === "grok"),
     ]);
   const remove = (i: number) => setPlayers((ps) => ps.filter((_, j) => j !== i));
 
   async function submit() {
-    if (invalid) return setError(invalid);
+    if (invalid) return setError(t.setup[invalid]);
     setBusy(true);
     setError(null);
     try {
-      const code = await createRoom(toForm(mode, rounds, local, players));
+      const code = await createRoom(
+        toForm(mode, rounds, local, players, t.setup.playerPlaceholder),
+      );
       navigate(`/room/${code}${local ? "?autostart=1" : ""}`);
     } catch (e) {
       setError((e as Error).message);
@@ -90,10 +94,12 @@ export function SetupPage() {
     <main className={s.page}>
       <div className={s.top}>
         <Logo size={22} />
-        <span className={s.meta}>{pl.setup.playersOnDevice(players.length, local)}</span>
+        <span className={s.meta}>
+          {t.setup.playersOnDevice(players.length, local)} <LangToggle />
+        </span>
       </div>
 
-      <h1 className={s.title}>{pl.setup.title}</h1>
+      <h1 className={s.title}>{t.setup.title}</h1>
 
       <div className={s.strip} aria-hidden>
         {rows(0, 2)
@@ -104,7 +110,7 @@ export function SetupPage() {
       </div>
 
       <fieldset className={s.modes}>
-        <legend className="visually-hidden">Tryb gry</legend>
+        <legend className="visually-hidden">{t.setup.modeGroup}</legend>
         {MODES.map((m) => {
           const [sx, sy] = MODE_SWATCH[m];
           return (
@@ -115,8 +121,8 @@ export function SetupPage() {
               aria-pressed={mode === m}
               onClick={() => setMode(m)}
             >
-              <span className={s.modeTitle}>{pl.setup.modes[m].title}</span>
-              <span className={s.modeSub}>{pl.setup.modes[m].sub}</span>
+              <span className={s.modeTitle}>{t.setup.modes[m].title}</span>
+              <span className={s.modeSub}>{t.setup.modes[m].sub}</span>
               <Stones mode={m} />
               <span className={s.swatch} aria-hidden>
                 {[0, 1].flatMap((dy) =>
@@ -152,7 +158,7 @@ export function SetupPage() {
                 className={s.name}
                 value={p.name}
                 maxLength={24}
-                aria-label={`Imię gracza ${i + 1}`}
+                aria-label={t.setup.playerName(i + 1)}
                 onChange={(e) => rename(i, e.target.value)}
               />
             )}
@@ -161,7 +167,7 @@ export function SetupPage() {
                 type="button"
                 className={s.remove}
                 onClick={() => remove(i)}
-                aria-label={`Usuń ${p.name}`}
+                aria-label={t.setup.removePlayer(p.name)}
               >
                 ×
               </button>
@@ -174,11 +180,11 @@ export function SetupPage() {
               type="button"
               className={`${s.chip} ${s.chipAdd}`}
               onClick={add}
-              aria-label={pl.setup.addPlayer}
+              aria-label={t.setup.addPlayer}
             >
               +
             </button>
-            <span className={s.name}>{pl.setup.addPlayer}</span>
+            <span className={s.name}>{t.setup.addPlayer}</span>
           </div>
         )}
         <div className={s.rounds}>
@@ -186,30 +192,30 @@ export function SetupPage() {
             <button
               type="button"
               onClick={() => setRounds((r) => Math.max(MIN_ROUNDS, r - 1))}
-              aria-label="Mniej rund"
+              aria-label={t.setup.fewerRounds}
             >
               −
             </button>
-            {pl.setup.rounds(rounds)}
+            {t.setup.rounds(rounds)}
             <button
               type="button"
               onClick={() => setRounds((r) => Math.min(MAX_ROUNDS, r + 1))}
-              aria-label="Więcej rund"
+              aria-label={t.setup.moreRounds}
             >
               +
             </button>
           </span>
-          <span>{pl.setup.duration(rounds)}</span>
+          <span>{t.setup.duration(rounds)}</span>
         </div>
       </div>
 
       <fieldset className={s.toggle}>
-        <legend className="visually-hidden">Sposób gry</legend>
+        <legend className="visually-hidden">{t.setup.playGroup}</legend>
         <button type="button" aria-pressed={local} onClick={() => setLocal(true)}>
-          {pl.setup.localToggle.local}
+          {t.setup.localToggle.local}
         </button>
         <button type="button" aria-pressed={!local} onClick={() => setLocal(false)}>
-          {pl.setup.localToggle.online}
+          {t.setup.localToggle.online}
         </button>
       </fieldset>
 
@@ -220,14 +226,14 @@ export function SetupPage() {
         </p>
       )}
       <button type="button" className={s.primary} disabled={busy || !!invalid} onClick={submit}>
-        {local ? pl.setup.startLocal(firstCueGiver(mode, players)) : pl.setup.startOnline}
+        {local ? t.setup.startLocal(firstCueGiver(mode, players)) : t.setup.startOnline}
       </button>
       <button
         type="button"
         className={s.demo}
         onClick={() => navigate(`/room/${startDemo()}?autostart=1`)}
       >
-        Wersja demo bez serwera
+        {t.setup.demo}
       </button>
     </main>
   );
