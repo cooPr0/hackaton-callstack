@@ -321,6 +321,7 @@ struct GameShell: View {
     @State private var players = GamePlayer.openingTable
     @State private var mode = PartyMode.stol
     @State private var scores: [String: Int] = [:]
+    @State private var totalRounds = 6
     @State private var isPaused = false
 
     var body: some View {
@@ -352,14 +353,15 @@ struct GameShell: View {
     private var phaseContent: some View {
         switch phase {
         case .setup:
-            NewGameView { mode, players in
+            NewGameView { mode, players, rounds in
                 self.mode = mode
                 self.players = players
+                self.totalRounds = rounds
                 self.scores = Dictionary(uniqueKeysWithValues: players.map { ($0.name, 0) })
                 let giver = mode == .grok
                     ? "Grok"
                     : (players.first { $0.kind == .human }?.name ?? "Gracz")
-                phase = .first(.draw(cueGiver: giver, hidesShade: mode == .grok))
+                phase = .first(.draw(cueGiver: giver, hidesShade: mode == .grok, totalRounds: rounds))
             }
         case .first(let round):
             if round.hidesShade {
@@ -409,7 +411,7 @@ struct GameShell: View {
             .joined(separator: ", ")
         switch phase {
         case .setup:
-            return (1, 6, line)
+            return (1, totalRounds, line)
         case .first(let round), .second(let round, _, _):
             return (round.round, round.totalRounds, line)
         case .roundEnd(let card), .pass(let card):

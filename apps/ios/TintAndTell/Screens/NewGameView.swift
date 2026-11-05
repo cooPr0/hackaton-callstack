@@ -75,14 +75,15 @@ struct NewGameView: View {
     @ObserveInjection private var inject
     @State private var mode: PartyMode
     @State private var players: [GamePlayer]
+    @State private var rounds = 6
     @State private var drawCount = 0
 
-    var onDrawShade: (PartyMode, [GamePlayer]) -> Void
+    var onDrawShade: (PartyMode, [GamePlayer], Int) -> Void
 
     init(
         mode: PartyMode = .stol,
         players: [GamePlayer] = GamePlayer.openingTable,
-        onDrawShade: @escaping (PartyMode, [GamePlayer]) -> Void = { _, _ in }
+        onDrawShade: @escaping (PartyMode, [GamePlayer], Int) -> Void = { _, _, _ in }
     ) {
         _mode = State(initialValue: mode)
         var seated = players.filter { $0.kind == .human }
@@ -122,6 +123,7 @@ struct NewGameView: View {
         .background(Color.ground.ignoresSafeArea())
         .tint(Color.ink)
         .sensoryFeedback(.selection, trigger: mode)
+        .sensoryFeedback(.selection, trigger: rounds)
         .sensoryFeedback(.impact(weight: .medium), trigger: drawCount)
         .enableInjection()
     }
@@ -184,20 +186,53 @@ struct NewGameView: View {
 
             Spacer(minLength: 8)
 
-            VStack(alignment: .trailing, spacing: 0) {
-                Text("6 rund")
-                Text("ok. 20 min")
-            }
-            .font(.system(size: 15))
-            .foregroundStyle(Color.ink2)
-            .multilineTextAlignment(.trailing)
+            roundsControl
         }
+    }
+
+    /// Same bounds and duration as the web setup: 1…12 rounds, about 3.3 minutes each, never under 5.
+    private var roundsControl: some View {
+        VStack(alignment: .trailing, spacing: 2) {
+            HStack(spacing: 6) {
+                roundStep("−", label: "Mniej rund", enabled: rounds > Self.minRounds) {
+                    rounds = max(Self.minRounds, rounds - 1)
+                }
+                Text(PartyCopy.rounds(rounds))
+                    .font(.system(size: 12, weight: .medium))
+                    .foregroundStyle(Color.ink)
+                    .lineLimit(1)
+                roundStep("+", label: "Więcej rund", enabled: rounds < Self.maxRounds) {
+                    rounds = min(Self.maxRounds, rounds + 1)
+                }
+            }
+            Text(PartyCopy.duration(rounds))
+                .font(.system(size: 12))
+                .foregroundStyle(Color.ink2)
+        }
+    }
+
+    private func roundStep(
+        _ mark: String,
+        label: String,
+        enabled: Bool,
+        action: @escaping () -> Void
+    ) -> some View {
+        Button(action: action) {
+            Text(mark)
+                .font(.system(size: 16, weight: .medium))
+                .foregroundStyle(enabled ? Color.ink : Color.ink3)
+                .frame(width: 24, height: 24)
+                .overlay(Circle().strokeBorder(Color.rule, lineWidth: 1))
+        }
+        .buttonStyle(.plain)
+        .disabled(!enabled)
+        .accessibilityLabel(label)
     }
 
     private var drawButton: some View {
         Button {
             drawCount += 1
-            onDrawShade(mode, seatedPlayers)
+            onDrawShade(mode, seatedPlayers, rounds)
         } label: {
             Text(shadeOwner.isEmpty ? "Losuj odcień · zaczyna …" : "Losuj odcień · zaczyna \(shadeOwner)")
                 .font(.system(size: 17, weight: .semibold))
@@ -325,6 +360,8 @@ struct NewGameView: View {
     }
 
     private static let maxHumans = 5
+    private static let minRounds = 1
+    private static let maxRounds = 12
 }
 
 private struct ModeTile: View {
@@ -464,6 +501,16 @@ private struct CheckStroke: Shape {
 enum PartyCopy {
     static func playerCount(_ count: Int) -> String {
         "\(count) \(plural(count, one: "gracz", few: "graczy", many: "graczy"))"
+    }
+
+    static func rounds(_ count: Int) -> String {
+        "\(count) \(plural(count, one: "runda", few: "rundy", many: "rund"))"
+    }
+
+    /// Matches the web: `ok. max(5, round(n * 3.3)) min`.
+    static func duration(_ count: Int) -> String {
+        let minutes = max(5, Int((Double(count) * 3.3).rounded()))
+        return "ok. \(minutes) min"
     }
 
     static func inHouse(_ count: Int) -> String {
