@@ -11,7 +11,7 @@ import SwiftUI
 struct TintAndTellApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            GameShell()
         }
     }
 }
