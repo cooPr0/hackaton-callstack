@@ -3,7 +3,7 @@ import { MAX_ROUNDS, MIN_ROUNDS } from "@tint/protocol";
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { Logo } from "../components/Logo";
-import { useCopy } from "../i18n";
+import { useCopy, useLang } from "../i18n";
 import { LangToggle } from "../i18n/LangToggle";
 import { hexAt, rows } from "../palette/palette";
 import { startDemo, useGame } from "../store";
@@ -52,6 +52,7 @@ function Stones({ mode }: { mode: Mode }) {
 
 export function SetupPage() {
   const t = useCopy();
+  const { lang } = useLang();
   const navigate = useNavigate();
   const createRoom = useGame((st) => st.createRoom);
   const [mode, setMode] = useState<Mode>("stol");
@@ -80,7 +81,8 @@ export function SetupPage() {
     setError(null);
     try {
       const code = await createRoom(
-        toForm(mode, rounds, local, players, t.setup.playerPlaceholder),
+        // the room speaks the creator's UI language (Grok's clues, lines and speech)
+        { ...toForm(mode, rounds, local, players, t.setup.playerPlaceholder), lang },
       );
       navigate(`/room/${code}${local ? "?autostart=1" : ""}`);
     } catch (e) {

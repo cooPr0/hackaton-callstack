@@ -1,4 +1,4 @@
-import type { Mode, PlayerView, SeatKind, ServerMessage } from "@tint/protocol";
+import type { Lang, Mode, PlayerView, SeatKind, ServerMessage } from "@tint/protocol";
 import { createStore, type StoreApi } from "zustand/vanilla";
 import type { BotState, ConnState, Posture, UiState, WebActions } from "../app/types";
 import type { Api } from "../net/api";
@@ -13,6 +13,8 @@ export interface SetupForm {
   players: { name: string; kind: SeatKind }[];
   /** Name this browser uses in `hello` (the host / first player). */
   hostName: string;
+  /** Room language (v1.1): Grok's clues, lines and speech follow it. Defaults to "pl" on the server. */
+  lang?: Lang;
 }
 
 export interface ConnectHandlers {
@@ -178,6 +180,7 @@ export function createGameStore(deps: GameDeps): StoreApi<GameStore> {
             local: form.local,
             platform: "web",
             seats: form.players,
+            ...(form.lang ? { lang: form.lang } : {}),
           });
           deps.tokens.save(res.code, {
             seats: res.seats,

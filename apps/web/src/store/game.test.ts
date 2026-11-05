@@ -71,6 +71,7 @@ describe("game store", () => {
       rounds: 6,
       local: true,
       hostName: "Kuba",
+      lang: "en",
       players: [
         { name: "Kuba", kind: "human" },
         { name: "Ola", kind: "human" },
@@ -79,7 +80,7 @@ describe("game store", () => {
     });
     expect(code).toBe("K7PQX");
     expect(api.createRoom).toHaveBeenCalledWith(
-      expect.objectContaining({ local: true, platform: "web" }),
+      expect.objectContaining({ local: true, platform: "web", lang: "en" }),
     );
     store.getState().connect(code);
     expect(opened()).toEqual({
