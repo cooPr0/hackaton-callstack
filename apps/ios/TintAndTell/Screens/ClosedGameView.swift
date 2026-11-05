@@ -1,6 +1,7 @@
 import Inject
 import SwiftUI
 import TintDesign
+import TintKit
 
 /// The secret the closed phone is allowed to show: a 7 × 9 window, never a coordinate.
 struct ClosedRound: Equatable {
@@ -311,12 +312,16 @@ struct FoldedDuoMark: View {
 struct GameShell: View {
     private enum Phase {
         case setup
+        case join(code: String)
+        case online(RoomSession)
         case first(ClosedRound)
         case second(ClosedRound, firstClue: String, stones: [FinderStone])
         case roundEnd(RoundCard)
         case pass(RoundCard)
     }
 
+    @ObserveInjection var inject
+    @Environment(IncomingLink.self) private var links
     @State private var phase = Phase.setup
     @State private var players = GamePlayer.openingTable
     @State private var mode = PartyMode.stol
@@ -328,6 +333,11 @@ struct GameShell: View {
             phaseContent
         }
         .environment(\.openPause, { isPaused = true })
+        .onChange(of: links.arrival?.id) { _, _ in
+            guard let code = links.arrival?.code else { return }
+            Task { await arrive(code) }
+        }
+        .enableInjection()
         .sheet(isPresented: $isPaused) {
             let context = pauseContext
             PauseSheet(
@@ -348,11 +358,30 @@ struct GameShell: View {
         }
     }
 
+    private func arrive(_ code: String) async {
+        if case .online(let session) = phase {
+            session.leave()
+        }
+        let stored = try? KeychainTokenStore().load(code: code)
+        if let stored, !stored.isEmpty {
+            let session = RoomSession(code: code)
+            let name = UserDefaults.standard.string(forKey: RoomSession.nameKey)
+            do {
+                try await session.connect(tokens: stored, name: name)
+                phase = .online(session)
+                return
+            } catch {
+                session.leave()
+            }
+        }
+        phase = .join(code: code)
+    }
+
     @ViewBuilder
     private var phaseContent: some View {
         switch phase {
         case .setup:
-            NewGameView { mode, players in
+            NewGameView(onJoin: { phase = .join(code: "") }) { mode, players in
                 self.mode = mode
                 self.players = players
                 self.scores = Dictionary(uniqueKeysWithValues: players.map { ($0.name, 0) })
@@ -360,6 +389,16 @@ struct GameShell: View {
                     ? "Grok"
                     : (players.first { $0.kind == .human }?.name ?? "Gracz")
                 phase = .first(.draw(cueGiver: giver, hidesShade: mode == .grok))
+            }
+        case .join(let code):
+            JoinRoomView(initialCode: code, onCancel: { phase = .setup }) { session in
+                phase = .online(session)
+            }
+            .id(code)
+        case .online(let session):
+            OnlineRoomView(session: session) {
+                session.leave()
+                phase = .setup
             }
         case .first(let round):
             if round.hidesShade {
@@ -408,7 +447,7 @@ struct GameShell: View {
             .map { "\($0.element.name) \(scores[$0.element.name] ?? 0)" }
             .joined(separator: ", ")
         switch phase {
-        case .setup:
+        case .setup, .join, .online:
             return (1, 6, line)
         case .first(let round), .second(let round, _, _):
             return (round.round, round.totalRounds, line)
