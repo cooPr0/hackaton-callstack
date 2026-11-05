@@ -45,7 +45,10 @@ export function GameOverScreen(props: ScreenProps) {
             data-winner={winner?.kind === "winner" && winner.id === s.id ? "" : undefined}
           >
             <Chip name={s.name} grok={s.kind === "grok"} hideName size={36} />
-            <span className={styles.name}>{s.name}</span>
+            <span className={styles.name}>
+              <span className={styles.nameText}>{s.name}</span>
+              {s.degraded ? <span className={styles.degraded}>{t.grok.degraded}</span> : null}
+            </span>
             <span className={`display ${styles.points}`}>{s.score}</span>
           </li>
         ))}

@@ -2,9 +2,11 @@ import type { PlayerView } from "@tint/protocol";
 import type { ScreenId } from "./types";
 
 /**
- * PRIVACY: strip the secret unless the round is revealed. Anything rendered on the shared
- * "table" (or on any screen other than the cue giver's private `secret` screen) must go through
- * this — in local mode the device legitimately holds the secret, but the open table is public.
+ * PRIVACY: strip the secret unless the round is public. REVEAL shows it. GAME_OVER is public
+ * too, but the server omits `secret` there and puts past targets in `history`. Anything
+ * rendered on the shared table (or on any screen other than the cue giver's private `secret`
+ * screen) must go through this — in local mode the device legitimately holds the secret, but
+ * the open table is public.
  */
 export function publicView(view: PlayerView): PlayerView {
   if (view.phase === "REVEAL" || view.phase === "GAME_OVER" || !view.secret) return view;

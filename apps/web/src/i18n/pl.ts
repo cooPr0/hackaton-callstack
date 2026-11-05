@@ -107,6 +107,7 @@ export const pl = {
     yourTurn: (name: string) => `Twój ruch, ${name}`,
     turnOf: (name: string) => `Ruch: ${name}`,
     waitingForClue: (name: string) => `${name} wymyśla podpowiedź…`,
+    timeLeft: (clock: string) => `Zostało ${clock}`,
     place: "Postaw",
     nextRound: "Następna runda",
     finish: "Wyniki",

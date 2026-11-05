@@ -1,8 +1,8 @@
 import { ERROR_CODES } from "@tint/protocol";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { copies } from ".";
 import { errorMessages, messageFor } from "./errors";
-import { detectLang } from "./lang";
+import { detectLang, langStore, setShownLang } from "./lang";
 import { pl } from "./pl";
 import { plural } from "./plural";
 
@@ -51,6 +51,25 @@ describe("copy", () => {
     expect(copies.en.reveal.stonesHome(1)).toBe("1 stone home");
     expect(pl.setup.rounds(6)).toBe("6 rund");
     expect(copies.en.round.header(3, 6)).toBe("Round 3 of 6");
+  });
+});
+
+describe("setShownLang", () => {
+  it("switches the copy without saving the preference", () => {
+    const saved = new Map<string, string>();
+    vi.stubGlobal("localStorage", {
+      getItem: (key: string) => saved.get(key) ?? null,
+      setItem: (key: string, value: string) => saved.set(key, value),
+    });
+    langStore.getState().setLang("en");
+    const previous = setShownLang("pl");
+    expect(previous).toBe("en");
+    expect(langStore.getState().lang).toBe("pl");
+    expect(saved.get("tint:lang")).toBe("en");
+    setShownLang(previous);
+    expect(langStore.getState().lang).toBe("en");
+    langStore.setState({ lang: "pl" });
+    vi.unstubAllGlobals();
   });
 });
 
