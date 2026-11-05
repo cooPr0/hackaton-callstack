@@ -27,7 +27,8 @@ function SecretForm(props: ScreenProps) {
   const inputId = useId();
   const errorId = useId();
   const input = useRef<HTMLInputElement>(null);
-  const [text, setText] = useState("");
+  // seeded from the store so folding back (or a re-render after an unfold) keeps what was typed
+  const [text, setText] = useState(props.ui.clueDraft);
   const [clueError, setClueError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -110,6 +111,7 @@ function SecretForm(props: ScreenProps) {
           value={text}
           onValueChange={(v) => {
             setText(v);
+            actions.setClueDraft(v);
             if (clueError) setClueError(null);
           }}
           enterKeyHint="send"
