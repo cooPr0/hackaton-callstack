@@ -1,0 +1,6 @@
+{
+  "type": "error",
+  "cid": "c-0004",
+  "code": "CELL_TAKEN",
+  "message": "Ta kratka jest zajęta."
+}

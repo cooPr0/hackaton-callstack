@@ -1,0 +1,21 @@
+{
+  "mode": "stol",
+  "rounds": 6,
+  "local": false,
+  "platform": "ios",
+  "seats": [
+    {
+      "name": "Kuba",
+      "kind": "human"
+    },
+    {
+      "name": "Ola",
+      "kind": "human"
+    },
+    {
+      "name": "Grok",
+      "kind": "grok"
+    }
+  ],
+  "botMode": "grok"
+}

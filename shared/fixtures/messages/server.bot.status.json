@@ -1,0 +1,5 @@
+{
+  "type": "bot.status",
+  "seatId": "s3",
+  "state": "thinking"
+}

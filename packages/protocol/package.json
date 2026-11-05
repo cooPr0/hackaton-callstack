@@ -17,6 +17,8 @@
   },
   "scripts": {
     "typecheck": "tsc -p .",
-    "test": "vitest run --passWithNoTests"
+    "test": "vitest run --passWithNoTests",
+    "fixtures:gen": "tsx scripts/gen-fixtures.ts",
+    "fixtures:check": "tsx scripts/check-fixtures.ts"
   }
 }

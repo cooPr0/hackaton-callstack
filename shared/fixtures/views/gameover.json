@@ -1,0 +1,119 @@
+{
+  "v": 1,
+  "roomCode": "K7PQX",
+  "mode": "stol",
+  "local": false,
+  "phase": "GAME_OVER",
+  "round": 6,
+  "totalRounds": 6,
+  "paused": false,
+  "hostSeatId": "s1",
+  "seats": [
+    {
+      "id": "s1",
+      "name": "Kuba",
+      "kind": "human",
+      "platform": "ios",
+      "score": 14,
+      "connected": true
+    },
+    {
+      "id": "s2",
+      "name": "Ola",
+      "kind": "human",
+      "platform": "web",
+      "score": 19,
+      "connected": true
+    },
+    {
+      "id": "s3",
+      "name": "Grok",
+      "kind": "grok",
+      "platform": null,
+      "score": 15,
+      "connected": true
+    }
+  ],
+  "you": [
+    "s2"
+  ],
+  "cueGiverSeatId": null,
+  "turnSeatId": null,
+  "turnDeadline": null,
+  "clues": [],
+  "stones": [],
+  "history": [
+    {
+      "round": 1,
+      "cueGiverSeatId": "s1",
+      "target": {
+        "x": 15,
+        "y": 6
+      },
+      "clues": [
+        "Basen",
+        "pod chmurką"
+      ]
+    },
+    {
+      "round": 2,
+      "cueGiverSeatId": "s2",
+      "target": {
+        "x": 9,
+        "y": 3
+      },
+      "clues": [
+        "Mech",
+        "po deszczu"
+      ]
+    },
+    {
+      "round": 3,
+      "cueGiverSeatId": "s1",
+      "target": {
+        "x": 4,
+        "y": 4
+      },
+      "clues": [
+        "Rosół",
+        "z marchewką"
+      ]
+    },
+    {
+      "round": 4,
+      "cueGiverSeatId": "s2",
+      "target": {
+        "x": 20,
+        "y": 8
+      },
+      "clues": [
+        "Burak",
+        "z chrzanem"
+      ]
+    },
+    {
+      "round": 5,
+      "cueGiverSeatId": "s1",
+      "target": {
+        "x": 12,
+        "y": 1
+      },
+      "clues": [
+        "Lód",
+        "miętowy"
+      ]
+    },
+    {
+      "round": 6,
+      "cueGiverSeatId": "s2",
+      "target": {
+        "x": 1,
+        "y": 10
+      },
+      "clues": [
+        "Cegła",
+        "mokra"
+      ]
+    }
+  ]
+}

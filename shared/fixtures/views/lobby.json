@@ -1,0 +1,46 @@
+{
+  "v": 1,
+  "roomCode": "K7PQX",
+  "mode": "stol",
+  "local": false,
+  "phase": "LOBBY",
+  "round": 0,
+  "totalRounds": 6,
+  "paused": false,
+  "hostSeatId": "s1",
+  "seats": [
+    {
+      "id": "s1",
+      "name": "Kuba",
+      "kind": "human",
+      "platform": "ios",
+      "score": 0,
+      "connected": true
+    },
+    {
+      "id": "s2",
+      "name": "Ola",
+      "kind": "human",
+      "platform": "web",
+      "score": 0,
+      "connected": true
+    },
+    {
+      "id": "s3",
+      "name": "Grok",
+      "kind": "grok",
+      "platform": null,
+      "score": 0,
+      "connected": true
+    }
+  ],
+  "you": [
+    "s1"
+  ],
+  "cueGiverSeatId": null,
+  "turnSeatId": null,
+  "turnDeadline": null,
+  "clues": [],
+  "stones": [],
+  "history": []
+}
