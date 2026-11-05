@@ -1,7 +1,15 @@
 {
   "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
   "files": {
-    "includes": ["**", "!**/node_modules", "!**/dist", "!**/.wrangler", "!shared/palette.json", "!apps/ios/**"]
+    "includes": [
+      "**",
+      "!**/node_modules",
+      "!**/dist",
+      "!**/.wrangler",
+      "!shared/palette.json",
+      "!apps/ios",
+      "!**/*.md"
+    ]
   },
   "formatter": {
     "enabled": true,
@@ -14,6 +22,6 @@
   },
   "linter": {
     "enabled": true,
-    "rules": { "recommended": true }
+    "rules": { "preset": "recommended" }
   }
 }
