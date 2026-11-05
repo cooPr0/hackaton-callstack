@@ -57,6 +57,11 @@ function playRound(g: GameState): GameState {
 }
 
 describe("createGame", () => {
+  it("stores the room language, defaulting to pl", () => {
+    expect(lobby().lang).toBe("pl");
+    expect(lobby({ lang: "en" }).lang).toBe("en");
+  });
+
   it("rejects a non-human host and anything but exactly one grok", () => {
     expect(
       err(

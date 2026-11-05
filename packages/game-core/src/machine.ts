@@ -3,6 +3,7 @@ import {
   BOARD_ROWS,
   type Cell,
   type CreateRoomRequest,
+  DEFAULT_LANG,
   type ErrorCode,
   type Phase,
 } from "@tint/protocol";
@@ -54,6 +55,7 @@ export function createGame(
     mode: req.mode,
     local: req.local,
     botMode: req.botMode,
+    lang: req.lang ?? DEFAULT_LANG,
     phase: "LOBBY",
     totalRounds: req.rounds,
     paused: false,
