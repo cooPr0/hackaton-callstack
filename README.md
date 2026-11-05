@@ -7,6 +7,10 @@
 
 Party game · iOS (SwiftUI) + Web (React) · real-time cross-play · Grok as a player · built for foldables
 
+<video src="docs/demo.mp4" controls width="720" playsinline></video>
+
+[Watch a round](docs/demo.mp4)
+
 </div>
 
 ---
