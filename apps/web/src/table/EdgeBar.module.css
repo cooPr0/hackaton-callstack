@@ -46,6 +46,38 @@
   text-overflow: ellipsis;
 }
 
+/* Unfold write-on: 560 ms in, one letter every 25 ms (see table/Unfold.tsx). */
+.letter {
+  display: inline-block;
+  white-space: pre;
+  animation: write 160ms var(--ease-out) both;
+  animation-delay: calc(560ms + var(--i) * 25ms);
+}
+
+@keyframes write {
+  from {
+    opacity: 0;
+    translate: 0 0.18em;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .letter {
+    /* biome-ignore lint/complexity/noImportantStyles: beats the global reduced-motion reset: a plain 200 ms crossfade */
+    animation: fade 200ms linear both !important;
+  }
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}
+
 .waiting {
   margin: 0;
   font-size: 30px;

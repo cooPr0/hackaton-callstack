@@ -1,10 +1,13 @@
 import { BOARD_COLS, BOARD_ROWS, type Cell, HINGE_AFTER_X } from "@tint/protocol";
+import { animate } from "motion";
+import { useReducedMotion } from "motion/react";
 import {
   type CSSProperties,
   type KeyboardEvent,
   memo,
   type ReactNode,
   useCallback,
+  useLayoutEffect,
   useRef,
 } from "react";
 import { Brackets } from "../components/Brackets";
@@ -50,6 +53,8 @@ export interface BoardProps {
   portrait?: boolean;
   /** REVEAL only: the public target (`view.reveal.target`); drives zones and the brackets. */
   revealTarget?: Cell | null;
+  /** Bump to play the unfold (halves slide out from the hinge). 0 = no intro. */
+  intro?: number;
   /** Extra grid items laid over the board (reveal rings). */
   children?: ReactNode;
 }
@@ -151,10 +156,47 @@ export function Board({
   dimmed = false,
   portrait = false,
   revealTarget = null,
+  intro = 0,
   children,
 }: BoardProps) {
   const t = useCopy();
   const root = useRef<HTMLElement>(null);
+  const leftHalf = useRef<HTMLDivElement>(null);
+  const rightHalf = useRef<HTMLDivElement>(null);
+  const reduced = useReducedMotion();
+
+  // Unfold (PDF p.4): 220–520 ms the halves slide out from the hinge (left from +50%, right
+  // from −50%) on a spring; no zoom. Set the start pose before paint, then animate.
+  useLayoutEffect(() => {
+    if (!intro) return;
+    const halves = [
+      [leftHalf.current, "50%"],
+      [rightHalf.current, "-50%"],
+    ] as const;
+    const running = halves.flatMap(([el, from]) => {
+      if (!el) return [];
+      el.style.opacity = "0";
+      if (reduced) return [animate(el, { opacity: [0, 1] }, { duration: 0.2, ease: "linear" })];
+      el.style.transform = `translateX(${from})`;
+      return [
+        animate(
+          el,
+          { x: [from, "0%"] },
+          { type: "spring", duration: 0.5, bounce: 0.15, delay: 0.22 },
+        ),
+        animate(el, { opacity: [0, 1] }, { duration: 0.14, delay: 0.22, ease: "linear" }),
+      ];
+    });
+    return () => {
+      for (const a of running) a.stop();
+      for (const [el] of halves) {
+        if (el) {
+          el.style.opacity = "";
+          el.style.transform = "";
+        }
+      }
+    };
+  }, [intro, reduced]);
 
   const byCell = new Map<number, BoardStone>();
   for (const s of stones) byCell.set(key(s.x, s.y), s);
@@ -239,10 +281,10 @@ export function Board({
       tabIndex={-1}
       onKeyDown={onKeyDown}
     >
-      <div className={`${styles.half} ${styles.left}`} data-half="left">
+      <div ref={leftHalf} className={`${styles.half} ${styles.left}`} data-half="left">
         {half(0, HINGE_AFTER_X)}
       </div>
-      <div className={`${styles.half} ${styles.right}`} data-half="right">
+      <div ref={rightHalf} className={`${styles.half} ${styles.right}`} data-half="right">
         {half(HINGE_AFTER_X + 1, BOARD_COLS - 1)}
       </div>
       {showChip && selected ? (

@@ -1,0 +1,63 @@
+/* Centred on the hinge of the board area; fades out once the halves start moving (220 ms). */
+.layer {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  z-index: 6;
+  pointer-events: none;
+  animation: out 200ms linear 220ms forwards;
+}
+
+/* One L-shaped viewfinder corner; --dx/--dy (±1) say which. */
+.corner {
+  --len: 18px;
+  --w: 3px;
+  position: absolute;
+  width: var(--len);
+  height: var(--len);
+  margin: calc(var(--len) / -2);
+  border: 0 solid var(--fg);
+  border-top-width: calc((1 - var(--dy)) / 2 * var(--w));
+  border-bottom-width: calc((1 + var(--dy)) / 2 * var(--w));
+  border-left-width: calc((1 - var(--dx)) / 2 * var(--w));
+  border-right-width: calc((1 + var(--dx)) / 2 * var(--w));
+  animation: close 180ms cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+/* The seal: the sample closes into a black square. */
+.seal {
+  position: absolute;
+  width: 34px;
+  height: 34px;
+  margin: -17px;
+  border-radius: 4px;
+  background: var(--ink);
+  animation: seal 140ms cubic-bezier(0.2, 1.4, 0.4, 1) 180ms both;
+}
+
+@keyframes close {
+  from {
+    translate: calc(var(--dx) * 64px) calc(var(--dy) * 64px);
+  }
+  to {
+    translate: calc(var(--dx) * 26px) calc(var(--dy) * 26px);
+  }
+}
+
+@keyframes seal {
+  from {
+    scale: 0;
+  }
+  to {
+    scale: 1;
+  }
+}
+
+@keyframes out {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}

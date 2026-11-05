@@ -13,6 +13,7 @@ import { EdgeBar } from "./EdgeBar";
 import { Rings } from "./Rings";
 import { deltasLine, revealTargetOf, stoneBadges } from "./reveal";
 import styles from "./TableScreen.module.css";
+import { UnfoldSeal, useUnfoldIntro } from "./Unfold";
 
 const isGuess = (v: PlayerView) => v.phase === "GUESS_1" || v.phase === "GUESS_2";
 const isSecret = (v: PlayerView) => v.phase === "SECRET_1" || v.phase === "SECRET_2";
@@ -54,6 +55,7 @@ export function TableScreen(props: ScreenProps) {
   const { view, actions, posture, bot, pending, error } = props;
   const [sel, setSel] = useState<{ key: string; cell: Cell | null }>({ key: "", cell: null });
   const [sent, setSent] = useState<{ key: string; cell: Cell } | null>(null);
+  const intro = useUnfoldIntro(view);
 
   const key = view ? boardKey(view) : "";
   const selected = sel.key === key ? sel.cell : null;
@@ -122,6 +124,7 @@ export function TableScreen(props: ScreenProps) {
       scores={rankedScores(view)}
       flipped={flipped}
       compact={portrait}
+      writeOn={intro}
       action={next(flipped)}
     />
   );
@@ -138,6 +141,7 @@ export function TableScreen(props: ScreenProps) {
       )}
 
       <div className={styles.boardArea}>
+        {intro > 0 ? <UnfoldSeal key={intro} /> : null}
         <Board
           stones={stones}
           interactive={canPlace}
@@ -148,6 +152,7 @@ export function TableScreen(props: ScreenProps) {
           dimmed={isSecret(view)}
           portrait={portrait}
           revealTarget={revealTarget}
+          intro={intro}
         >
           {revealTarget ? <Rings target={revealTarget} /> : null}
         </Board>

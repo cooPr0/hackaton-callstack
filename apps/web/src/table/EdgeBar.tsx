@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import type { RankedScore } from "../screens/helpers";
 import styles from "./EdgeBar.module.css";
 
@@ -19,8 +19,10 @@ export interface EdgeBarProps {
   /** The far side of the table: the whole bar is turned 180°. */
   flipped?: boolean;
   compact?: boolean;
-  /** A button above the scores (REVEAL: "Następna runda"). */
+  /** A button beside the scores (REVEAL: "Następna runda"). */
   action?: ReactNode;
+  /** Bump to write the newest clue on, letter by letter (the unfold, 560 ms on). */
+  writeOn?: number;
 }
 
 /**
@@ -38,6 +40,7 @@ export function EdgeBar({
   flipped = false,
   compact = false,
   action = null,
+  writeOn = 0,
 }: EdgeBarProps) {
   const longest = Math.max(0, ...clues.map((c) => c.length));
   const cls = [styles.bar, flipped ? styles.flipped : "", compact ? styles.compact : ""]
@@ -54,13 +57,34 @@ export function EdgeBar({
             data-long={longest > 9 ? "" : undefined}
             data-xlong={longest > 14 ? "" : undefined}
           >
-            {clues.map((c, i) => (
-              // biome-ignore lint/suspicious/noArrayIndexKey: clues are a fixed, append-only pair and may repeat
-              <span key={i} className={styles.word}>
-                {c}
-                {i < clues.length - 1 ? "," : ""}
-              </span>
-            ))}
+            {clues.map((c, i) => {
+              const text = `${c}${i < clues.length - 1 ? "," : ""}`;
+              // The newest clue writes itself on after an unfold, letter by letter.
+              const write = writeOn > 0 && i === clues.length - 1;
+              return (
+                <span key={write ? `${i}-${writeOn}` : i} className={styles.word}>
+                  {write ? (
+                    <>
+                      <span aria-hidden="true">
+                        {Array.from(text).map((ch, j) => (
+                          <span
+                            // biome-ignore lint/suspicious/noArrayIndexKey: letters of a fixed string
+                            key={j}
+                            className={styles.letter}
+                            style={{ "--i": j } as CSSProperties}
+                          >
+                            {ch}
+                          </span>
+                        ))}
+                      </span>
+                      <span className="visually-hidden">{text}</span>
+                    </>
+                  ) : (
+                    text
+                  )}
+                </span>
+              );
+            })}
           </p>
         ) : waiting ? (
           <p className={`display ${styles.waiting}`}>{waiting}</p>
