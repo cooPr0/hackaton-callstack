@@ -1,0 +1,18 @@
+{
+  "name": "tint-and-tell",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@12.11.2",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "typecheck": "pnpm -r --if-present typecheck",
+    "test": "pnpm -r --if-present test",
+    "lint": "biome check .",
+    "format": "biome check --write .",
+    "fixtures:check": "pnpm --filter @tint/protocol fixtures:check",
+    "palette": "pnpm --filter @tint/game-core palette",
+    "playtest": "pnpm --filter @tint/playtester --silent playtest"
+  }
+}
