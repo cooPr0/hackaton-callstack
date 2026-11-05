@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { Cid, SeatId } from "./common";
-import { PROTOCOL_VERSION } from "./constants";
+import { PROTOCOL_VERSION, ROOM_CODE_ALPHABET, ROOM_CODE_LENGTH } from "./constants";
 import { ErrorCode } from "./errors";
 import { PlayerView } from "./view";
 
@@ -21,10 +21,24 @@ export const BotStatus = z.object({
   seatId: SeatId,
   state: z.enum(["thinking", "idle"]),
 });
+/** Same-origin path to the MP3 of one Grok line: `/api/rooms/:code/say/:lineId.mp3`. */
+export const SayAudioPath = z
+  .string()
+  .regex(
+    new RegExp(`^/api/rooms/[${ROOM_CODE_ALPHABET}]{${ROOM_CODE_LENGTH}}/say/[a-f0-9]{32}\\.mp3$`),
+  );
+export const sayAudioPath = (code: string, lineId: string) =>
+  `/api/rooms/${code}/say/${lineId}.mp3`;
+
 export const BotSay = z.object({
   type: z.literal("bot.say"),
   seatId: SeatId,
   text: z.string().min(1).max(200),
+  /**
+   * v1.1: Grok's line as speech, relative to the API base URL. Absent when speech is off,
+   * over budget or unavailable: show the text only. Respect the client's sound toggle.
+   */
+  audioUrl: SayAudioPath.optional(),
 });
 export const Ack = z.object({ type: z.literal("ack"), cid: Cid });
 export const ErrorMessage = z.object({

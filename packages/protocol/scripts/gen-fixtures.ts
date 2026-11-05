@@ -168,6 +168,7 @@ const messages: Record<string, unknown> = {
     type: "bot.say",
     seatId: "s3",
     text: "Złoty, ale nie z puszki. Biorę kratkę głębiej.",
+    audioUrl: "/api/rooms/K7PQX/say/0123456789abcdef0123456789abcdef.mp3",
   },
   "server.ack": { type: "ack", cid: "c-0004" },
   "server.error": {
