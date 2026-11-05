@@ -258,10 +258,12 @@ struct Viewfinder: View {
     }
 }
 
-private struct CornerBracket: Shape {
+struct CornerBracket: Shape {
+    var armLength: CGFloat = 15
+
     nonisolated func path(in rect: CGRect) -> Path {
         var path = Path()
-        let arm = min(15, rect.width / 2, rect.height / 2)
+        let arm = min(armLength, rect.width / 2, rect.height / 2)
         let corners: [(CGPoint, CGPoint, CGPoint)] = [
             (
                 CGPoint(x: rect.minX, y: rect.minY + arm),
@@ -339,8 +341,16 @@ struct GameShell: View {
                 phase = .first(.draw(cueGiver: giver, hidesShade: mode == .grok))
             }
         case .first(let round):
-            ClosedGameView(round: round) { clue in
-                phase = .second(round, firstClue: clue, stones: FinderStone.sampleGuesses(around: round))
+            if round.hidesShade {
+                ShadeSealView(
+                    round: round.round,
+                    totalRounds: round.totalRounds,
+                    knower: round.cueGiver
+                )
+            } else {
+                ClosedGameView(round: round) { clue in
+                    phase = .second(round, firstClue: clue, stones: FinderStone.sampleGuesses(around: round))
+                }
             }
         case .second(let round, let firstClue, let stones):
             SecondPeekView(round: round, firstClue: firstClue, stones: stones) { second in
