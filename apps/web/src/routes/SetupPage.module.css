@@ -1,0 +1,287 @@
+.page {
+  min-height: 100dvh;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: calc(16px + env(safe-area-inset-top)) 20px calc(20px + env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--fg);
+}
+
+.meta {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.title {
+  font-size: clamp(40px, 12vw, 56px);
+  line-height: 0.95;
+}
+
+.strip {
+  display: grid;
+  grid-template-columns: repeat(24, 1fr);
+  gap: 2px;
+}
+
+.strip span {
+  aspect-ratio: 1.6;
+  border-radius: 2px;
+}
+
+.modes,
+.toggle {
+  border: 0;
+  margin: 0;
+  min-width: 0;
+}
+
+.modes {
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.mode {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 4px 12px;
+  padding: 14px 14px 12px;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  background: transparent;
+  text-align: left;
+}
+
+.mode[aria-pressed="true"] {
+  background: var(--surface-strong);
+  color: var(--on-surface-strong);
+  border-color: transparent;
+}
+
+.modeTitle {
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.modeSub {
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+.modeStones {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 6px;
+  font-size: 11px;
+}
+
+.check {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  font-size: 14px;
+}
+
+.swatch {
+  grid-row: 1 / span 3;
+  grid-column: 2;
+  align-self: end;
+  display: grid;
+  grid-template-columns: repeat(2, 14px);
+  gap: 2px;
+}
+
+.swatch span {
+  width: 14px;
+  height: 14px;
+  border-radius: 2px;
+}
+
+.stone {
+  display: inline-grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1.5px solid currentColor;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.stoneGrok {
+  background: currentColor;
+}
+
+.stoneGrok::after {
+  content: "";
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--bg);
+}
+
+.mode[aria-pressed="true"] .stoneGrok::after {
+  background: var(--surface-strong);
+}
+
+.players {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.player {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  width: 54px;
+}
+
+.chip {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1.5px solid var(--fg);
+  font-weight: 700;
+  background: transparent;
+}
+
+.chipGrok {
+  background: var(--fg);
+}
+
+.chipGrok::after {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--bg);
+}
+
+.chipAdd {
+  border-style: dashed;
+  color: var(--muted);
+  font-size: 20px;
+}
+
+.name {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  text-align: center;
+  font-size: 11px;
+  color: var(--muted);
+  padding: 0;
+}
+
+.name:focus {
+  color: var(--fg);
+  outline: none;
+  border-bottom: 1px solid var(--fg);
+}
+
+.remove {
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font-size: 11px;
+  padding: 0;
+}
+
+.rounds {
+  margin-left: auto;
+  text-align: right;
+  font-size: 12px;
+  color: var(--muted);
+  display: grid;
+  justify-items: end;
+  gap: 2px;
+}
+
+.stepper {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--fg);
+}
+
+.stepper button {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: transparent;
+  line-height: 1;
+}
+
+.toggle {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding: 3px;
+  border-radius: 999px;
+  background: var(--surface);
+}
+
+.toggle button {
+  border: 0;
+  border-radius: 999px;
+  padding: 9px 10px;
+  font-size: 13px;
+  background: transparent;
+  color: var(--muted);
+}
+
+.toggle button[aria-pressed="true"] {
+  background: var(--bg);
+  color: var(--fg);
+  font-weight: 600;
+  box-shadow: var(--shadow-card);
+}
+
+.spacer {
+  flex: 1;
+}
+
+.error {
+  color: var(--danger);
+  font-size: 13px;
+  margin: 0;
+}
+
+.primary {
+  width: 100%;
+  border: 0;
+  border-radius: 999px;
+  padding: 15px 20px;
+  background: var(--surface-strong);
+  color: var(--on-surface-strong);
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.primary:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.demo {
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font-size: 12px;
+  text-decoration: underline;
+  justify-self: center;
+}
