@@ -119,3 +119,52 @@
   display: flex;
   gap: var(--space-3);
 }
+
+/* Wide (≥ 900px, see theme/layout.css): the winner and scores on the left; every round as a
+   sample card on the right, in a wrapping grid instead of the phone's swipe strip. */
+@container closed (min-width: 900px) {
+  .body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) var(--col-form);
+    grid-template-rows: auto auto minmax(0, 1fr);
+    column-gap: var(--split-gap);
+    align-content: start;
+    margin: 0;
+    padding: 0;
+  }
+
+  .headline {
+    grid-column: 1;
+    grid-row: 1;
+    font-size: clamp(56px, 7cqw, 96px);
+  }
+
+  .scores {
+    grid-column: 1;
+    grid-row: 2;
+    max-width: 520px;
+  }
+
+  .historySection {
+    grid-column: 2;
+    grid-row: 1 / -1;
+    margin-top: 0;
+  }
+
+  .history {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin: 0;
+    padding: 0 0 20px;
+    overflow: visible;
+  }
+
+  .card {
+    width: auto;
+  }
+
+  /* Short enough that a 6-round game (3 rows) fits at 828px tall; longer games scroll. */
+  .swatch {
+    height: clamp(64px, 11cqh, 150px);
+  }
+}

@@ -31,6 +31,7 @@ export function GameOverScreen(props: ScreenProps) {
         </div>
       }
       bodyClassName={styles.body}
+      wide="split"
     >
       <h1 className={styles.headline}>
         {winner?.kind === "winner" ? t.gameOver.winner(winner.name) : t.gameOver.tie}
