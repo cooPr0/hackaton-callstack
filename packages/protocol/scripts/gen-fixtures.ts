@@ -160,6 +160,7 @@ const messages: Record<string, unknown> = {
   "client.pause.set": { type: "pause.set", cid: "c-0006", paused: true },
   "client.game.end": { type: "game.end", cid: "c-0007" },
   "client.ping": { type: "ping", cid: "c-0008" },
+  "client.grok.ask": { type: "grok.ask", cid: "c-0009", seatId: "s1", draft: "Rosół" },
   // server → client
   "server.welcome": { type: "welcome", seatIds: ["s2"], serverTime: T0, protocol: 1 },
   "server.view": { type: "view", seq: 42, view: views.guess1 },
@@ -169,6 +170,14 @@ const messages: Record<string, unknown> = {
     seatId: "s3",
     text: "Złoty, ale nie z puszki. Biorę kratkę głębiej.",
     audioUrl: "/api/rooms/K7PQX/say/0123456789abcdef0123456789abcdef.mp3",
+  },
+  "server.grok.hint": {
+    type: "grok.hint",
+    seatId: "s1",
+    text: "W piątkowych wpisach rosół to dym znad garnka i niedzielny obiad, nie blacha.",
+    citations: [
+      { handle: "kuchnia_pl", url: "https://x.com/kuchnia_pl/status/1854000000000000001" },
+    ],
   },
   "server.ack": { type: "ack", cid: "c-0004" },
   "server.error": {

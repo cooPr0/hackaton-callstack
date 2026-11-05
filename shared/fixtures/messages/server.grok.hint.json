@@ -1,0 +1,11 @@
+{
+  "type": "grok.hint",
+  "seatId": "s1",
+  "text": "W piątkowych wpisach rosół to dym znad garnka i niedzielny obiad, nie blacha.",
+  "citations": [
+    {
+      "handle": "kuchnia_pl",
+      "url": "https://x.com/kuchnia_pl/status/1854000000000000001"
+    }
+  ]
+}

@@ -20,6 +20,14 @@ export const RoundNext = msg("round.next", {});
 export const PauseSet = msg("pause.set", { paused: z.boolean() });
 export const GameEnd = msg("game.end", {});
 export const Ping = msg("ping", {});
+/**
+ * v1.1: ask Grok for a hint grounded in recent X posts. Answered with `grok.hint` to this socket
+ * only. `draft` (SECRET_* only, the cue giver's candidate word) must pass the clue rules.
+ */
+export const GrokAsk = msg("grok.ask", {
+  seatId: SeatId,
+  draft: z.string().trim().min(1).max(CLUE_MAX_CHARS).optional(),
+});
 
 export const ClientMessage = z.discriminatedUnion("type", [
   Hello,
@@ -30,6 +38,7 @@ export const ClientMessage = z.discriminatedUnion("type", [
   PauseSet,
   GameEnd,
   Ping,
+  GrokAsk,
 ]);
 export type ClientMessage = z.infer<typeof ClientMessage>;
 export type ClientMessageType = ClientMessage["type"];
