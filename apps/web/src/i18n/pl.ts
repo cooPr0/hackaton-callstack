@@ -161,4 +161,37 @@ export const pl = {
   notFound: { title: "Nie ma takiej strony", back: "Nowa partia" },
 
   lang: { label: "Język", pl: "PL", en: "EN" },
+
+  /** Closed-phone screens (Lane B). Names stay in the nominative. */
+  closed: {
+    pauseLabel: "Pauza",
+    grokGives: "podpowiada Grok",
+    foldedOnlyLooks: (name: string) => `złożone, patrzy tylko ${name}`,
+    clueLabel: "Podpowiedź",
+    viewfinder: "Wizjer: Twój odcień w narożnikach, dookoła sąsiednie kratki",
+    lobby: {
+      platform: { ios: "iPhone", web: "przeglądarka", grok: "bot" },
+      online: "połączony",
+      offline: "rozłączony",
+      you: "Ty",
+      host: "gospodarz",
+      qrAlt: (code: string) => `Kod QR do pokoju ${code}`,
+      needPlayers: "Potrzeba co najmniej dwóch graczy",
+    },
+    roundCard: {
+      nextSub: "Podajcie telefon dalej. Następny odcień czeka.",
+      lastSub: "To była ostatnia runda. Czas na wyniki.",
+    },
+    pause: {
+      sub: (round: string, scores: string) => `${round} · ${scores}`,
+      endYes: "Tak, zakończ",
+      endNo: "Anuluj",
+    },
+    rulesClose: "Wróć",
+    gameOver: {
+      scores: "Wyniki",
+      history: "Rundy",
+      roundN: (n: number) => `Runda ${n}`,
+    },
+  },
 } as const;

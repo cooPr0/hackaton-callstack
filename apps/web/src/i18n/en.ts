@@ -157,4 +157,36 @@ export const en: Copy = {
   notFound: { title: "Page not found", back: "New game" },
 
   lang: { label: "Language", pl: "PL", en: "EN" },
+
+  closed: {
+    pauseLabel: "Pause",
+    grokGives: "Grok gives the clue",
+    foldedOnlyLooks: (name) => `folded, only ${name} looks`,
+    clueLabel: "Clue",
+    viewfinder: "Viewfinder: your shade inside the corners, its neighbours around it",
+    lobby: {
+      platform: { ios: "iPhone", web: "browser", grok: "bot" },
+      online: "connected",
+      offline: "disconnected",
+      you: "You",
+      host: "host",
+      qrAlt: (code) => `QR code for room ${code}`,
+      needPlayers: "You need at least two players",
+    },
+    roundCard: {
+      nextSub: "Pass the phone on. The next shade is waiting.",
+      lastSub: "That was the last round. Time for the scores.",
+    },
+    pause: {
+      sub: (round, scores) => `${round} · ${scores}`,
+      endYes: "Yes, end it",
+      endNo: "Cancel",
+    },
+    rulesClose: "Back",
+    gameOver: {
+      scores: "Scores",
+      history: "Rounds",
+      roundN: (n) => `Round ${n}`,
+    },
+  },
 };
