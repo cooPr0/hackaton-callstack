@@ -64,7 +64,7 @@ const initial: GameState = {
   pendingCount: 0,
   error: null,
   bot: { thinking: false, line: null, lineAt: null },
-  ui: { secretUnlockedFor: null, pauseOpen: false, rulesOpen: false },
+  ui: { secretUnlockedFor: null, pauseOpen: false, rulesOpen: false, clueDraft: "" },
 };
 
 /**
@@ -116,6 +116,8 @@ export function createGameStore(deps: GameDeps): StoreApi<GameStore> {
               // a new secret must be re-confirmed by whoever holds the phone
               secretUnlockedFor: newSecret ? null : s.ui.secretUnlockedFor,
               pauseOpen: next.paused ? true : s.ui.pauseOpen && !(!next.paused && prev?.paused),
+              // a draft belongs to one SECRET phase: sent or not, it never carries over
+              clueDraft: newSecret || prev?.phase !== next.phase ? "" : s.ui.clueDraft,
             },
             bot:
               next.phase === "GUESS_1" || next.phase === "GUESS_2"
@@ -154,6 +156,7 @@ export function createGameStore(deps: GameDeps): StoreApi<GameStore> {
       unlockSecret: (seatId) => set((s) => ({ ui: { ...s.ui, secretUnlockedFor: seatId } })),
       openPause: (open) => set((s) => ({ ui: { ...s.ui, pauseOpen: open } })),
       openRules: (open) => set((s) => ({ ui: { ...s.ui, rulesOpen: open } })),
+      setClueDraft: (text) => set((s) => ({ ui: { ...s.ui, clueDraft: text } })),
       setPosture: (p) => deps.setPostureOverride(p),
       retryConnection: () => conn?.retry(),
       leave: () => {

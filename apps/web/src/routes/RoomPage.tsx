@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useRef } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router";
+import { draftToSendOnUnfold } from "../app/clueDraft";
 import { isHost } from "../app/roles";
 import { ScreenHost } from "../app/ScreenHost";
+import type { Posture } from "../app/types";
 import { useCopy } from "../i18n";
 import { isDemoRoom } from "../net/mock";
 import { PostureToggle } from "../posture/PostureToggle";
@@ -54,6 +56,16 @@ export function RoomPage() {
       actions.start().catch(() => {});
     }
   }, [view, params, actions]);
+
+  // local: unfolding the phone after typing a clue sends it, Enter or not
+  const prevPosture = useRef<Posture | null>(null);
+  useEffect(() => {
+    const prev = prevPosture.current;
+    prevPosture.current = posture;
+    const st = gameStore.getState();
+    const draft = draftToSendOnUnfold(prev, posture, st.view, st.ui);
+    if (draft && st.pendingCount === 0) st.actions.submitClue(draft).catch(() => {});
+  }, [posture]);
 
   // toasts fade on their own
   useEffect(() => {

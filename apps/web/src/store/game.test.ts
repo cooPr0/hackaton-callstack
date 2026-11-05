@@ -161,6 +161,18 @@ describe("game store", () => {
     expect(store.getState().ui.secretUnlockedFor).toBeNull();
   });
 
+  it("keeps the clue draft within one phase and clears it on the next", async () => {
+    const { store, push } = setup();
+    await store.getState().joinRoom("K7PQX", "Ola");
+    store.getState().connect("K7PQX");
+    push(viewMsg("secret1-cuegiver"));
+    store.getState().actions.setClueDraft("Rosó");
+    push({ type: "view", seq: 2, view: { ...fixture("secret1-cuegiver"), paused: true } });
+    expect(store.getState().ui.clueDraft).toBe("Rosó"); // same phase → kept
+    push(viewMsg("guess1", 3));
+    expect(store.getState().ui.clueDraft).toBe("");
+  });
+
   it("tracks Grok's thinking and lines", async () => {
     const { store, push } = setup();
     await store.getState().joinRoom("K7PQX", "Ola");
