@@ -19,7 +19,7 @@ struct ShadeSealView: View {
             ShadeCard()
                 .frame(width: 300, height: 400)
                 .rotationEffect(.degrees(-4))
-                .offset(x: -64, y: 96)
+                .offset(x: -40, y: 72)
                 .accessibilityHidden(true)
 
             VStack(alignment: .leading, spacing: 0) {
@@ -88,27 +88,34 @@ struct ShadeSealView: View {
     }
 }
 
-/// Graphite card back. The swatch is sealed, so no hue shows.
+/// Graphite card back. The sealed square is near-black, never a cell from the board.
 private struct ShadeCard: View {
     @Environment(\.colorScheme) private var scheme
+
+    /// Cold steel, fixed. Bone flips to white in light mode and would read as a tint.
+    private var steel: Color { Color(hex: "F8F7F4") }
 
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 22, style: .continuous)
                 .fill(Color.cocoa)
             RoundedRectangle(cornerRadius: 22, style: .continuous)
-                .strokeBorder(Color.bone.opacity(scheme == .dark ? 0.45 : 0), lineWidth: 1.5)
+                .strokeBorder(steel.opacity(scheme == .dark ? 0.45 : 0), lineWidth: 1.5)
 
             RoundedRectangle(cornerRadius: 12, style: .continuous)
-                .strokeBorder(Color.bone.opacity(0.22), lineWidth: 2)
+                .strokeBorder(steel.opacity(0.22), lineWidth: 2)
                 .padding(18)
 
             ZStack {
                 RoundedRectangle(cornerRadius: 6, style: .continuous)
                     .fill(Color(hex: "0A0A0A"))
                     .frame(width: 120, height: 120)
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 6, style: .continuous)
+                            .strokeBorder(steel.opacity(0.14), lineWidth: 2)
+                    }
                 CornerBracket(armLength: 18)
-                    .stroke(Color.bone, style: StrokeStyle(lineWidth: 3, lineCap: .square, lineJoin: .miter))
+                    .stroke(steel, style: StrokeStyle(lineWidth: 3, lineCap: .square, lineJoin: .miter))
                     .frame(width: 148, height: 148)
             }
 
@@ -116,7 +123,7 @@ private struct ShadeCard: View {
                 .fill(Color.ground)
                 .frame(width: 30, height: 30)
                 .overlay {
-                    Circle().strokeBorder(Color.black.opacity(0.35), lineWidth: 1)
+                    Circle().strokeBorder(Color.black.opacity(0.45), lineWidth: 1)
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
                 .padding(.top, 30)
