@@ -86,7 +86,7 @@ Tint & Tell is a party game first. It also touches a few bigger questions:
 - **Do machines see color the way we talk about it?** Every round is a small perception experiment: a word, a target, human guesses and an AI guess. With players' opt-in consent and anonymization, those rounds could form an open dataset of color–word associations. That could be used to measure how well language models are grounded in human perception, starting with Polish, a language that is under-represented in perception research.
 - **Language as play.** Describing a shade without naming the color pushes players toward metaphor: food, places, memories. That's useful for language learners and for kids building vocabulary.
 - **Privacy by design, as a pattern.** The hinge as a physical privacy boundary, together with per-seat server projections, is a reusable pattern for any multi-user app on foldables: card games, negotiations, classroom quizzes.
-- **Next: inclusion.** About 1 in 12 men has a color-vision deficiency. On the roadmap: a CVD-aware mode with palettes validated against deuteranopia and protanopia simulations, plus pattern overlays, so a game about color doesn't exclude the people who see it differently.
+- **Next: inclusion.** About 1 in 12 men of Northern European descent has a color-vision deficiency. On the roadmap: a CVD-aware mode with palettes validated against deuteranopia and protanopia simulations, plus pattern overlays, so a game about color doesn't exclude the people who see it differently.
 
 ## Roadmap
 - [ ] CVD-aware palettes + pattern overlays

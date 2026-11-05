@@ -28,3 +28,7 @@ DerivedData/
 .idea/
 .vscode/*
 !.vscode/extensions.json
+
+# pitch media (large, generated)
+pitch/raw/
+pitch/out/
