@@ -48,6 +48,8 @@
   --ink-line: rgb(248 247 244 / 0.16);
   --ok: #2f9e55;
   --danger-text: var(--danger);
+  --ink-deep: #100f0d;
+  --ink-edge: #8f8c85;
   --shadow-button: 0 1px 2px rgb(25 24 21 / 0.08), 0 4px 14px rgb(25 24 21 / 0.08);
 }
 
@@ -67,6 +69,8 @@
   --ink: #0f0e0c;
   --ink-line: rgb(248 247 244 / 0.2);
   --danger-text: #f2626b;
+  --ink-deep: #080807;
+  --ink-edge: #3a3934;
   --shadow-button: 0 1px 2px rgb(0 0 0 / 0.3), 0 4px 14px rgb(0 0 0 / 0.3);
 }
 
@@ -87,6 +91,8 @@
     --ink: #0f0e0c;
     --ink-line: rgb(248 247 244 / 0.2);
     --danger-text: #f2626b;
+    --ink-deep: #080807;
+    --ink-edge: #3a3934;
     --shadow-button: 0 1px 2px rgb(0 0 0 / 0.3), 0 4px 14px rgb(0 0 0 / 0.3);
   }
 }

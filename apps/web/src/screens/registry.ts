@@ -1,5 +1,6 @@
 import type { ComponentType } from "react";
 import type { ScreenId, ScreenProps } from "../app/types";
+import { GrokSecretScreen } from "./GrokSecretScreen";
 import { Placeholder } from "./Placeholder";
 import { SecretScreen } from "./SecretScreen";
 
@@ -12,7 +13,7 @@ export const registry: Record<ScreenId, ComponentType<ScreenProps>> = {
   lobby: Placeholder,
   pass: Placeholder,
   secret: SecretScreen,
-  "grok-secret": Placeholder,
+  "grok-secret": GrokSecretScreen,
   "handoff-fold": Placeholder,
   "handoff-unfold": Placeholder,
   table: Placeholder,
