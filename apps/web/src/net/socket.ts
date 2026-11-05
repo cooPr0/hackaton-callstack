@@ -27,8 +27,19 @@ export type Outgoing = ClientMessage extends infer M
     : never
   : never;
 
-/** Close codes after which reconnecting is pointless (bad token / protocol mismatch). */
-export const FATAL_CLOSE_CODES = new Set([4401, 4426]);
+/**
+ * Close codes after which reconnecting is pointless (docs/PROTOCOL.md "Close codes"):
+ * 4401 BAD_TOKEN · 4404 ROOM_NOT_FOUND · 4409 seat taken over by a newer socket · 4426 PROTOCOL_MISMATCH.
+ */
+export const FATAL_CLOSE_CODES = new Set([4401, 4404, 4409, 4426]);
+
+/** Client error code for a fatal close (the server also sends `error {code}` before closing, except 4409). */
+export const FATAL_CLOSE_ERROR: Record<number, string> = {
+  4401: "BAD_TOKEN",
+  4404: "ROOM_NOT_FOUND",
+  4409: "SEAT_TAKEN_OVER",
+  4426: "PROTOCOL_MISMATCH",
+};
 const OPEN = 1;
 
 export interface RoomSocketOptions {
@@ -36,6 +47,8 @@ export interface RoomSocketOptions {
   hello: { platform: "web"; name?: string };
   onMessage(msg: ServerMessage): void;
   onStatus(state: ConnState): void;
+  /** Called once with the close code when the server ends the session for good. */
+  onFatal?(closeCode: number): void;
   createSocket?: WSFactory;
   ackTimeoutMs?: number;
   pingMs?: number;
@@ -86,6 +99,7 @@ export class RoomSocket implements RoomConnection {
       maxAttempts: 10,
       random: Math.random,
       newCid: () => crypto.randomUUID(),
+      onFatal: () => {},
       ...opts,
     };
   }
@@ -191,6 +205,7 @@ export class RoomSocket implements RoomConnection {
     if (this.intentional) return;
     if (FATAL_CLOSE_CODES.has(code)) {
       this.o.onStatus("failed");
+      this.o.onFatal(code);
       return;
     }
     this.attempts += 1;

@@ -131,6 +131,27 @@ describe("RoomSocket", () => {
     expect(states.at(-1)).toBe("failed");
   });
 
+  it.each([4401, 4404, 4409, 4426])("treats close %i as fatal", (code) => {
+    const fatal: number[] = [];
+    const f = fakeFactory();
+    const states: ConnState[] = [];
+    const sock = new RoomSocket({
+      url: "ws://x",
+      hello: { platform: "web" },
+      onMessage: () => {},
+      onStatus: (st) => states.push(st),
+      onFatal: (c) => fatal.push(c),
+      createSocket: f.create,
+    });
+    sock.connect();
+    f.current().open();
+    f.current().drop(code);
+    vi.advanceTimersByTime(60_000);
+    expect(f.sockets).toHaveLength(1);
+    expect(states.at(-1)).toBe("failed");
+    expect(fatal).toEqual([code]);
+  });
+
   it("treats 4401/4426 as fatal and close() as final", () => {
     const a = setup();
     a.sock.connect();

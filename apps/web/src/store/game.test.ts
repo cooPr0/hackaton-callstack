@@ -188,3 +188,26 @@ describe("game store", () => {
     expect(store.getState().view).toBeNull();
   });
 });
+
+describe("game store — fatal closes", () => {
+  it("forgets a dead seat and surfaces a translated error", async () => {
+    const { store, handlers } = setup();
+    await store.getState().joinRoom("K7PQX", "Ola");
+    store.getState().connect("K7PQX");
+    handlers()?.onStatus("failed");
+    handlers()?.onFatal(4401);
+    expect(store.getState().error?.code).toBe("BAD_TOKEN");
+    store.getState().connect("K7PQX");
+    expect(store.getState().error?.code).toBe("NO_SEAT"); // token was forgotten
+  });
+
+  it("explains a takeover by another tab without forgetting the seat", async () => {
+    const { store, handlers } = setup();
+    await store.getState().joinRoom("K7PQX", "Ola");
+    store.getState().connect("K7PQX");
+    handlers()?.onFatal(4409);
+    expect(store.getState().error?.message).toMatch(/innej karcie/);
+    store.getState().connect("K7PQX");
+    expect(store.getState().error).toBeNull();
+  });
+});
