@@ -1,4 +1,4 @@
-import type { PlayerView } from "@tint/protocol";
+import type { Cell, PlayerView } from "@tint/protocol";
 import { roundDeltas } from "../app/roles";
 import { rankedScores } from "../screens/helpers";
 import { zone } from "./geometry";
@@ -11,12 +11,19 @@ import { zone } from "./geometry";
 const STONE_REASONS = new Set(["exact", "near", "far"]);
 
 /**
+ * PRIVACY: the only target the table may draw. It comes from the public `reveal` block and
+ * only in REVEAL — never from `secret`, even when a local device holds it.
+ */
+export const revealTargetOf = (view: PlayerView): Cell | null =>
+  view.phase === "REVEAL" ? (view.reveal?.target ?? null) : null;
+
+/**
  * Badge text per stone index in `view.stones` ("+3"), in placement order.
  * An award (seat, reason) is matched to that seat's not-yet-used stone in the same zone.
  */
 export function stoneBadges(view: PlayerView): Map<number, string> {
   const out = new Map<number, string>();
-  const target = view.reveal?.target;
+  const target = revealTargetOf(view);
   if (!target) return out;
   const used = new Set<number>();
   for (const award of view.reveal?.awards ?? []) {
