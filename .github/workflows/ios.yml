@@ -1,0 +1,23 @@
+name: ios
+
+on:
+  pull_request:
+    paths: ["apps/ios/**", "shared/**", ".github/workflows/ios.yml"]
+  push:
+    branches: [main]
+    paths: ["apps/ios/**", "shared/**"]
+
+concurrency:
+  group: ios-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  tintkit:
+    name: TintKit swift test
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: swift test (skipped until P3 adds the package)
+        if: hashFiles('apps/ios/TintKit/Package.swift') != ''
+        working-directory: apps/ios/TintKit
+        run: swift test

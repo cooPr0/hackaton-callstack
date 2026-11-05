@@ -1,0 +1,12 @@
+# Fill in GitHub logins at kickoff (replace the <...> placeholders, keep the leading @).
+# Contract changes need P1 + one client owner (enforced via branch protection "Require review from Code Owners").
+#
+# /packages/protocol/        @<P1-login> @<P3-login> @cooPr0
+# /shared/fixtures/          @<P1-login> @<P3-login> @cooPr0
+# /packages/game-core/       @<P1-login>
+# /packages/playtester/      @<P1-login>
+# /apps/server/              @<P1-login>
+# /apps/playtester-worker/   @<P1-login>
+# /apps/web/                 @cooPr0
+# /apps/ios/                 @<P3-login>
+# /apps/ios/TintAndTell/Table/ @<P4-login>
