@@ -51,8 +51,11 @@ function edgeText(v: PlayerView, t: Copy, botLine: string | null, clock: string 
 }
 
 /**
- * The open phone: the shared table (PDF p.4). Reads only the public view — `secret` is
- * stripped by ScreenHost before it gets here and is never touched.
+ * The shared board. Reads only the public view — `secret` is stripped by ScreenHost
+ * before it gets here and is never touched.
+ *
+ * Local (one device on the table): two edge bars, the far one rotated 180°, pause on the hinge.
+ * Online: one upright bar and one pause. Each player has their own screen.
  */
 export function TableScreen(props: ScreenProps) {
   const t = useCopy();
@@ -80,6 +83,8 @@ export function TableScreen(props: ScreenProps) {
   if (!view) return null;
 
   const portrait = !view.local && posture === "closed";
+  // One laptop passed around keeps the open-phone table. Online does not.
+  const shared = view.local;
   // Public reveal data only (never `secret`): present from REVEAL on.
   const revealTarget = revealTargetOf(view);
   const badges = revealTarget ? stoneBadges(view) : new Map<number, string>();
@@ -130,6 +135,7 @@ export function TableScreen(props: ScreenProps) {
       scores={rankedScores(view)}
       flipped={flipped}
       compact={portrait}
+      solo={!shared && !portrait}
       action={next(flipped)}
     />
   );
@@ -137,12 +143,12 @@ export function TableScreen(props: ScreenProps) {
 
   return (
     <div className={`${styles.root} ${portrait ? styles.portraitRoot : ""}`}>
-      {portrait ? (
-        <div className={styles.portraitTop}>
+      {shared ? (
+        bar(true)
+      ) : (
+        <div className={portrait ? styles.portraitTop : styles.soloTop}>
           <PauseButton label={t.closed.pauseLabel} onClick={pause} />
         </div>
-      ) : (
-        bar(true)
       )}
 
       <div className={styles.boardArea}>
@@ -163,7 +169,7 @@ export function TableScreen(props: ScreenProps) {
 
       {bar(false)}
 
-      {portrait ? null : (
+      {shared ? (
         <>
           <span className={styles.hinge} aria-hidden="true" />
           <div className={`${styles.hingePause} ${styles.top}`}>
@@ -173,7 +179,7 @@ export function TableScreen(props: ScreenProps) {
             <PauseButton label={t.closed.pauseLabel} onClick={pause} />
           </div>
         </>
-      )}
+      ) : null}
 
       <Toast message={error} />
       <Overlays {...props} />

@@ -51,8 +51,14 @@
   padding: 4px 16px;
 }
 
-.portraitTop {
+.portraitTop,
+.soloTop {
   display: flex;
   justify-content: flex-end;
   padding: max(16px, env(safe-area-inset-top)) 20px 0;
+}
+
+/* Online on a wide window: the pause sits in the corner, the board fills the rest. */
+.soloTop {
+  padding-bottom: 4px;
 }
