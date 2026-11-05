@@ -75,8 +75,6 @@ struct NewGameView: View {
     @ObserveInjection private var inject
     @State private var mode: PartyMode
     @State private var players: [GamePlayer]
-    @State private var isAdding = false
-    @State private var draftName = ""
     @State private var drawCount = 0
 
     var onDrawShade: (PartyMode, [GamePlayer]) -> Void
@@ -87,7 +85,9 @@ struct NewGameView: View {
         onDrawShade: @escaping (PartyMode, [GamePlayer]) -> Void = { _, _ in }
     ) {
         _mode = State(initialValue: mode)
-        _players = State(initialValue: players)
+        var seated = players.filter { $0.kind == .human }
+        seated.append(.grok)
+        _players = State(initialValue: seated)
         self.onDrawShade = onDrawShade
     }
 
@@ -123,13 +123,6 @@ struct NewGameView: View {
         .tint(Color.ink)
         .sensoryFeedback(.selection, trigger: mode)
         .sensoryFeedback(.impact(weight: .medium), trigger: drawCount)
-        .alert("Dodaj gracza", isPresented: $isAdding) {
-            TextField("Imię", text: $draftName)
-            Button("Dodaj", action: addPlayer)
-            Button("Anuluj", role: .cancel) { draftName = "" }
-        } message: {
-            Text("Przy stole siada do sześciu osób, w tym Grok.")
-        }
         .enableInjection()
     }
 
@@ -167,7 +160,7 @@ struct NewGameView: View {
                 Button {
                     mode = item
                 } label: {
-                    ModeTile(mode: item, players: players, isSelected: mode == item)
+                    ModeTile(mode: item, isSelected: mode == item)
                 }
                 .buttonStyle(.plain)
             }
@@ -178,11 +171,11 @@ struct NewGameView: View {
     private var playerRow: some View {
         HStack(alignment: .bottom, spacing: 12) {
             ScrollView(.horizontal, showsIndicators: false) {
-                HStack(alignment: .bottom, spacing: 18) {
+                HStack(alignment: .bottom, spacing: 10) {
                     ForEach(orderedPlayers) { player in
                         playerChip(player)
                     }
-                    if players.count < 6 {
+                    if humanCount < Self.maxHumans {
                         addChip
                     }
                 }
@@ -204,9 +197,9 @@ struct NewGameView: View {
     private var drawButton: some View {
         Button {
             drawCount += 1
-            onDrawShade(mode, orderedPlayers)
+            onDrawShade(mode, seatedPlayers)
         } label: {
-            Text("Losuj odcień · zaczyna \(shadeOwner)")
+            Text(shadeOwner.isEmpty ? "Losuj odcień · zaczyna …" : "Losuj odcień · zaczyna \(shadeOwner)")
                 .font(.system(size: 17, weight: .semibold))
                 .foregroundStyle(Color.ground)
                 .frame(maxWidth: .infinity)
@@ -214,14 +207,13 @@ struct NewGameView: View {
                 .background(Color.ink, in: Capsule())
         }
         .buttonStyle(.plain)
+        .disabled(!canDraw)
+        .opacity(canDraw ? 1 : 0.38)
         .accessibilityHint("Zaczyna partię od sekretnego odcienia")
     }
 
     private var addChip: some View {
-        Button {
-            draftName = ""
-            isAdding = true
-        } label: {
+        Button(action: addPlayer) {
             VStack(spacing: 8) {
                 Circle()
                     .strokeBorder(Color.ink3, style: StrokeStyle(lineWidth: 2, dash: [3.5, 3.5]))
@@ -241,64 +233,102 @@ struct NewGameView: View {
     }
 
     private func playerChip(_ player: GamePlayer) -> some View {
-        let chip = VStack(spacing: 8) {
-            SeatStone(player: player, size: 44, hole: Color.ground)
-            Text(player.name)
-                .font(.system(size: 13, weight: .medium))
-                .foregroundStyle(Color.ink2)
-                .lineLimit(1)
-        }
-        .accessibilityElement(children: .combine)
-        .accessibilityLabel(player.kind == .grok ? "Grok" : player.name)
-
-        return Group {
-            if player.kind == .human, humanCount > 1 {
-                chip.contextMenu {
-                    Button("Usuń", role: .destructive) {
+        VStack(spacing: 4) {
+            ZStack(alignment: .topTrailing) {
+                SeatStone(player: player, size: 44, hole: Color.ground)
+                if player.kind == .human, humanCount > 1 {
+                    Button {
                         players.removeAll { $0.id == player.id }
+                    } label: {
+                        Text("×")
+                            .font(.system(size: 12, weight: .bold))
+                            .foregroundStyle(Color.ink2)
+                            .frame(width: 18, height: 18)
+                            .background(Color.ground, in: Circle())
                     }
+                    .buttonStyle(.plain)
+                    .offset(x: 4, y: -4)
+                    .accessibilityLabel("Usuń: \(player.name)")
                 }
+            }
+            if player.kind == .grok {
+                Text("Grok")
+                    .font(.system(size: 11, weight: .medium))
+                    .foregroundStyle(Color.ink2)
             } else {
-                chip
+                TextField("Imię", text: nameBinding(for: player.id))
+                    .font(.system(size: 11, weight: .medium))
+                    .foregroundStyle(Color.ink2)
+                    .multilineTextAlignment(.center)
+                    .textFieldStyle(.plain)
+                    .textInputAutocapitalization(.words)
+                    .submitLabel(.done)
+                    .frame(width: 54)
+                    .accessibilityLabel("Imię gracza")
             }
         }
+        .frame(width: 54)
     }
 
+    /// Humans stay in the order they were added. Grok is always the last seat, as on the web.
     private var orderedPlayers: [GamePlayer] {
-        players.filter { $0.kind == .human } + players.filter { $0.kind == .grok }
+        players.filter { $0.kind == .human } + [GamePlayer.grok]
+    }
+
+    /// Names ready to play: blanks become „Gracz N”, and exactly one Grok sits at the end.
+    private var seatedPlayers: [GamePlayer] {
+        orderedPlayers.enumerated().map { index, player in
+            guard player.kind == .human else { return .grok }
+            var seated = player
+            let trimmed = player.name.trimmingCharacters(in: .whitespacesAndNewlines)
+            let humansBefore = orderedPlayers.prefix(index).filter { $0.kind == .human }.count
+            seated.name = trimmed.isEmpty ? "Gracz \(humansBefore + 1)" : String(trimmed.prefix(24))
+            return seated
+        }
     }
 
     private var humanCount: Int {
         players.filter { $0.kind == .human }.count
     }
 
-    /// The seat the secret shade belongs to. At the table and when you clue, that is the first human. When Grok clues, it is Grok.
+    /// Stół needs two people besides Grok. The other modes need one.
+    private var canDraw: Bool {
+        if humanCount < 1 { return false }
+        if mode == .stol, humanCount < 2 { return false }
+        return true
+    }
+
+    /// Who draws the first shade. Grok mode starts with Grok; every other mode starts with the first person.
     private var shadeOwner: String {
-        switch mode {
-        case .grok:
-            "Grok"
-        case .stol, .ty:
-            players.first { $0.kind == .human }?.name ?? "Gracz"
-        }
+        if mode == .grok { return "Grok" }
+        return seatedPlayers.first { $0.kind == .human }?.name ?? ""
+    }
+
+    private func nameBinding(for id: UUID) -> Binding<String> {
+        Binding(
+            get: { players.first { $0.id == id }?.name ?? "" },
+            set: { newValue in
+                guard let index = players.firstIndex(where: { $0.id == id }) else { return }
+                players[index].name = String(newValue.prefix(24))
+            }
+        )
     }
 
     private func addPlayer() {
-        let trimmed = draftName.trimmingCharacters(in: .whitespacesAndNewlines)
-        draftName = ""
-        guard !trimmed.isEmpty, players.count < 6 else { return }
-        let name = String(trimmed.prefix(16))
-        let player = GamePlayer(id: UUID(), name: name, kind: .human)
+        guard humanCount < Self.maxHumans else { return }
+        let player = GamePlayer(id: UUID(), name: "Gracz \(humanCount + 1)", kind: .human)
         if let grok = players.firstIndex(where: { $0.kind == .grok }) {
             players.insert(player, at: grok)
         } else {
             players.append(player)
         }
     }
+
+    private static let maxHumans = 5
 }
 
 private struct ModeTile: View {
     var mode: PartyMode
-    var players: [GamePlayer]
     var isSelected: Bool
 
     var body: some View {
@@ -349,27 +379,26 @@ private struct ModeTile: View {
         isSelected ? Color.bone : Color.ground
     }
 
+    /// The mode tiles illustrate the rule. They stay Kuba, Ola and Grok, like the web, whatever the list says.
     private var seatRow: some View {
-        HStack(spacing: 6) {
+        let kuba = GamePlayer.openingTable[0]
+        let ola = GamePlayer.openingTable[1]
+        return HStack(spacing: 6) {
             switch mode {
             case .stol:
-                ForEach(players) { player in
-                    SeatStone(player: player, size: 26, hole: grokHole, onFilledTile: isSelected)
-                }
+                SeatStone(player: kuba, size: 26, hole: grokHole, onFilledTile: isSelected)
+                SeatStone(player: ola, size: 26, hole: Color.ground, onFilledTile: isSelected)
+                SeatStone(player: .grok, size: 26, hole: grokHole, onFilledTile: isSelected)
             case .ty:
-                if let human = players.first(where: { $0.kind == .human }) {
-                    SeatStone(player: human, size: 26, hole: Color.ground, onFilledTile: isSelected)
-                    FlowArrow()
-                        .foregroundStyle(isSelected ? Color.ground.opacity(0.72) : Color.ink2)
-                    SeatStone(player: .grok, size: 26, hole: grokHole, onFilledTile: isSelected)
-                }
+                SeatStone(player: kuba, size: 26, hole: Color.ground, onFilledTile: isSelected)
+                FlowArrow()
+                    .foregroundStyle(isSelected ? Color.ground.opacity(0.72) : Color.ink2)
+                SeatStone(player: .grok, size: 26, hole: grokHole, onFilledTile: isSelected)
             case .grok:
                 SeatStone(player: .grok, size: 26, hole: grokHole, onFilledTile: isSelected)
                 FlowArrow()
                     .foregroundStyle(isSelected ? Color.ground.opacity(0.72) : Color.ink2)
-                if let human = players.first(where: { $0.kind == .human }) {
-                    SeatStone(player: human, size: 26, hole: Color.ground, onFilledTile: isSelected)
-                }
+                SeatStone(player: kuba, size: 26, hole: Color.ground, onFilledTile: isSelected)
             }
         }
     }
