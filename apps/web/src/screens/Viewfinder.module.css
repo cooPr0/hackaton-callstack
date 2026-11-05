@@ -1,11 +1,14 @@
-.grid {
-  display: grid;
-  gap: 6px;
+.frame {
   flex: none;
   /* Fill the column, but never so tall that the clue field falls off a short screen.
      100cqh is the screen height (ClosedLayout is a size container). */
   width: min(100%, calc((100cqh - var(--vf-reserve)) * var(--vf-ratio)));
   margin: 0 auto 0 0;
+}
+
+.grid {
+  display: grid;
+  gap: 6px;
 }
 
 .cell {

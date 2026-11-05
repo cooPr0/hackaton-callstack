@@ -1,4 +1,5 @@
 import type { Cell } from "@tint/protocol";
+import type { ReactNode } from "react";
 import { Brackets } from "../components/Brackets";
 import { StoneDisc } from "../components/StoneDisc";
 import { useCopy } from "../i18n";
@@ -18,13 +19,21 @@ export interface ViewfinderProps {
   stones?: readonly ViewfinderStone[];
   /** Vertical space the rest of the screen needs; the grid shrinks to leave it free. */
   reservePx?: number;
+  /** Rendered under the grid, at the grid's width (the SECRET_2 caption row). */
+  caption?: ReactNode;
 }
 
 /**
  * The cue giver's 7 × 9 window onto the board, target in corner brackets. No coordinates are
  * rendered or exposed — the cells are anonymous squares.
  */
-export function Viewfinder({ window: w, target, stones = [], reservePx = 400 }: ViewfinderProps) {
+export function Viewfinder({
+  window: w,
+  target,
+  stones = [],
+  reservePx = 400,
+  caption,
+}: ViewfinderProps) {
   const t = useCopy();
   const cells = [];
   for (let y = w.y0; y < w.y0 + w.h; y++) {
@@ -41,16 +50,21 @@ export function Viewfinder({ window: w, target, stones = [], reservePx = 400 }: 
   }
   return (
     <div
-      className={styles.grid}
-      role="img"
-      aria-label={t.closed.viewfinder}
+      className={styles.frame}
       style={{
-        gridTemplateColumns: `repeat(${w.w}, 1fr)`,
         ["--vf-reserve" as string]: `${reservePx}px`,
         ["--vf-ratio" as string]: `${w.w / w.h}`,
       }}
     >
-      {cells}
+      <div
+        className={styles.grid}
+        role="img"
+        aria-label={t.closed.viewfinder}
+        style={{ gridTemplateColumns: `repeat(${w.w}, 1fr)` }}
+      >
+        {cells}
+      </div>
+      {caption}
     </div>
   );
 }

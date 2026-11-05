@@ -84,13 +84,15 @@ function SecretForm(props: ScreenProps) {
         target={secret.target}
         stones={stones}
         reservePx={view.local ? (second ? 420 : 390) : second ? 430 : 400}
+        caption={
+          second ? (
+            <p className={styles.caption}>
+              <span>{t.secret.bothStonesInFrame(stones.length)}</span>
+              {view.clues[0] ? <span>{t.secret.was(view.clues[0])}</span> : null}
+            </p>
+          ) : null
+        }
       />
-      {second ? (
-        <p className={styles.caption}>
-          <span>{t.secret.bothStonesInFrame(stones.length)}</span>
-          {view.clues[0] ? <span>{t.secret.was(view.clues[0])}</span> : null}
-        </p>
-      ) : null}
       <form
         id={formId}
         className={styles.form}
