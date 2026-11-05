@@ -59,7 +59,14 @@ export function LobbyScreen(props: ScreenProps) {
   );
 
   return (
-    <ClosedLayout screen={props} header={t.lobby.code} pause={false} footer={footer}>
+    <ClosedLayout
+      screen={props}
+      header={t.lobby.code}
+      pause={false}
+      footer={footer}
+      wide="split"
+      bodyClassName={styles.body}
+    >
       <p className={`display ${styles.code}`}>
         <span aria-hidden="true">{code}</span>
         {/* Spelled out so screen readers read letters, not a made-up word. */}

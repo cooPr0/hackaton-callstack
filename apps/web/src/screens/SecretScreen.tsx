@@ -82,7 +82,14 @@ function SecretForm(props: ScreenProps) {
   );
 
   return (
-    <ClosedLayout screen={props} header={header} footer={footer} toast={false}>
+    <ClosedLayout
+      screen={props}
+      header={header}
+      footer={footer}
+      toast={false}
+      wide="split"
+      bodyClassName={styles.body}
+    >
       <Viewfinder
         window={secret.window}
         target={secret.target}

@@ -127,3 +127,58 @@
   font-size: 15px;
   color: var(--muted);
 }
+
+/* Wide (≥ 900px, see theme/layout.css): a host screen. The code and a bigger QR on the left,
+   for people joining from across the room; the seats on the right, over the start pill. */
+@container closed (min-width: 900px) {
+  .body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) var(--col-form);
+    grid-template-rows: auto minmax(0, 1fr);
+    column-gap: var(--split-gap);
+    align-content: center;
+  }
+
+  .code {
+    grid-column: 1;
+    grid-row: 1;
+    /* Fit the left pane: page − 2 gutters − form column − gap = min(100cqw, 1120px) − 600px.
+       A 5-letter code is ≈ 3.8em wide, so pane / 4 always fits. */
+    font-size: clamp(72px, calc((min(100cqw, var(--page-max)) - 600px) / 4), 136px);
+  }
+
+  .join {
+    grid-column: 1;
+    grid-row: 2;
+    align-self: start;
+    flex-wrap: wrap;
+    gap: 20px 28px;
+    margin-top: 32px;
+  }
+
+  /* Beside the QR when the pane is wide enough, under it otherwise (≈ 900–1000px windows). */
+  .joinText {
+    flex: 1 1 200px;
+  }
+
+  .qr {
+    width: 220px;
+    height: 220px;
+    padding: 12px;
+    border-radius: 20px;
+  }
+
+  .label {
+    grid-column: 2;
+    grid-row: 1;
+    align-self: end;
+    margin: 0 0 6px;
+  }
+
+  .seats {
+    grid-column: 2;
+    grid-row: 2;
+    align-self: start;
+    max-height: 100%;
+  }
+}

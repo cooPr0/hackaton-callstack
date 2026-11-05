@@ -16,3 +16,11 @@
   aspect-ratio: 1;
   border-radius: var(--radius-cell);
 }
+
+/* Wide (≥ 900px): the clue moves beside the viewfinder, so only the header, the footer and the
+   SECRET_2 caption share the height. --vf-reserve (set inline for the phone) is not used here. */
+@container closed (min-width: 900px) {
+  .frame {
+    width: min(100%, calc((100cqh - var(--vf-reserve-wide, 270px)) * var(--vf-ratio)));
+  }
+}

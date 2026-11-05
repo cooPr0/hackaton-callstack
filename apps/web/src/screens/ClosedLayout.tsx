@@ -5,6 +5,7 @@ import { PauseButton } from "../components/PauseButton";
 import { Toast } from "../components/Toast";
 import { useCopy } from "../i18n";
 import styles from "./ClosedLayout.module.css";
+import { isFoldEmulation } from "./helpers";
 import { Overlays } from "./PauseSheet";
 
 export interface ClosedLayoutProps {
@@ -19,6 +20,11 @@ export interface ClosedLayoutProps {
   /** Vertically centre the body (hand-off screens). */
   center?: boolean;
   bodyClassName?: string;
+  /**
+   * Wide windows (≥ 900px): "center" keeps the centred phone column (hand-offs, connecting);
+   * "split" widens the page for a two-pane body and puts the footer under the right pane.
+   */
+  wide?: "center" | "split";
   children: ReactNode;
 }
 
@@ -34,30 +40,38 @@ export function ClosedLayout({
   toast = true,
   center = false,
   bodyClassName,
+  wide = "center",
   children,
 }: ClosedLayoutProps) {
   const t = useCopy();
   return (
-    <div className={styles.root}>
-      <div className={styles.column}>
-        {header !== undefined || pause ? (
-          <header className={styles.header}>
-            <p className={styles.headerText}>{header}</p>
-            {pause ? (
-              <PauseButton
-                label={t.closed.pauseLabel}
-                onClick={() => screen.actions.openPause(true)}
-              />
-            ) : null}
-          </header>
-        ) : null}
-        <main className={`${styles.body} ${center ? styles.center : ""} ${bodyClassName ?? ""}`}>
-          {children}
-        </main>
-        {footer ? <footer className={styles.footer}>{footer}</footer> : null}
+    <div
+      className={styles.root}
+      data-wide={wide}
+      data-fold={isFoldEmulation(screen.view, screen.posture) ? "" : undefined}
+    >
+      {/* Pass-through, except in fold emulation on a wide window: then it is the phone. */}
+      <div className={styles.frame}>
+        <div className={styles.column}>
+          {header !== undefined || pause ? (
+            <header className={styles.header}>
+              <p className={styles.headerText}>{header}</p>
+              {pause ? (
+                <PauseButton
+                  label={t.closed.pauseLabel}
+                  onClick={() => screen.actions.openPause(true)}
+                />
+              ) : null}
+            </header>
+          ) : null}
+          <main className={`${styles.body} ${center ? styles.center : ""} ${bodyClassName ?? ""}`}>
+            {children}
+          </main>
+          {footer ? <footer className={styles.footer}>{footer}</footer> : null}
+        </div>
+        <Toast message={toast ? screen.error : null} />
+        <Overlays {...screen} />
       </div>
-      <Toast message={toast ? screen.error : null} />
-      <Overlays {...screen} />
     </div>
   );
 }

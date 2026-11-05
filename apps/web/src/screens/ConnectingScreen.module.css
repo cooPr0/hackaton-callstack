@@ -31,3 +31,15 @@
     animation: none;
   }
 }
+
+/* Wide (≥ 900px, see theme/layout.css): same centred screen, a bigger mark. */
+@container closed (min-width: 900px) {
+  .center > svg {
+    width: auto;
+    height: 96px;
+  }
+
+  .text {
+    font-size: 19px;
+  }
+}

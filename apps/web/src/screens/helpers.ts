@@ -1,6 +1,15 @@
 import type { PlayerView } from "@tint/protocol";
 import { CLUE_MAX_CHARS, CLUE_MAX_WORDS } from "@tint/protocol";
+import type { Posture } from "../app/types";
 import { type Copy, getCopy } from "../i18n";
+
+/**
+ * Local pass-and-play held "closed" (F key / fold pill) is fold emulation: on a wide window
+ * ClosedLayout draws the screen inside a phone frame instead of stretching it.
+ * Online screens never get the frame — there posture only picks the table layout.
+ */
+export const isFoldEmulation = (view: PlayerView | null, posture: Posture): boolean =>
+  !!view?.local && posture === "closed";
 
 /**
  * Pure display helpers for the closed screens. No game rules here: the clue check is only a
