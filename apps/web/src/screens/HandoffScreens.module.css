@@ -22,3 +22,10 @@
 .scores {
   margin-top: 40px;
 }
+
+/* Wide (≥ 900px, see theme/layout.css): the centred column stays, the headline grows. */
+@container closed (min-width: 900px) {
+  .headline {
+    font-size: 72px;
+  }
+}
