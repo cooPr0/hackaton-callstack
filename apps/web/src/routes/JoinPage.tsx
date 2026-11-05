@@ -1,10 +1,102 @@
-import { useParams } from "react-router";
+import { ROOM_CODE_ALPHABET, ROOM_CODE_LENGTH } from "@tint/protocol";
+import { useState } from "react";
+import { Link, useNavigate, useParams } from "react-router";
+import { Logo } from "../components/Logo";
+import { pl } from "../i18n/pl";
+import { useGame } from "../store";
+import s from "./Form.module.css";
 
+const NAME_KEY = "tint:name";
+const cleanCode = (v: string) =>
+  v
+    .toUpperCase()
+    .split("")
+    .filter((c) => ROOM_CODE_ALPHABET.includes(c))
+    .join("")
+    .slice(0, ROOM_CODE_LENGTH);
+
+function lastName(): string {
+  try {
+    return localStorage.getItem(NAME_KEY) ?? "";
+  } catch {
+    return "";
+  }
+}
+
+/** /join/:code — claim an open seat in an online room (QR from the lobby lands here). */
 export function JoinPage() {
-  const { code } = useParams();
+  const params = useParams();
+  const navigate = useNavigate();
+  const joinRoom = useGame((st) => st.joinRoom);
+  const [code, setCode] = useState(cleanCode(params.code ?? ""));
+  const [name, setName] = useState(lastName);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const ready = code.length === ROOM_CODE_LENGTH && name.trim().length > 0;
+
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!ready) return;
+    setBusy(true);
+    setError(null);
+    try {
+      try {
+        localStorage.setItem(NAME_KEY, name.trim());
+      } catch {
+        /* optional convenience */
+      }
+      await joinRoom(code, name.trim());
+      navigate(`/room/${code}`);
+    } catch (err) {
+      setError((err as Error).message);
+    } finally {
+      setBusy(false);
+    }
+  }
+
   return (
-    <main>
-      <h1>Dołącz do {code}</h1>
-    </main>
+    <form className={s.page} onSubmit={submit}>
+      <div className={s.top}>
+        <Link to="/" aria-label={pl.notFound.back} style={{ color: "inherit" }}>
+          <Logo size={22} />
+        </Link>
+      </div>
+      <h1 className={s.title}>{pl.join.title}</h1>
+      <label className={s.label}>
+        {pl.join.code}
+        <input
+          className={`${s.input} ${s.code}`}
+          value={code}
+          onChange={(e) => setCode(cleanCode(e.target.value))}
+          inputMode="text"
+          autoCapitalize="characters"
+          autoComplete="off"
+          spellCheck={false}
+          maxLength={ROOM_CODE_LENGTH}
+        />
+      </label>
+      <label className={s.label}>
+        {pl.join.name}
+        <input
+          className={s.input}
+          value={name}
+          onChange={(e) => setName(e.target.value.slice(0, 24))}
+          autoComplete="nickname"
+          maxLength={24}
+        />
+      </label>
+      <div className={s.spacer} />
+      {error && (
+        <p className={s.error} role="alert">
+          {error}
+        </p>
+      )}
+      <button type="submit" className={s.primary} disabled={!ready || busy}>
+        {pl.join.submit}
+      </button>
+      <Link to="/" className={s.link}>
+        {pl.setup.title}
+      </Link>
+    </form>
   );
 }
