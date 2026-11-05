@@ -6,6 +6,7 @@ import { useCopy } from "../i18n";
 import { LangToggle } from "../i18n/LangToggle";
 import { useGame } from "../store";
 import s from "./Form.module.css";
+import { PaletteHero } from "./PaletteHero";
 
 const NAME_KEY = "tint:name";
 const cleanCode = (v: string) =>
@@ -64,42 +65,48 @@ export function JoinPage() {
         </Link>
         <LangToggle />
       </div>
-      <h1 className={s.title}>{t.join.title}</h1>
-      <label className={s.label}>
-        {t.join.code}
-        <input
-          className={`${s.input} ${s.code}`}
-          value={code}
-          onChange={(e) => setCode(cleanCode(e.target.value))}
-          inputMode="text"
-          autoCapitalize="characters"
-          autoComplete="off"
-          spellCheck={false}
-          maxLength={ROOM_CODE_LENGTH}
-        />
-      </label>
-      <label className={s.label}>
-        {t.join.name}
-        <input
-          className={s.input}
-          value={name}
-          onChange={(e) => setName(e.target.value.slice(0, 24))}
-          autoComplete="nickname"
-          maxLength={24}
-        />
-      </label>
-      <div className={s.spacer} />
-      {error && (
-        <p className={s.error} role="alert">
-          {error}
-        </p>
-      )}
-      <button type="submit" className={s.primary} disabled={!ready || busy}>
-        {t.join.submit}
-      </button>
-      <Link to="/" className={s.link}>
-        {t.setup.title}
-      </Link>
+      <div className={s.hero}>
+        <h1 className={s.title}>{t.join.title}</h1>
+        <p className={s.tagline}>{t.tagline}</p>
+        <PaletteHero className={s.board} />
+      </div>
+      <div className={s.form}>
+        <label className={s.label}>
+          {t.join.code}
+          <input
+            className={`${s.input} ${s.code}`}
+            value={code}
+            onChange={(e) => setCode(cleanCode(e.target.value))}
+            inputMode="text"
+            autoCapitalize="characters"
+            autoComplete="off"
+            spellCheck={false}
+            maxLength={ROOM_CODE_LENGTH}
+          />
+        </label>
+        <label className={s.label}>
+          {t.join.name}
+          <input
+            className={s.input}
+            value={name}
+            onChange={(e) => setName(e.target.value.slice(0, 24))}
+            autoComplete="nickname"
+            maxLength={24}
+          />
+        </label>
+        <div className={s.spacer} />
+        {error && (
+          <p className={s.error} role="alert">
+            {error}
+          </p>
+        )}
+        <button type="submit" className={s.primary} disabled={!ready || busy}>
+          {t.join.submit}
+        </button>
+        <Link to="/" className={s.link}>
+          {t.setup.title}
+        </Link>
+      </div>
     </form>
   );
 }
