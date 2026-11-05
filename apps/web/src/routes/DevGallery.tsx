@@ -32,6 +32,7 @@ function uiFor(view: PlayerView | null, on: Record<Flag, boolean>): UiState {
     secretUnlockedFor: on.unlocked && view ? view.cueGiverSeatId : null,
     pauseOpen: on.pause,
     rulesOpen: on.rules,
+    clueDraft: "",
   };
 }
 

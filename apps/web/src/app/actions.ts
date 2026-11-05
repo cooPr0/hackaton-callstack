@@ -16,6 +16,7 @@ export const noopActions: WebActions = {
   unlockSecret: (id) => log("unlockSecret")(id),
   openPause: (o) => log("openPause")(o),
   openRules: (o) => log("openRules")(o),
+  setClueDraft: () => {},
   setPosture: (p) => log("setPosture")(p),
   retryConnection: () => log("retryConnection")(),
   leave: () => log("leave")(),

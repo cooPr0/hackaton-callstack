@@ -24,6 +24,11 @@ export interface UiState {
   secretUnlockedFor: string | null;
   pauseOpen: boolean;
   rulesOpen: boolean;
+  /**
+   * The clue the cue giver is typing, kept here (not in the screen) so local mode can send it
+   * when the phone is unfolded without pressing Enter. Cleared on every phase change.
+   */
+  clueDraft: string;
 }
 
 export interface BotState {
@@ -50,6 +55,8 @@ export interface WebActions {
   unlockSecret(seatId: string): void;
   openPause(open: boolean): void;
   openRules(open: boolean): void;
+  /** Mirror of the clue input (see UiState.clueDraft). */
+  setClueDraft(text: string): void;
   /** Manual fold/unfold (emulation); null = follow the device. */
   setPosture(posture: Posture | null): void;
   retryConnection(): void;
