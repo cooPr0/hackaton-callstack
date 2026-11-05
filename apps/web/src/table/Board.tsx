@@ -1,10 +1,27 @@
 import { BOARD_COLS, BOARD_ROWS, type Cell, HINGE_AFTER_X } from "@tint/protocol";
-import { type KeyboardEvent, memo, type ReactNode, useCallback, useRef } from "react";
+import {
+  type CSSProperties,
+  type KeyboardEvent,
+  memo,
+  type ReactNode,
+  useCallback,
+  useRef,
+} from "react";
+import { Brackets } from "../components/Brackets";
 import { StoneDisc } from "../components/StoneDisc";
 import { useCopy } from "../i18n";
 import { hexAt } from "../palette/palette";
 import styles from "./Board.module.css";
-import { gridColumn, gridRow, isArrow, START_CELL, step } from "./geometry";
+import {
+  distance,
+  gridColumn,
+  gridRow,
+  isArrow,
+  START_CELL,
+  step,
+  type Zone,
+  zone,
+} from "./geometry";
 
 export interface BoardStone {
   x: number;
@@ -12,6 +29,10 @@ export interface BoardStone {
   name: string;
   grok: boolean;
   second: boolean;
+  /** Reveal: the points this stone earned ("+3"), taken from the server awards. */
+  badge?: string | null;
+  /** Reveal: the order in which badges pop (0, 1, 2…). */
+  badgeOrder?: number;
 }
 
 export interface BoardProps {
@@ -27,7 +48,9 @@ export interface BoardProps {
   dimmed?: boolean;
   /** Rotated 90° to fit a portrait screen. */
   portrait?: boolean;
-  /** Extra grid items laid over the board (reveal rings, badges). */
+  /** REVEAL only: the public target (`view.reveal.target`); drives zones and the brackets. */
+  revealTarget?: Cell | null;
+  /** Extra grid items laid over the board (reveal rings). */
   children?: ReactNode;
 }
 
@@ -41,6 +64,10 @@ interface CellProps {
   stoneSecond: boolean;
   ghostName: string | null;
   ghostGrok: boolean;
+  badge: string | null;
+  badgeOrder: number;
+  zone: Zone | null;
+  dist: number;
   selected: boolean;
   interactive: boolean;
   tabbable: boolean;
@@ -57,6 +84,10 @@ const BoardCell = memo(function BoardCell({
   stoneSecond,
   ghostName,
   ghostGrok,
+  badge,
+  badgeOrder,
+  zone: cellZone,
+  dist,
   selected,
   interactive,
   tabbable,
@@ -69,12 +100,16 @@ const BoardCell = memo(function BoardCell({
     <button
       type="button"
       className={styles.cell}
-      style={{
-        background: hexAt(x, y),
-        gridColumn: right ? x - HINGE_AFTER_X : x + 1,
-        gridRow: gridRow(y),
-      }}
+      style={
+        {
+          "--hex": hexAt(x, y),
+          "--d": dist,
+          gridColumn: right ? x - HINGE_AFTER_X : x + 1,
+          gridRow: gridRow(y),
+        } as CSSProperties
+      }
       data-i={key(x, y)}
+      data-zone={cellZone ?? undefined}
       data-selected={selected ? "" : undefined}
       data-occupied={occupied ? "" : undefined}
       disabled={!interactive || occupied}
@@ -82,10 +117,20 @@ const BoardCell = memo(function BoardCell({
       aria-label={label}
       onClick={() => onPick(x, y)}
     >
+      {cellZone === "exact" ? <Brackets /> : null}
       {stoneName !== null ? (
         <StoneDisc name={stoneName} grok={stoneGrok} second={stoneSecond} drop />
       ) : ghostName !== null ? (
         <StoneDisc name={ghostName} grok={ghostGrok} ghost />
+      ) : null}
+      {badge ? (
+        <span
+          className={styles.badge}
+          style={{ "--order": badgeOrder } as CSSProperties}
+          aria-hidden="true"
+        >
+          {badge}
+        </span>
       ) : null}
     </button>
   );
@@ -105,6 +150,7 @@ export function Board({
   onPlace,
   dimmed = false,
   portrait = false,
+  revealTarget = null,
   children,
 }: BoardProps) {
   const t = useCopy();
@@ -164,6 +210,10 @@ export function Board({
             stoneSecond={s?.second ?? false}
             ghostName={isGhost && ghost ? ghost.name : null}
             ghostGrok={isGhost && ghost ? ghost.grok : false}
+            badge={s?.badge ?? null}
+            badgeOrder={s?.badgeOrder ?? 0}
+            zone={revealTarget ? zone(x, y, revealTarget) : null}
+            dist={revealTarget ? distance({ x, y }, revealTarget) : 0}
             selected={isSel}
             interactive={interactive}
             tabbable={tabCell.x === x && tabCell.y === y}
@@ -183,6 +233,7 @@ export function Board({
       ref={root}
       className={`${styles.board} ${portrait ? styles.portrait : ""}`}
       data-dimmed={dimmed ? "" : undefined}
+      data-revealed={revealTarget ? "" : undefined}
       data-interactive={interactive ? "" : undefined}
       aria-label={interactive ? `${t.board.label}. ${t.board.placeHint}` : t.board.label}
       tabIndex={-1}

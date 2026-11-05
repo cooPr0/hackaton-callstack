@@ -52,10 +52,22 @@
   padding: 0;
   border: 0;
   border-radius: var(--radius-cell);
+  background-color: var(--hex);
   cursor: default;
   transition:
     transform 120ms var(--ease-out),
-    box-shadow 120ms var(--ease-out);
+    box-shadow 120ms var(--ease-out),
+    background-color 520ms var(--ease-out);
+}
+
+/* Reveal: everything outside 5 × 5 fades toward the table (Cold Steel / Cocoa Spice),
+   rippling outward from the target. */
+.board[data-revealed] .cell {
+  transition-delay: 0ms, 0ms, calc(var(--d) * 40ms);
+}
+
+.board[data-revealed] .cell[data-zone="out"] {
+  background-color: color-mix(in oklab, var(--hex) 15%, var(--bg));
 }
 
 .cell:disabled {
@@ -119,6 +131,38 @@
 .chipAnchor[data-below] .chip {
   bottom: auto;
   top: calc(100% + 10px);
+}
+
+/* "+3 / +2 / +1" beside a scoring stone. */
+.badge {
+  position: absolute;
+  right: -6px;
+  bottom: -6px;
+  z-index: 3;
+  padding: 2px 5px;
+  border-radius: var(--radius-control);
+  background: var(--cocoa-spice);
+  color: var(--cold-steel);
+  box-shadow: 0 0 0 1.5px var(--cold-steel);
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.1;
+  rotate: var(--stone-rotate, 0deg);
+  animation: pop 320ms cubic-bezier(0.22, 1.4, 0.4, 1) both;
+  animation-delay: calc(700ms + var(--order) * 120ms);
+}
+
+/* Reduced motion: no ripple, no pops — one short crossfade for the whole board. */
+@media (prefers-reduced-motion: reduce) {
+  .board[data-revealed] .cell {
+    /* biome-ignore lint/complexity/noImportantStyles: beats the global reduced-motion reset so the fade stays a crossfade */
+    transition: background-color 200ms linear !important;
+  }
+
+  .badge {
+    animation: none;
+  }
 }
 
 @keyframes pop {
