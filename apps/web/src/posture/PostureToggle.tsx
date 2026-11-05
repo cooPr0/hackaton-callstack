@@ -9,19 +9,25 @@ export function PostureToggle({ posture }: { posture: Posture }) {
   const next: Posture = posture === "open" ? "closed" : "open";
   return (
     <div
+      // A slim vertical tab on the left edge, mid-height: the screens keep their header, footer
+      // buttons and scores at the top/bottom and their pause buttons on the right or at the hinge,
+      // so this spot covers nothing. z 40 keeps it under sheets (50) and toasts (60+).
       style={{
         position: "fixed",
-        right: 16,
-        bottom: "calc(16px + env(safe-area-inset-bottom))",
-        zIndex: 50,
+        left: 0,
+        top: "50%",
+        transform: "translateY(-50%)",
+        zIndex: 40,
         display: "flex",
+        flexDirection: "column",
         gap: 4,
-        padding: 4,
-        borderRadius: 999,
+        padding: 3,
+        borderRadius: "0 14px 14px 0",
         background: "var(--glass)",
         backdropFilter: "blur(16px)",
         boxShadow: "var(--shadow-card)",
-        fontSize: 14,
+        fontSize: 12,
+        writingMode: "vertical-rl",
       }}
     >
       <button
@@ -31,7 +37,7 @@ export function PostureToggle({ posture }: { posture: Posture }) {
         style={{
           border: 0,
           borderRadius: 999,
-          padding: "8px 14px",
+          padding: "12px 6px",
           background: "var(--surface-strong)",
           color: "var(--on-surface-strong)",
           fontWeight: 600,
@@ -43,7 +49,13 @@ export function PostureToggle({ posture }: { posture: Posture }) {
         <button
           type="button"
           onClick={() => setOverride(null)}
-          style={{ border: 0, borderRadius: 999, padding: "8px 12px", background: "transparent" }}
+          style={{
+            border: 0,
+            borderRadius: 999,
+            padding: "8px 6px",
+            background: "transparent",
+            color: "var(--fg)",
+          }}
           aria-label="Auto"
         >
           auto
