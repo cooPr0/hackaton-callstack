@@ -57,13 +57,13 @@ const HUE_NAMES: [number, string][] = [
   [361, "pink-red"],
 ];
 
-function hueName(h: number): string {
+export function hueName(h: number): string {
   const hh = ((h % 360) + 360) % 360;
   for (const [limit, name] of HUE_NAMES) if (hh < limit) return name;
   return "pink-red";
 }
 
-function lightnessName(L: number): string {
+export function lightnessName(L: number): string {
   if (L >= 0.85) return "very light";
   if (L >= 0.75) return "light";
   if (L >= 0.65) return "medium-light";
