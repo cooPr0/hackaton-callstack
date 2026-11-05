@@ -59,7 +59,7 @@ export function SetupPage() {
   const [mode, setMode] = useState<Mode>("stol");
   const [players, setPlayers] = useState<Row[]>(() => DEFAULT_PLAYERS.map(withId));
   const [rounds, setRounds] = useState(DEFAULT_ROUNDS);
-  const [local, setLocal] = useState(true);
+  const [local, setLocal] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
