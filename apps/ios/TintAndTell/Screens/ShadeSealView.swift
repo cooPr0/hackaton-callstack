@@ -9,6 +9,7 @@ struct ShadeSealView: View {
     var round: Int
     var totalRounds: Int
     var knower: String
+    var onGuess: () -> Void = {}
 
     private var isGrok: Bool {
         knower.compare("Grok", options: .caseInsensitive) == .orderedSame
@@ -57,8 +58,21 @@ struct ShadeSealView: View {
                 }
                 .padding(.top, 28)
                 .padding(.horizontal, 24)
-                .padding(.bottom, 20)
                 .accessibilityElement(children: .combine)
+
+                Button(action: onGuess) {
+                    Text("Zgaduj")
+                        .font(.system(size: 17, weight: .semibold))
+                        .foregroundStyle(Color.ground)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 54)
+                        .background(Color.ink, in: Capsule())
+                }
+                .buttonStyle(.plain)
+                .padding(.horizontal, 24)
+                .padding(.top, 20)
+                .padding(.bottom, 14)
+                .accessibilityHint("Otwiera planszę. Złożony Duo prosi o rozłożenie.")
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
