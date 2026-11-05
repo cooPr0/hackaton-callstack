@@ -63,7 +63,7 @@ pnpm playtest <smoke|fill|attack> # playtest bot (once P1 adds it)
 - TS: strict, ESM, import workspace packages as `@tint/protocol` / `@tint/game-core` (TS source, no build step). Biome formats on commit (lefthook).
 - Web: React 19 + React Router + Zustand + Motion, CSS Modules + CSS variables (`tokens.css`).
 - Server: Workers + Durable Objects (SQLite-backed, WebSocket Hibernation API, alarms), zod-validate every input.
-- iOS: Swift 6 strict concurrency, SwiftUI, Observation (`@Observable`), async/await, no third-party runtime deps, swift-testing.
+- iOS: Swift 6 strict concurrency, SwiftUI, Observation (`@Observable`), async/await, no third-party runtime deps, swift-testing. Polish copy is `apps/ios/TintAndTell/Localizable.xcstrings`; app screens use the generated symbols (`Text(.setupTitle)`). Views outside the app target take `LocalizedKey`. See `docs/ios/LOCALIZATION.md`.
 - Brand tokens: Cold Steel `#F8F7F4` (light bg), Cocoa Spice `#191815` (dark bg), round gold `#E9B005`.
 
 ## Communication
