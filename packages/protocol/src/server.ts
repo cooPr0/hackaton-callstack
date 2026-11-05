@@ -40,6 +40,23 @@ export const BotSay = z.object({
    */
   audioUrl: SayAudioPath.optional(),
 });
+/** An X post Grok's hint leans on. Only post links on x.com / twitter.com pass. */
+export const Citation = z.object({
+  handle: z.string().regex(/^[A-Za-z0-9_]{1,15}$/),
+  url: z
+    .string()
+    .regex(/^https:\/\/(?:x|twitter)\.com\/(?:[A-Za-z0-9_]{1,15}|i\/web|i)\/status\/\d{1,25}$/),
+});
+export type Citation = z.infer<typeof Citation>;
+
+/** v1.1: answer to `grok.ask`, sent only to the asking socket. Never contains the target. */
+export const GrokHint = z.object({
+  type: z.literal("grok.hint"),
+  seatId: SeatId,
+  text: z.string().min(1).max(200),
+  citations: z.array(Citation).max(2),
+});
+
 export const Ack = z.object({ type: z.literal("ack"), cid: Cid });
 export const ErrorMessage = z.object({
   type: z.literal("error"),
@@ -54,6 +71,7 @@ export const ServerMessage = z.discriminatedUnion("type", [
   ViewMessage,
   BotStatus,
   BotSay,
+  GrokHint,
   Ack,
   ErrorMessage,
   Pong,
