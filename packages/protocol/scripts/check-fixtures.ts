@@ -1,5 +1,5 @@
 import { PlayerView } from "../src";
-import { loadFixtures, schemaFor, secretLeak } from "./fixtures";
+import { boardLeak, isGrokUnicast, loadFixtures, schemaFor, secretLeak } from "./fixtures";
 
 let failed = 0;
 for (const { dir, file, data } of loadFixtures()) {
@@ -12,6 +12,11 @@ for (const { dir, file, data } of loadFixtures()) {
   if (dir === "views" && secretLeak(PlayerView.parse(data))) {
     failed++;
     console.error(`✖ ${dir}/${file}: secret visible to a non-cue-giver before REVEAL`);
+    continue;
+  }
+  if (isGrokUnicast(file) && boardLeak(data)) {
+    failed++;
+    console.error(`✖ ${dir}/${file}: Grok hint/voice payload carries board data`);
     continue;
   }
   console.log(`✔ ${dir}/${file}`);

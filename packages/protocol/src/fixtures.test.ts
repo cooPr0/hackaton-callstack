@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { loadFixtures, schemaFor, secretLeak } from "../scripts/fixtures";
+import { boardLeak, isGrokUnicast, loadFixtures, schemaFor, secretLeak } from "../scripts/fixtures";
 import { PlayerView } from "./view";
 
 const fixtures = loadFixtures();
@@ -23,6 +23,20 @@ describe("shared/fixtures", () => {
       expect(secretLeak(PlayerView.parse(f.data))).toBe(false);
     },
   );
+
+  it.each(fixtures.filter((f) => isGrokUnicast(f.file)).map((f) => [f.file, f] as const))(
+    "%s carries no board data",
+    (_, f) => {
+      expect(boardLeak(f.data)).toBe(false);
+    },
+  );
+
+  it("boardLeak catches a hint that mentions a cell or a hex", () => {
+    const hint = { type: "grok.hint", seatId: "s1", text: "ok", citations: [] };
+    expect(boardLeak(hint)).toBe(false);
+    expect(boardLeak({ ...hint, target: { x: 4, y: 4 } })).toBe(true);
+    expect(boardLeak({ ...hint, text: "try #E9B005" })).toBe(true);
+  });
 
   it("secretLeak catches a guesser view with a secret", () => {
     const guess1 = fixtures.find((f) => f.file === "guess1.json");
