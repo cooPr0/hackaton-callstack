@@ -14,6 +14,8 @@
 .clue {
   min-width: 0;
   flex: 1 1 auto;
+  /* Never reach the hinge (and its pause button) in the middle of the table. */
+  max-width: calc(50% - 64px);
 }
 
 .meta {
@@ -28,8 +30,13 @@
   line-height: 0.98;
 }
 
-.words[data-lines="2"] {
+.words[data-lines="2"],
+.words[data-long] {
   font-size: 40px;
+}
+
+.words[data-xlong] {
+  font-size: 28px;
 }
 
 .word {
@@ -52,7 +59,7 @@
   align-items: flex-end;
   gap: 8px;
   flex: none;
-  max-width: 50%;
+  max-width: calc(50% - 64px);
   text-align: right;
 }
 
@@ -104,12 +111,21 @@
   gap: 14px;
 }
 
+.compact .clue {
+  max-width: none;
+}
+
 .compact .words {
   font-size: 38px;
 }
 
-.compact .words[data-lines="2"] {
+.compact .words[data-lines="2"],
+.compact .words[data-long] {
   font-size: 28px;
+}
+
+.compact .words[data-xlong] {
+  font-size: 22px;
 }
 
 .compact .waiting {

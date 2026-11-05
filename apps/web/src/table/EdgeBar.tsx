@@ -35,6 +35,7 @@ export function EdgeBar({
   flipped = false,
   compact = false,
 }: EdgeBarProps) {
+  const longest = Math.max(0, ...clues.map((c) => c.length));
   const cls = [styles.bar, flipped ? styles.flipped : "", compact ? styles.compact : ""]
     .join(" ")
     .trim();
@@ -43,7 +44,12 @@ export function EdgeBar({
       <div className={styles.clue}>
         <p className={styles.meta}>{meta}</p>
         {clues.length > 0 ? (
-          <p className={`display ${styles.words}`} data-lines={clues.length}>
+          <p
+            className={`display ${styles.words}`}
+            data-lines={clues.length}
+            data-long={longest > 9 ? "" : undefined}
+            data-xlong={longest > 14 ? "" : undefined}
+          >
             {clues.map((c, i) => (
               // biome-ignore lint/suspicious/noArrayIndexKey: clues are a fixed, append-only pair and may repeat
               <span key={i} className={styles.word}>
