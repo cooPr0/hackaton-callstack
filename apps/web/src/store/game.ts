@@ -3,7 +3,7 @@ import { createStore, type StoreApi } from "zustand/vanilla";
 import type { BotState, ConnState, Posture, UiState, WebActions } from "../app/types";
 import type { Api } from "../net/api";
 import { ApiError, fromCode, toApiError } from "../net/errors";
-import type { Outgoing, RoomConnection } from "../net/socket";
+import { FATAL_CLOSE_ERROR, type Outgoing, type RoomConnection } from "../net/socket";
 import type { TokenStore } from "./tokens";
 
 export interface SetupForm {
@@ -19,6 +19,7 @@ export interface ConnectHandlers {
   hello: { platform: "web"; name?: string };
   onMessage(msg: ServerMessage): void;
   onStatus(state: ConnState): void;
+  onFatal(closeCode: number): void;
 }
 
 export interface GameDeps {
@@ -205,7 +206,7 @@ export function createGameStore(deps: GameDeps): StoreApi<GameStore> {
             ...initial,
             code,
             conn: "failed",
-            error: { code: "NO_SEAT", message: "Nie masz miejsca w tym pokoju.", at: deps.now() },
+            error: { code: "NO_SEAT", message: fromCode("NO_SEAT").message, at: deps.now() },
           });
           return;
         }
@@ -217,6 +218,11 @@ export function createGameStore(deps: GameDeps): StoreApi<GameStore> {
             hello: { platform: "web", name: room.name },
             onMessage,
             onStatus: (state) => set({ conn: state }),
+            onFatal: (closeCode) => {
+              const errCode = FATAL_CLOSE_ERROR[closeCode] ?? "INTERNAL";
+              if (errCode === "BAD_TOKEN" || errCode === "ROOM_NOT_FOUND") deps.tokens.forget(code);
+              set({ error: { code: errCode, message: fromCode(errCode).message, at: deps.now() } });
+            },
           },
         );
         conn.connect();

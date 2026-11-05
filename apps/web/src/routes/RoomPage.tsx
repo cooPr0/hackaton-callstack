@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router";
 import { isHost } from "../app/roles";
 import { ScreenHost } from "../app/ScreenHost";
-import { pl } from "../i18n/pl";
+import { useCopy } from "../i18n";
 import { isDemoRoom } from "../net/mock";
 import { PostureToggle } from "../posture/PostureToggle";
 import { usePosture, usePostureHotkey } from "../posture/usePosture";
@@ -13,6 +13,7 @@ const TOAST_MS = 4_000;
 
 /** /room/:code — store → selectScreen → privacy filter → registered screen. */
 export function RoomPage() {
+  const t = useCopy();
   const { code = "" } = useParams();
   const [params] = useSearchParams();
   const navigate = useNavigate();
@@ -33,10 +34,12 @@ export function RoomPage() {
     return () => gameStore.getState().actions.leave();
   }, [code]);
 
-  // no seat for this room in this browser → go claim one
+  // no (valid) seat for this room in this browser → go claim one; expired room → home
   useEffect(() => {
-    if (conn === "failed" && error?.code === "NO_SEAT")
+    if (conn !== "failed" || !error) return;
+    if (error.code === "NO_SEAT" || error.code === "BAD_TOKEN")
       navigate(`/join/${code}`, { replace: true });
+    if (error.code === "ROOM_NOT_FOUND") navigate("/", { replace: true });
   }, [conn, error, code, navigate]);
 
   // local games created from setup start right away ("Losuj odcień")
@@ -75,7 +78,7 @@ export function RoomPage() {
       />
       {conn === "reconnecting" && (
         <div className={s.banner} role="status">
-          {pl.conn.reconnecting}
+          {t.conn.reconnecting}
         </div>
       )}
       {error && error.code !== "NO_SEAT" && (

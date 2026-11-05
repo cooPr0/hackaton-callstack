@@ -1,4 +1,4 @@
-import { messageFor, NETWORK_ERROR } from "../i18n/errors";
+import { messageFor } from "../i18n/errors";
 
 /** Any failure the UI may show. `code` is a protocol ErrorCode or a client code. */
 export class ApiError extends Error {
@@ -12,7 +12,7 @@ export class ApiError extends Error {
   }
 }
 
-export const networkError = () => new ApiError("NETWORK", NETWORK_ERROR);
+export const networkError = () => new ApiError("NETWORK", messageFor("NETWORK"));
 export const fromCode = (code: string, status?: number) =>
   new ApiError(code, messageFor(code), status);
 
