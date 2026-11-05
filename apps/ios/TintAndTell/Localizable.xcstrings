@@ -1,0 +1,1466 @@
+{
+  "sourceLanguage" : "pl",
+  "strings" : {
+    "app.name" : {
+      "comment" : "App name and the lockup accessibility label. Keep the brand in Latin script.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tint & Tell"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tint & Tell"
+          }
+        }
+      }
+    },
+    "app.pitch" : {
+      "comment" : "Opening sentence on the design cover.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "People and Grok try to land on the same shade with nothing but a word."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ludzie i Grok próbują trafić ten sam odcień samym językiem skojarzeń."
+          }
+        }
+      }
+    },
+    "app.tagline" : {
+      "comment" : "Home line under the lockup. Design cover and the first screen.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Folded, the phone keeps the secret. Unfolded, it becomes the table."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Złożony telefon trzyma sekret, rozłożony staje się stołem."
+          }
+        }
+      }
+    },
+    "grok.knows" : {
+      "comment" : "Title on the face-down Grok card.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grok knows the shade"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grok zna odcień"
+          }
+        }
+      }
+    },
+    "grok.noOneLooks" : {
+      "comment" : "Caption under the Grok card. PDF page 3.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nobody has to look. Unfold the phone and Grok will put the clue on the table."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nikt nie musi patrzeć. Rozłóż telefon, Grok poda podpowiedź na stole."
+          }
+        }
+      }
+    },
+    "handoff.iAm" : {
+      "comment" : "Button after the round card. PDF shows „Jestem Olą, losuj”; insert the seat name as stored.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I'm %@, draw"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jestem %@, losuj"
+          }
+        }
+      }
+    },
+    "handoff.pass" : {
+      "comment" : "Headline that hands the phone to the next cue giver. PDF shows „Podaj Oli”.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pass it to %@"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Podaj %@"
+          }
+        }
+      }
+    },
+    "handoff.receives" : {
+      "comment" : "Line under Podaj. PDF mock: „Teraz ona dostaje odcień. Grok i Kuba zgadują.” The guessers are the other seats, drawn from score.player.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Now %@ gets the shade."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Teraz %@ dostaje odcień."
+          }
+        }
+      }
+    },
+    "pause.end" : {
+      "comment" : "Pause sheet. Destructive action.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "End the game"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zakończ partię"
+          }
+        }
+      }
+    },
+    "pause.pass" : {
+      "comment" : "Pause sheet. Pass the cue-giver role.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pass the role on"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Przekaż rolę dalej"
+          }
+        }
+      }
+    },
+    "pause.resume" : {
+      "comment" : "Pause sheet. Primary action.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resume the game"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wznów grę"
+          }
+        }
+      }
+    },
+    "pause.rules" : {
+      "comment" : "Pause sheet. Opens the clue rules.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clue rules"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zasady podpowiedzi"
+          }
+        }
+      }
+    },
+    "pause.title" : {
+      "comment" : "Pause sheet title.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pause"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pauza"
+          }
+        }
+      }
+    },
+    "reveal.shade" : {
+      "comment" : "Reveal edge-bar label. PDF: „Odcień Kuby”.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@'s shade"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odcień %@"
+          }
+        }
+      }
+    },
+    "reveal.shadeLine" : {
+      "comment" : "Round-card strip. PDF: „Odcień Kuby · 4 kamienie w domu”. First argument is the cue giver, second is how many stones landed in the 3×3 home.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@'s shade · %#@stones@"
+          },
+          "substitutions" : {
+            "stones" : {
+              "argNum" : 2,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg stone in the home"
+                    }
+                  },
+                  "few" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg stones in the home"
+                    }
+                  },
+                  "many" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg stones in the home"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg stones in the home"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odcień %1$@ · %#@stones@"
+          },
+          "substitutions" : {
+            "stones" : {
+              "argNum" : 2,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg kamień w domu"
+                    }
+                  },
+                  "few" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg kamienie w domu"
+                    }
+                  },
+                  "many" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg kamieni w domu"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg kamieni w domu"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "round.cuedBy" : {
+      "comment" : "Header when someone else gives the clue. PDF: „Runda 5 z 6 · podpowiada Grok”. Third argument is the cue giver.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Round %#@round@ of %#@total@ · %3$@ gives the clue"
+          },
+          "substitutions" : {
+            "round" : {
+              "argNum" : 1,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg"
+                    }
+                  }
+                }
+              }
+            },
+            "total" : {
+              "argNum" : 2,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Runda %#@round@ z %#@total@ · podpowiada %3$@"
+          },
+          "substitutions" : {
+            "round" : {
+              "argNum" : 1,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg"
+                    }
+                  }
+                }
+              }
+            },
+            "total" : {
+              "argNum" : 2,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "round.ended" : {
+      "comment" : "Round-card header. PDF: „Koniec rundy 3 z 6”.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "End of round %#@round@ of %#@total@"
+          },
+          "substitutions" : {
+            "round" : {
+              "argNum" : 1,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg"
+                    }
+                  }
+                }
+              }
+            },
+            "total" : {
+              "argNum" : 2,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Koniec rundy %#@round@ z %#@total@"
+          },
+          "substitutions" : {
+            "round" : {
+              "argNum" : 1,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg"
+                    }
+                  }
+                }
+              }
+            },
+            "total" : {
+              "argNum" : 2,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "round.foldedLooksOnly" : {
+      "comment" : "Second-clue header, phone closed. PDF: „Runda 3 z 6 · złożone, patrzy tylko Kuba”. Third argument is the cue giver.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Round %#@round@ of %#@total@ · folded, only %3$@ is looking"
+          },
+          "substitutions" : {
+            "round" : {
+              "argNum" : 1,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg"
+                    }
+                  }
+                }
+              }
+            },
+            "total" : {
+              "argNum" : 2,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Runda %#@round@ z %#@total@ · złożone, patrzy tylko %3$@"
+          },
+          "substitutions" : {
+            "round" : {
+              "argNum" : 1,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg"
+                    }
+                  }
+                }
+              }
+            },
+            "total" : {
+              "argNum" : 2,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "round.looksOnly" : {
+      "comment" : "Secret header. PDF: „Runda 3 z 6 · patrzy tylko Kuba”. Third argument is the cue giver.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Round %#@round@ of %#@total@ · only %3$@ is looking"
+          },
+          "substitutions" : {
+            "round" : {
+              "argNum" : 1,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg"
+                    }
+                  }
+                }
+              }
+            },
+            "total" : {
+              "argNum" : 2,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Runda %#@round@ z %#@total@ · patrzy tylko %3$@"
+          },
+          "substitutions" : {
+            "round" : {
+              "argNum" : 1,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg"
+                    }
+                  }
+                }
+              }
+            },
+            "total" : {
+              "argNum" : 2,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "round.progress" : {
+      "comment" : "Round counter on its own. PDF round card „Runda 4 z 6” and the prefix of the pause sheet „Runda 3 z 6 · Ola 7, Grok 6, Kuba 5”.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Round %#@round@ of %#@total@"
+          },
+          "substitutions" : {
+            "round" : {
+              "argNum" : 1,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg"
+                    }
+                  }
+                }
+              }
+            },
+            "total" : {
+              "argNum" : 2,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Runda %#@round@ z %#@total@"
+          },
+          "substitutions" : {
+            "round" : {
+              "argNum" : 1,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg"
+                    }
+                  }
+                }
+              }
+            },
+            "total" : {
+              "argNum" : 2,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "score.delta" : {
+      "comment" : "One seat's reveal delta. PDF: „Ola +3 · Grok +2 · Kuba +1”. First argument is the seat name. Join seats with Text(verbatim:).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ +%#@points@"
+          },
+          "substitutions" : {
+            "points" : {
+              "argNum" : 2,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ +%#@points@"
+          },
+          "substitutions" : {
+            "points" : {
+              "argNum" : 2,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "score.player" : {
+      "comment" : "One seat's score. PDF pause sheet uses commas („Ola 7, Grok 6, Kuba 5”); the round card uses a middle dot („Ola 10 · Grok 8 · Kuba 6”). First argument is the seat name. The separator is layout punctuation via Text(verbatim:).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ %#@points@"
+          },
+          "substitutions" : {
+            "points" : {
+              "argNum" : 2,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ %#@points@"
+          },
+          "substitutions" : {
+            "points" : {
+              "argNum" : 2,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "secret.bothInFrame" : {
+      "comment" : "Second-clue status when both stones sit inside the viewfinder. PDF page 3.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Both stones in frame"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oba kamienie w kadrze"
+          }
+        }
+      }
+    },
+    "secret.firstClue" : {
+      "comment" : "Placeholder above the first clue.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "First clue, one word"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pierwsza podpowiedź, jedno słowo"
+          }
+        }
+      }
+    },
+    "secret.previous" : {
+      "comment" : "The first clue, shown while the second is typed. PDF: „Było: Rosół”. The clue itself is player text.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Previously: %@"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Było: %@"
+          }
+        }
+      }
+    },
+    "secret.rules" : {
+      "comment" : "Footer under the clue field.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No color names, and no position on the board."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bez nazw kolorów i bez pozycji na planszy."
+          }
+        }
+      }
+    },
+    "secret.secondClue" : {
+      "comment" : "Placeholder above the second clue.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Second clue, up to two words"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Druga podpowiedź, do dwóch słów"
+          }
+        }
+      }
+    },
+    "secret.stonesInFrame" : {
+      "comment" : "Stones inside the viewfinder when the count is not both. The two-stone mock uses secret.bothInFrame.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%#@count@"
+          },
+          "substitutions" : {
+            "count" : {
+              "argNum" : 1,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg stone in frame"
+                    }
+                  },
+                  "few" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg stones in frame"
+                    }
+                  },
+                  "many" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg stones in frame"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg stones in frame"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%#@count@"
+          },
+          "substitutions" : {
+            "count" : {
+              "argNum" : 1,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg kamień w kadrze"
+                    }
+                  },
+                  "few" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg kamienie w kadrze"
+                    }
+                  },
+                  "many" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg kamieni w kadrze"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg kamieni w kadrze"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "secret.unfold" : {
+      "comment" : "Footer that opens the table. PDF secret, Grok card, and dark clue screen.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unfold the phone on the table"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rozłóż telefon na stole"
+          }
+        }
+      }
+    },
+    "secret.unfoldToShow" : {
+      "comment" : "Footer on the second-clue screen.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unfold to show it"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rozłóż, żeby pokazać"
+          }
+        }
+      }
+    },
+    "setup.add" : {
+      "comment" : "Add a player chip.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dodaj"
+          }
+        }
+      }
+    },
+    "setup.duration" : {
+      "comment" : "Estimated length beside the round count. PDF shows „ok. 20 min” next to „6 rund”.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "about %#@minutes@ min"
+          },
+          "substitutions" : {
+            "minutes" : {
+              "argNum" : 1,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ok. %#@minutes@ min"
+          },
+          "substitutions" : {
+            "minutes" : {
+              "argNum" : 1,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "setup.mode.grok" : {
+      "comment" : "Mode tile. Grok gives every clue.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grok gives the clue"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grok podpowiada"
+          }
+        }
+      }
+    },
+    "setup.mode.grok.detail" : {
+      "comment" : "Subtitle of the Grok-clues tile.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You only guess"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ty tylko zgadujesz"
+          }
+        }
+      }
+    },
+    "setup.mode.table" : {
+      "comment" : "Mode tile. Players take turns giving clues.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Table"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stół"
+          }
+        }
+      }
+    },
+    "setup.mode.table.detail" : {
+      "comment" : "Subtitle of the Stół tile.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You take turns giving clues"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Podpowiadacie po kolei"
+          }
+        }
+      }
+    },
+    "setup.mode.you" : {
+      "comment" : "Mode tile. The human gives clues.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You give the clue"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ty podpowiadasz"
+          }
+        }
+      }
+    },
+    "setup.mode.you.detail" : {
+      "comment" : "Subtitle of the Ty podpowiadasz tile.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Only Grok guesses"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grok tylko zgaduje"
+          }
+        }
+      }
+    },
+    "setup.playersFolded" : {
+      "comment" : "Who is sharing this phone. PDF: „3 graczy · telefon złożony”.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%#@count@"
+          },
+          "substitutions" : {
+            "count" : {
+              "argNum" : 1,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg player · phone folded"
+                    }
+                  },
+                  "few" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg players · phone folded"
+                    }
+                  },
+                  "many" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg players · phone folded"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg players · phone folded"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%#@count@"
+          },
+          "substitutions" : {
+            "count" : {
+              "argNum" : 1,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg gracz · telefon złożony"
+                    }
+                  },
+                  "few" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg graczy · telefon złożony"
+                    }
+                  },
+                  "many" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg graczy · telefon złożony"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg graczy · telefon złożony"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "setup.rounds" : {
+      "comment" : "Round count on setup. PDF shows „6 rund” beside „ok. 20 min”.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%#@count@"
+          },
+          "substitutions" : {
+            "count" : {
+              "argNum" : 1,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg round"
+                    }
+                  },
+                  "few" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg rounds"
+                    }
+                  },
+                  "many" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg rounds"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg rounds"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%#@count@"
+          },
+          "substitutions" : {
+            "count" : {
+              "argNum" : 1,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg runda"
+                    }
+                  },
+                  "few" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg rundy"
+                    }
+                  },
+                  "many" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg rund"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg rund"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "setup.start" : {
+      "comment" : "Primary setup button. PDF shows „Losuj odcień dla Kuby”; insert the seat name as stored.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Draw a shade for %@"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Losuj odcień dla %@"
+          }
+        }
+      }
+    },
+    "setup.title" : {
+      "comment" : "Setup screen title.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New game"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nowa partia"
+          }
+        }
+      }
+    },
+    "table.clueFirst" : {
+      "comment" : "Bottom edge bar during the first guess. PDF: „Podpowiedź Kuby · pierwszy kamień”.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@'s clue · first stone"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Podpowiedź %@ · pierwszy kamień"
+          }
+        }
+      }
+    },
+    "table.grokSays" : {
+      "comment" : "Grok's spoken line on the edge bar. The line is bot text, not a catalog key. PDF: Grok: „Złoty, ale nie z puszki. Biorę kratkę głębiej.”",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grok: “%@”"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grok: „%@”"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}
