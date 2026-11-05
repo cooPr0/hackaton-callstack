@@ -20,6 +20,7 @@ export function projectView(g: GameState, seatIds: string[]): PlayerView {
     roomCode: g.code,
     mode: g.mode,
     local: g.local,
+    lang: g.lang,
     phase: g.phase,
     round: r?.round ?? g.history.at(-1)?.round ?? 0,
     totalRounds: g.totalRounds,

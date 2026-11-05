@@ -1,6 +1,7 @@
 import type {
   Cell,
   HistoryEntry,
+  Lang,
   Mode,
   Phase,
   Platform,
@@ -46,6 +47,8 @@ export interface GameState {
   mode: Mode;
   local: boolean;
   botMode: "grok" | "fallback";
+  /** Language Grok speaks in this room (prompts, fallback words, speech, voice). */
+  lang: Lang;
   phase: Phase;
   totalRounds: number;
   paused: boolean;
