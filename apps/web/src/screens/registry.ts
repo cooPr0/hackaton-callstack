@@ -1,5 +1,6 @@
 import type { ComponentType } from "react";
 import type { ScreenId, ScreenProps } from "../app/types";
+import { GameOverScreen } from "./GameOverScreen";
 import { GrokSecretScreen } from "./GrokSecretScreen";
 import { HandoffFoldScreen, HandoffUnfoldScreen, PassScreen } from "./HandoffScreens";
 import { Placeholder } from "./Placeholder";
@@ -20,5 +21,5 @@ export const registry: Record<ScreenId, ComponentType<ScreenProps>> = {
   "handoff-unfold": HandoffUnfoldScreen,
   table: Placeholder,
   "round-card": RoundCardScreen,
-  "game-over": Placeholder,
+  "game-over": GameOverScreen,
 };
