@@ -63,7 +63,8 @@ public actor LocalGameEngine: GameEngine {
     public var round: RoundDefinition? { current }
     public var isPaused: Bool { paused }
 
-    /// Non-nil for the cue giver before reveal, and for every seat once the target is public.
+    /// Non-nil for the cue giver before reveal, and for every seat once the target is public
+    /// (REVEAL, and GAME_OVER on this local engine). The wire's GAME_OVER view has no `secret`.
     /// Lobby has no target. The value is never copied onto `RoundDefinition`.
     public func secret(for seatId: String) -> RoundSecret? {
         guard let storedSecret else { return nil }

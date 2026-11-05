@@ -14,13 +14,17 @@ import {
   type ClientMessage,
   ClientMessage as ClientMessageSchema,
   type ErrorCode,
+  type Lang,
   ONLINE_TURN_TIMEOUT_MS,
   type Platform,
   PROTOCOL_VERSION,
   type ServerMessage,
+  sayAudioPath,
 } from "@tint/protocol";
 import { fallbackClue, fallbackGuess } from "./bot/fallback";
 import { grokClue, grokDefend, grokGuess, takeCall } from "./bot/grok";
+import { type Line, MAX_TRIES, remember } from "./bot/lines";
+import { TTS_ROOM_CHARS, ttsAvailable } from "./bot/tts";
 import { projectView } from "./projection";
 import { CLOSE, cleanName, newToken, refuseSocket, sha256 } from "./util";
 
@@ -41,6 +45,9 @@ interface Meta {
   /** Grok's REVEAL line for this round is due (one attempt per round, see defendRound). */
   defend?: Timer;
   defendRound?: number;
+  /** Last lines Grok said (ids back the MP3 route) and the TTS characters spent on this room. */
+  lines?: Line[];
+  ttsChars?: number;
 }
 /** Seats a socket controls (authenticated at upgrade); `ready` once it said hello. */
 interface Attachment {
@@ -285,7 +292,7 @@ export class Room extends DurableObject<Env> {
     const now = this.game?.current;
     if (!line || !now?.reveal || this.game?.phase !== "REVEAL" || now.round !== r.round) return;
     now.reveal.botLine = line;
-    this.sendAll({ type: "bot.say", seatId: grok.id, text: line });
+    this.say(grok.id, line);
   }
 
   /** Online only: a silent guesser is skipped; a silent cue giver gets a fallback clue. */
@@ -317,7 +324,7 @@ export class Room extends DurableObject<Env> {
     this.meta.bot = undefined;
     const seat = this.game.seats.find((s) => s.id === who);
     if (seat) seat.degraded = move.degraded;
-    if (move.line) this.sendAll({ type: "bot.say", seatId: who, text: move.line });
+    if (move.line) this.say(who, move.line);
     this.sendAll({ type: "bot.status", seatId: who, state: "idle" });
     this.applyInternal(move.action);
   }
@@ -358,7 +365,36 @@ export class Room extends DurableObject<Env> {
     return { action: { type: "stone", seatId, x: fb.x, y: fb.y }, line: fb.line, degraded: llm };
   }
 
+  /**
+   * Text of one line Grok said, for the MP3 route. Charges the room's TTS budget once per line and
+   * caps retries, so neither a cache miss loop nor a guessed id can spend the key.
+   */
+  async sayLine(id: string): Promise<{ text: string; lang: Lang } | null> {
+    const line = this.meta.lines?.find((l) => l.id === id);
+    if (!line || !ttsAvailable(this.env, 0)) return null;
+    if ((line.tries ?? 0) >= MAX_TRIES) return null;
+    if (!line.charged) {
+      if ((this.meta.ttsChars ?? 0) + line.text.length > TTS_ROOM_CHARS) return null;
+      this.meta.ttsChars = (this.meta.ttsChars ?? 0) + line.text.length;
+      line.charged = true;
+    }
+    line.tries = (line.tries ?? 0) + 1;
+    await this.commit();
+    return { text: line.text, lang: line.lang };
+  }
+
   // ── Internals ─────────────────────────────────────────────────────────────
+
+  /** Broadcasts one of Grok's lines; when speech is on it carries the MP3 path of that exact line. */
+  private say(seatId: string, text: string) {
+    const g = this.game;
+    const speak = g && g.botMode === "grok" && ttsAvailable(this.env, this.meta.ttsChars ?? 0);
+    this.meta.lines ??= [];
+    const audioUrl = speak
+      ? sayAudioPath(g.code, remember(this.meta.lines, text, g.lang ?? "pl").id)
+      : undefined;
+    this.sendAll({ type: "bot.say", seatId, text, ...(audioUrl ? { audioUrl } : {}) });
+  }
 
   /** The room's xAI budget (30 calls / 10 min), persisted with the game in Meta. */
   private budget(): () => boolean {

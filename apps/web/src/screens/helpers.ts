@@ -47,6 +47,8 @@ export interface RankedScore {
   name: string;
   kind: "human" | "grok";
   score: number;
+  /** Grok only: the seat fell back off the API. Humans are always false. */
+  degraded: boolean;
 }
 
 /** Seats by score, highest first; ties keep seat order (the design's "Ola 10 · Grok 8 · Kuba 6"). */
@@ -55,7 +57,13 @@ export function rankedScores(view: PlayerView): RankedScore[] {
     .map((s, i) => ({ s, i }))
     .filter(({ s }) => s.kind === "grok" || s.platform !== null || s.score > 0)
     .sort((a, b) => b.s.score - a.s.score || a.i - b.i)
-    .map(({ s }) => ({ id: s.id, name: s.name, kind: s.kind, score: s.score }));
+    .map(({ s }) => ({
+      id: s.id,
+      name: s.name,
+      kind: s.kind,
+      score: s.score,
+      degraded: s.degraded === true,
+    }));
 }
 
 export type Winner = { kind: "winner"; id: string; name: string } | { kind: "tie" } | null;

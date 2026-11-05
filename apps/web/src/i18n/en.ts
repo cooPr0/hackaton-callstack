@@ -103,6 +103,7 @@ export const en: Copy = {
     yourTurn: (name) => `Your move, ${name}`,
     turnOf: (name) => `Turn: ${name}`,
     waitingForClue: (name) => `${name} is thinking of a clue…`,
+    timeLeft: (clock) => `${clock} left`,
     place: "Place",
     nextRound: "Next round",
     finish: "Results",

@@ -91,8 +91,9 @@ export function LobbyScreen(props: ScreenProps) {
           const grok = s.kind === "grok";
           const open = !grok && s.platform === null;
           const you = view.you.includes(s.id);
-          const platform =
-            grok || s.platform === "bot"
+          const platform = s.degraded
+            ? t.grok.degraded
+            : grok || s.platform === "bot"
               ? t.closed.lobby.platform.grok
               : s.platform
                 ? t.closed.lobby.platform[s.platform]

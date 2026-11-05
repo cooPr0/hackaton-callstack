@@ -1,5 +1,6 @@
 import type { Cell, PlayerView } from "@tint/protocol";
 import { useCallback, useState } from "react";
+import { formatClock, useRemaining } from "../app/clock";
 import { cueGiverName, isMyTurn, seatById, turnName } from "../app/roles";
 import type { ScreenProps } from "../app/types";
 import { Button } from "../components/Button";
@@ -20,7 +21,7 @@ const isSecret = (v: PlayerView) => v.phase === "SECRET_1" || v.phase === "SECRE
 /** Selection/sent state only lives for one board state; a new view (stone, turn) resets it. */
 const boardKey = (v: PlayerView) => `${v.round}:${v.phase}:${v.stones.length}:${v.turnSeatId}`;
 
-function edgeText(v: PlayerView, t: Copy, botLine: string | null) {
+function edgeText(v: PlayerView, t: Copy, botLine: string | null, clock: string | null) {
   const name = cueGiverName(v);
   const secret = isSecret(v);
   let meta: string = t.table.clueOf(name);
@@ -36,6 +37,10 @@ function edgeText(v: PlayerView, t: Copy, botLine: string | null) {
     turn = isMyTurn(v) ? t.table.yourTurn(turnName(v)) : t.table.turnOf(turnName(v));
   } else if (v.phase === "REVEAL") {
     turn = deltasLine(v);
+  }
+  if (clock && (secret || isGuess(v))) {
+    const left = t.table.timeLeft(clock);
+    turn = turn ? `${turn} · ${left}` : left;
   }
   return {
     meta,
@@ -55,6 +60,7 @@ function edgeText(v: PlayerView, t: Copy, botLine: string | null) {
 export function TableScreen(props: ScreenProps) {
   const t = useCopy();
   const { view, actions, posture, bot, pending, error } = props;
+  const secondsLeft = useRemaining(view?.turnDeadline ?? null);
   const [sel, setSel] = useState<{ key: string; cell: Cell | null }>({ key: "", cell: null });
   const [sent, setSent] = useState<{ key: string; cell: Cell } | null>(null);
 
@@ -114,7 +120,8 @@ export function TableScreen(props: ScreenProps) {
       ? { ...inFlight, name: turnSeat.name, grok: turnSeat.kind === "grok" }
       : null;
 
-  const text = edgeText(view, t, bot.line);
+  const clock = secondsLeft === null ? null : formatClock(secondsLeft);
+  const text = edgeText(view, t, bot.line, clock);
   const grokTurn = turnSeat?.kind === "grok";
   const bar = (flipped: boolean) => (
     <EdgeBar
@@ -124,6 +131,7 @@ export function TableScreen(props: ScreenProps) {
       botLine={text.botLine}
       turn={text.turn}
       thinking={bot.thinking && grokTurn}
+      urgent={secondsLeft !== null && secondsLeft <= 10}
       scores={rankedScores(view)}
       flipped={flipped}
       compact={portrait}

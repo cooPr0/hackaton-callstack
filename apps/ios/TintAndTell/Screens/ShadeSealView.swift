@@ -73,15 +73,7 @@ struct ShadeSealView: View {
                 .foregroundStyle(Color.ink2)
                 .lineLimit(2)
                 .frame(maxWidth: .infinity, alignment: .leading)
-            Button {} label: {
-                Image(systemName: "pause.fill")
-                    .font(.system(size: 13, weight: .semibold))
-                    .foregroundStyle(Color.ink)
-                    .frame(width: 44, height: 44)
-            }
-            .buttonStyle(.glass)
-            .buttonBorderShape(.circle)
-            .accessibilityLabel("Pauza")
+            PauseButton()
         }
         .frame(minHeight: 44)
         .padding(.top, 14)
@@ -95,28 +87,28 @@ private struct ShadeCard: View {
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 22, style: .continuous)
-                .fill(Color.cocoa)
+                .fill(scheme == .dark ? Color(hex: "0F0E0C") : Color.cocoa)
             RoundedRectangle(cornerRadius: 22, style: .continuous)
-                .strokeBorder(Color.bone.opacity(scheme == .dark ? 0.45 : 0), lineWidth: 1.5)
+                .strokeBorder(Color(hex: "F8F7F4").opacity(scheme == .dark ? 0.2 : 0), lineWidth: 1.5)
 
             RoundedRectangle(cornerRadius: 12, style: .continuous)
-                .strokeBorder(Color.bone.opacity(0.22), lineWidth: 2)
+                .strokeBorder(Color(hex: "F8F7F4").opacity(scheme == .dark ? 0.2 : 0.22), lineWidth: 2)
                 .padding(18)
 
             ZStack {
                 RoundedRectangle(cornerRadius: 6, style: .continuous)
-                    .fill(Color(hex: "0A0A0A"))
+                    .fill(Color(hex: "080807"))
                     .frame(width: 120, height: 120)
                 CornerBracket(armLength: 18)
-                    .stroke(Color.bone, style: StrokeStyle(lineWidth: 3, lineCap: .square, lineJoin: .miter))
+                    .stroke(Color(hex: "F8F7F4"), style: StrokeStyle(lineWidth: 3, lineCap: .square, lineJoin: .miter))
                     .frame(width: 148, height: 148)
             }
 
             Circle()
-                .fill(Color.ground)
+                .fill(Color(hex: "F8F7F4"))
                 .frame(width: 30, height: 30)
                 .overlay {
-                    Circle().strokeBorder(Color.black.opacity(0.35), lineWidth: 1)
+                    Circle().strokeBorder(Color.black.opacity(scheme == .dark ? 0.2 : 0.35), lineWidth: 1)
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
                 .padding(.top, 30)

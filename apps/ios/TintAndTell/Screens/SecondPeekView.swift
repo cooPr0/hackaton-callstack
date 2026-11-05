@@ -110,15 +110,7 @@ struct SecondPeekView: View {
                 .foregroundStyle(Color.ink2)
                 .lineLimit(2)
                 .frame(maxWidth: .infinity, alignment: .leading)
-            Button {} label: {
-                Image(systemName: "pause.fill")
-                    .font(.system(size: 13, weight: .semibold))
-                    .foregroundStyle(Color.ink)
-                    .frame(width: 44, height: 44)
-            }
-            .buttonStyle(.glass)
-            .buttonBorderShape(.circle)
-            .accessibilityLabel("Pauza")
+            PauseButton()
         }
         .frame(minHeight: 44)
     }

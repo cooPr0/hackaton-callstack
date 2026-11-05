@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { useCopy } from "../i18n";
 import type { RankedScore } from "../screens/helpers";
 import styles from "./EdgeBar.module.css";
 
@@ -15,6 +16,8 @@ export interface EdgeBarProps {
   turn?: string | null;
   /** Pulse the turn label (Grok is thinking). */
   thinking?: boolean;
+  /** The clock has 10 seconds or less. */
+  urgent?: boolean;
   scores: readonly RankedScore[];
   /** The far side of the table: the whole bar is turned 180°. */
   flipped?: boolean;
@@ -37,12 +40,14 @@ export function EdgeBar({
   botLine = null,
   turn = null,
   thinking = false,
+  urgent = false,
   scores,
   flipped = false,
   compact = false,
   solo = false,
   action = null,
 }: EdgeBarProps) {
+  const t = useCopy();
   const longest = Math.max(0, ...clues.map((c) => c.length));
   const cls = [
     styles.bar,
@@ -79,7 +84,12 @@ export function EdgeBar({
       <div className={styles.side}>
         {botLine ? <p className={styles.bot}>{botLine}</p> : null}
         {turn ? (
-          <p className={styles.turn} data-thinking={thinking ? "" : undefined} aria-live="polite">
+          <p
+            className={styles.turn}
+            data-thinking={thinking ? "" : undefined}
+            data-urgent={urgent ? "" : undefined}
+            aria-live="polite"
+          >
             {turn}
           </p>
         ) : null}
@@ -88,7 +98,10 @@ export function EdgeBar({
           <ol className={styles.scores}>
             {scores.map((s) => (
               <li key={s.id} className={styles.score}>
-                <span className={styles.scoreName}>{s.name}</span>
+                <span className={styles.scoreName}>
+                  {s.name}
+                  {s.degraded ? <span className={styles.degraded}>{t.grok.degraded}</span> : null}
+                </span>
                 <span className={`display ${styles.scoreValue}`}>{s.score}</span>
               </li>
             ))}

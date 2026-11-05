@@ -25,8 +25,9 @@ export type ViewfinderWindow = z.infer<typeof ViewfinderWindow>;
 
 /**
  * SECURITY: `secret` is present ONLY on connections that control the cue-giver seat
- * (phases SECRET_1..GUESS_2), or for everyone in REVEAL / GAME_OVER. The server builds a
- * separate PlayerView per connection; never broadcast one shared payload.
+ * (phases SECRET_1..GUESS_2), or for everyone in REVEAL. GAME_OVER omits it; past targets
+ * are in `history`. The server builds a separate PlayerView per connection; never broadcast
+ * one shared payload.
  */
 export const Secret = z.object({ target: Cell, window: ViewfinderWindow });
 export type Secret = z.infer<typeof Secret>;
@@ -71,7 +72,10 @@ export const PlayerView = z.object({
   you: z.array(SeatId),
   cueGiverSeatId: SeatId.nullable(),
   turnSeatId: SeatId.nullable(),
-  /** Epoch ms; null when no timer runs (local mode, non-GUESS phases). */
+  /**
+   * Epoch ms. Online: set while someone owes a clue (SECRET, 90 s) or a stone (GUESS, 60 s).
+   * Null in local mode, while paused, and in LOBBY / REVEAL / GAME_OVER.
+   */
   turnDeadline: z.number().int().nullable(),
   clues: z.array(z.string()),
   stones: z.array(Stone),
