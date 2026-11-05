@@ -1,0 +1,45 @@
+.chip {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.circle {
+  display: grid;
+  place-items: center;
+  flex: none;
+  border-radius: 50%;
+  border: 2px solid var(--fg);
+  background: var(--bg);
+  color: var(--fg);
+  font-weight: 700;
+  line-height: 1;
+}
+
+.grok {
+  background: var(--fg);
+  border-color: var(--fg);
+}
+
+.dot {
+  width: 28%;
+  height: 28%;
+  border-radius: 50%;
+  background: var(--bg);
+}
+
+.empty {
+  border-style: dashed;
+  border-color: var(--muted);
+}
+
+.name {
+  max-width: 72px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 12px;
+  color: var(--muted);
+}

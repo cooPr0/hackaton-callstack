@@ -1,0 +1,24 @@
+.bottom {
+  justify-content: flex-end;
+}
+
+.chip {
+  margin-bottom: 28px;
+}
+
+.headline {
+  font-size: clamp(44px, 14cqw, 60px);
+  line-height: 0.98;
+  overflow-wrap: anywhere;
+}
+
+.sub {
+  margin: 16px 0 0;
+  max-width: 34ch;
+  font-size: 17px;
+  color: var(--header-fg);
+}
+
+.scores {
+  margin-top: 40px;
+}

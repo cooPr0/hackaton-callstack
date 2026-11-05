@@ -37,6 +37,20 @@
 
   --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
   --shadow-card: 0 1px 2px rgb(25 24 21 / 0.06), 0 8px 24px rgb(25 24 21 / 0.08);
+
+  /* Closed-screen tokens (Lane B, additive). */
+  --header-fg: color-mix(in oklab, var(--fg) 78%, var(--bg));
+  --raised: #fdfcfa;
+  --scrim: rgb(25 24 21 / 0.42);
+  --ink: var(--cocoa-spice);
+  --on-ink: var(--cold-steel);
+  --on-ink-muted: rgb(248 247 244 / 0.62);
+  --ink-line: rgb(248 247 244 / 0.16);
+  --ok: #2f9e55;
+  --danger-text: var(--danger);
+  --ink-deep: #100f0d;
+  --ink-edge: #8f8c85;
+  --shadow-button: 0 1px 2px rgb(25 24 21 / 0.08), 0 4px 14px rgb(25 24 21 / 0.08);
 }
 
 :root[data-theme="dark"] {
@@ -50,6 +64,14 @@
   --on-surface-strong: var(--cocoa-spice);
   --glass: rgb(25 24 21 / 0.72);
   --shadow-card: 0 1px 2px rgb(0 0 0 / 0.3), 0 8px 24px rgb(0 0 0 / 0.35);
+  --raised: #2a2925;
+  --scrim: rgb(0 0 0 / 0.5);
+  --ink: #0f0e0c;
+  --ink-line: rgb(248 247 244 / 0.2);
+  --danger-text: #f2626b;
+  --ink-deep: #080807;
+  --ink-edge: #3a3934;
+  --shadow-button: 0 1px 2px rgb(0 0 0 / 0.3), 0 4px 14px rgb(0 0 0 / 0.3);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -64,5 +86,13 @@
     --on-surface-strong: var(--cocoa-spice);
     --glass: rgb(25 24 21 / 0.72);
     --shadow-card: 0 1px 2px rgb(0 0 0 / 0.3), 0 8px 24px rgb(0 0 0 / 0.35);
+    --raised: #2a2925;
+    --scrim: rgb(0 0 0 / 0.5);
+    --ink: #0f0e0c;
+    --ink-line: rgb(248 247 244 / 0.2);
+    --danger-text: #f2626b;
+    --ink-deep: #080807;
+    --ink-edge: #3a3934;
+    --shadow-button: 0 1px 2px rgb(0 0 0 / 0.3), 0 4px 14px rgb(0 0 0 / 0.3);
   }
 }

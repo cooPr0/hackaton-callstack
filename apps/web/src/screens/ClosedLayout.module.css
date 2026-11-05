@@ -1,0 +1,77 @@
+/* The closed phone is 402 × 874; on the open phone (1036 × 828) the column centres at 480. */
+.root {
+  position: relative;
+  height: 100%;
+  min-height: 100%;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  background: var(--bg);
+  color: var(--fg);
+  container-type: size;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 480px;
+  height: 100%;
+  padding: max(40px, env(safe-area-inset-top)) 24px max(28px, env(safe-area-inset-bottom));
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  min-height: 44px;
+  margin-bottom: 20px;
+}
+
+.headerText {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--header-fg);
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.center {
+  justify-content: center;
+}
+
+.footer {
+  flex: none;
+  padding-top: var(--space-5);
+}
+
+.hinge {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 0;
+  min-height: 44px;
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--fg);
+}
+
+.hingeButton {
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  text-align: left;
+}
+
+.hingeButton:disabled {
+  opacity: 0.45;
+  cursor: default;
+}

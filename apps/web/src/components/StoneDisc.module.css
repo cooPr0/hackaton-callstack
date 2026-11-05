@@ -1,0 +1,27 @@
+/* Sized by its parent: fills 62% of the cell it sits in. */
+.stone {
+  position: absolute;
+  inset: 19%;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--cold-steel);
+  color: var(--cocoa-spice);
+  border: 2px solid var(--cocoa-spice);
+  box-shadow: 0 1px 3px rgb(25 24 21 / 0.35);
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.grok {
+  background: var(--cocoa-spice);
+}
+
+.dot {
+  width: 30%;
+  height: 30%;
+  border-radius: 50%;
+  background: var(--cold-steel);
+}

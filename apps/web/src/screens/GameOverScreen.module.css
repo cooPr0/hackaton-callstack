@@ -1,0 +1,121 @@
+.body {
+  overflow-y: auto;
+  margin: 0 -24px;
+  padding: 0 24px;
+  scrollbar-width: none;
+}
+
+.headline {
+  font-size: clamp(40px, 13cqw, 56px);
+  line-height: 0.98;
+  overflow-wrap: anywhere;
+}
+
+.scores {
+  list-style: none;
+  margin: 24px 0 0;
+  padding: 0;
+}
+
+.score {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.score:last-child {
+  border-bottom: 0;
+}
+
+.name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.points {
+  font-size: 30px;
+}
+
+.score[data-winner] .points {
+  color: var(--fg);
+}
+
+.score:not([data-winner]) .points {
+  color: var(--muted);
+}
+
+.historySection {
+  margin-top: 28px;
+}
+
+.label {
+  font-family: var(--font-body);
+  font-stretch: normal;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--header-fg);
+  margin-bottom: 12px;
+}
+
+/* Sample cards in a horizontal, snap-scrolling strip. */
+.history {
+  display: flex;
+  gap: 12px;
+  list-style: none;
+  margin: 0 -24px;
+  padding: 0 24px 20px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding: 0 24px;
+  scrollbar-width: none;
+}
+
+.card {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  width: 164px;
+  border-radius: 8px;
+  overflow: hidden;
+  scroll-snap-align: start;
+  box-shadow: var(--shadow-card);
+}
+
+.swatch {
+  height: clamp(96px, 22cqh, 180px);
+}
+
+.strip {
+  flex: 1;
+  padding: 10px 12px 12px;
+  background: var(--ink);
+  color: var(--on-ink);
+}
+
+.meta {
+  margin: 0 0 4px;
+  font-size: 12px;
+  color: var(--on-ink-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.clues {
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.05;
+  overflow-wrap: anywhere;
+}
+
+.actions {
+  display: flex;
+  gap: var(--space-3);
+}
