@@ -21,6 +21,8 @@ XAI_MODEL_SMART = "grok-4.7"
 # Grok speaks its lines (xAI /v1/tts, one MP3 per line). "off" is the kill switch.
 XAI_TTS = "on"
 XAI_TTS_VOICE = "eve"
+# "Dopytaj Groka" hints (Responses API + x_search, ~3 cents each). "off" is the kill switch.
+XAI_HINTS = "on"
 # Online stone timeout. Overridable so e2e can run fast: --var TURN_TIMEOUT_MS:1500
 TURN_TIMEOUT_MS = "60000"
 
