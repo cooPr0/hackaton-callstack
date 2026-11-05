@@ -29,3 +29,6 @@ DerivedData/
 # pitch media (large, generated)
 pitch/raw/
 pitch/out/
+
+# Claude Code agent worktrees (local only)
+.claude/worktrees/
