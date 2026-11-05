@@ -113,3 +113,25 @@ See `packages/protocol/src/view.ts`. Key fields:
 - iOS: `open = width > height && width >= 700` (Duo is assumed at ≈402×874 closed and ≈1036×828 open), plus a DEBUG 3-finger-tap override.
 - Web: `matchMedia('(horizontal-viewport-segments: 2)')` → landscape ≥ 900 px → manual `F` key / "Złóż/Rozłóż" pill.
 - In online mode posture only chooses the layout.
+
+## v1.1 — Grok voice, speech, hints, room language (additive)
+All fields below are optional or new message types. v1 clients keep working: unknown message types are dropped, missing optional fields mean "not available".
+
+| Where | Change | Client behavior |
+|---|---|---|
+| `CreateRoomRequest.lang` | `"pl" \| "en"`, default `"pl"` | Send the UI locale. Grok's clues, lines, speech and voice follow it. |
+| `PlayerView.lang` | room language | Absent (v1 server) = `"pl"`. |
+| `bot.say.audioUrl` | same-origin `/api/rooms/:code/say/:lineId.mp3` | Prefix with the API base URL and play it if sound is on. Absent = show text only. |
+| C→S `grok.ask {seatId, draft?}` | ask Grok for a hint grounded in recent X posts | Seat must be yours. `draft` (SECRET phases, cue giver) follows the clue rules. |
+| S→C `grok.hint {seatId, text, citations}` | unicast answer, ≤ 2 citations | Show the text and the `@handle`s (links to `x.com`). Never broadcast. |
+| C→S `voice.ticket {seatId}` | ask for a realtime voice secret | Seat must be yours. |
+| S→C `voice.ready {seatId, value, expiresAt, url, model, voice, session}` | unicast ephemeral xAI secret | Open `url` with `Sec-WebSocket-Protocol: xai-client-secret.<value>` before `expiresAt`, send `session` first, then PCM16. Audio never touches our server. |
+
+Error codes `VOICE_UNAVAILABLE` and `HINT_UNAVAILABLE` arrive with the server PRs that emit them, together with the web copy (web keeps one message per error code).
+
+### Deviations from `docs/GROK-LIVE.md`
+1. **Global spend guard for voice.** An xAI client secret can't lock instructions or tools, so per-room caps alone would let anyone who creates rooms spend voice minutes. The server adds a global daily quota and a per-IP limit, and only issues tickets in started rooms with at least two connected humans.
+2. **"No color names" is instruction-only for live voice.** Speech can't be filtered; every text field (`bot.say`, `grok.hint`) is still checked against the color blocklist.
+3. **No X search in Grok's guess path.** Grok moves first and everyone waits, so search runs only for `grok.ask` and when Grok is the cue giver, never before Grok's stone.
+4. **Language follows the room** (`lang`), not "Polish only".
+5. **One Responses call per hint.** `x_search` and the structured `{text, citations}` output go in a single request to keep the hint under one round-trip.
