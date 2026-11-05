@@ -15,11 +15,9 @@ Party game · iOS (SwiftUI) + Web (React) · real-time cross-play · Grok as a p
 
 
 
-https://github.com/user-attachments/assets/00531298-f5cc-4fd0-bdcb-350bfcd9fba0
 
+https://github.com/user-attachments/assets/eb9810c5-4135-4f11-b701-3529cbc995a6
 
-
-https://github.com/user-attachments/assets/c3ecc70f-1c36-40c4-8bcb-42f183909e7b
 
 
 
