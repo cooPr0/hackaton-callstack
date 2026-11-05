@@ -346,6 +346,7 @@ struct GameShell: View {
             .presentationDragIndicator(.visible)
             .presentationCornerRadius(38)
         }
+        .onAppear { BackgroundMusic.start() }
     }
 
     @ViewBuilder
