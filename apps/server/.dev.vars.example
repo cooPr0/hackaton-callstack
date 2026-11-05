@@ -1,0 +1,2 @@
+# Copy to .dev.vars (gitignored). Empty is fine: Grok plays on the fallback bot.
+XAI_API_KEY=
