@@ -60,3 +60,7 @@ export const PHASES = [
 export const SEAT_KINDS = ["human", "grok"] as const;
 
 export const PLATFORMS = ["ios", "web", "bot"] as const;
+
+/** Room language: Grok's prompts, fallback words, speech and voice follow it. Default "pl". */
+export const LANGS = ["pl", "en"] as const;
+export const DEFAULT_LANG = "pl" as const;

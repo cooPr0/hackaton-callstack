@@ -1,6 +1,13 @@
 import { z } from "zod";
-import { Mode, Platform, RoomCode, SeatId, SeatKind } from "./common";
-import { DEFAULT_ROUNDS, MAX_ROUNDS, MAX_SEATS, MIN_ROUNDS, PROTOCOL_VERSION } from "./constants";
+import { Lang, Mode, Platform, RoomCode, SeatId, SeatKind } from "./common";
+import {
+  DEFAULT_LANG,
+  DEFAULT_ROUNDS,
+  MAX_ROUNDS,
+  MAX_SEATS,
+  MIN_ROUNDS,
+  PROTOCOL_VERSION,
+} from "./constants";
 
 /** POST /api/rooms */
 export const CreateRoomRequest = z.object({
@@ -16,6 +23,8 @@ export const CreateRoomRequest = z.object({
     .max(MAX_SEATS),
   /** "fallback" skips the xAI API (playtester / offline demo). */
   botMode: z.enum(["grok", "fallback"]).default("grok"),
+  /** v1.1: language Grok speaks in this room (clues, lines, speech, voice). */
+  lang: Lang.default(DEFAULT_LANG),
 });
 export type CreateRoomRequest = z.input<typeof CreateRoomRequest>;
 
