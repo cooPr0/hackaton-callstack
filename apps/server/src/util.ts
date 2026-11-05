@@ -21,3 +21,42 @@ export const cleanName = (s: string, fallback: string) =>
 
 export const httpError = (status: number, code: ErrorCode, message: string) =>
   Response.json({ code, message }, { status });
+
+/**
+ * Close codes for refused or ended sockets. A browser can't read an upgrade's HTTP status (it only
+ * sees 1006 and would retry forever), so refusals accept the socket, send `error`, then close
+ * with one of these. Clients treat them as fatal: don't reconnect.
+ */
+export const CLOSE = {
+  BAD_TOKEN: 4401,
+  ROOM_NOT_FOUND: 4404,
+  REPLACED: 4409,
+  PROTOCOL_MISMATCH: 4426,
+} as const;
+
+export function refuseSocket(close: number, code: ErrorCode, message: string): Response {
+  const [client, server] = Object.values(new WebSocketPair()) as [WebSocket, WebSocket];
+  server.accept();
+  server.send(JSON.stringify({ type: "error", code, message }));
+  server.close(close, code);
+  return new Response(null, { status: 101, webSocket: client });
+}
+
+/**
+ * Comma-separated allowlist. `https://*.example.dev` matches exactly one subdomain label
+ * (Pages preview deploys), so `https://evil.example.dev.attacker.com` does not match.
+ */
+export function originAllowed(origin: string, list: string): boolean {
+  return list
+    .split(",")
+    .map((p) => p.trim())
+    .filter(Boolean)
+    .some((p) => {
+      if (p === origin) return true;
+      const star = p.indexOf("*");
+      if (star < 0) return false;
+      const [pre, suf] = [p.slice(0, star), p.slice(star + 1)];
+      const label = origin.slice(pre.length, origin.length - suf.length);
+      return origin.startsWith(pre) && origin.endsWith(suf) && /^[a-z0-9-]+$/.test(label);
+    });
+}

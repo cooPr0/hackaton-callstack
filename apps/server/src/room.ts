@@ -21,7 +21,7 @@ import {
 } from "@tint/protocol";
 import { fallbackClue, fallbackGuess } from "./bot/fallback";
 import { projectView } from "./projection";
-import { cleanName, httpError, newToken, sha256 } from "./util";
+import { CLOSE, cleanName, newToken, refuseSocket, sha256 } from "./util";
 
 /** A timer belongs to one turn (turnKey). If the turn moved on, it's dropped, never applied. */
 interface Timer {
@@ -142,26 +142,31 @@ export class Room extends DurableObject<Env> {
 
   /** WebSocket upgrade. Auth happens here, before the socket exists: `?token=` (repeat it to claim several seats). */
   override async fetch(req: Request): Promise<Response> {
-    if (!this.game) return httpError(404, "ROOM_NOT_FOUND", "unknown room");
+    if (!this.game) return refuseSocket(CLOSE.ROOM_NOT_FOUND, "ROOM_NOT_FOUND", "unknown room");
     const url = new URL(req.url);
     if (url.searchParams.get("pv") !== String(PROTOCOL_VERSION)) {
-      return httpError(426, "PROTOCOL_MISMATCH", `server speaks protocol ${PROTOCOL_VERSION}`);
+      return refuseSocket(
+        CLOSE.PROTOCOL_MISMATCH,
+        "PROTOCOL_MISMATCH",
+        `server speaks protocol ${PROTOCOL_VERSION}`,
+      );
     }
     const tokens = url.searchParams.getAll("token");
     if (tokens.length === 0 || tokens.length > MAX_TOKENS)
-      return httpError(401, "BAD_TOKEN", "missing token");
+      return refuseSocket(CLOSE.BAD_TOKEN, "BAD_TOKEN", "missing token");
     const hashes = await Promise.all(tokens.map(sha256));
     const g = this.game;
-    if (!g) return httpError(404, "ROOM_NOT_FOUND", "unknown room");
+    if (!g) return refuseSocket(CLOSE.ROOM_NOT_FOUND, "ROOM_NOT_FOUND", "unknown room");
     const seatIds = [...new Set(hashes.map((h) => g.seats.find((s) => s.tokenHash === h)?.id))];
-    if (seatIds.some((id) => id === undefined)) return httpError(401, "BAD_TOKEN", "unknown token");
+    if (seatIds.some((id) => id === undefined))
+      return refuseSocket(CLOSE.BAD_TOKEN, "BAD_TOKEN", "unknown token");
     const mine = seatIds as string[];
 
     // One live socket per seat: a second device (or a reconnect racing a dead socket) replaces the old one.
     for (const ws of this.ctx.getWebSockets()) {
       if (att(ws).seatIds.some((id) => mine.includes(id))) {
         ws.serializeAttachment({ seatIds: [], ready: false } satisfies Attachment);
-        ws.close(4001, "replaced by a newer connection");
+        ws.close(CLOSE.REPLACED, "replaced by a newer connection");
       }
     }
     const [client, server] = Object.values(new WebSocketPair()) as [WebSocket, WebSocket];

@@ -1,6 +1,6 @@
 import { CreateRoomRequest, JoinRoomRequest, PROTOCOL_VERSION, RoomCode } from "@tint/protocol";
 import type { z } from "zod";
-import { httpError, newCode } from "./util";
+import { CLOSE, httpError, newCode, originAllowed, refuseSocket } from "./util";
 
 export { Room } from "./room";
 
@@ -12,8 +12,7 @@ export default {
   async fetch(req, env): Promise<Response> {
     // Origin is browser hygiene, not auth: native iOS sends none (allowed). Seat tokens are the auth.
     const origin = req.headers.get("Origin");
-    const allowed =
-      origin === null || env.ALLOWED_ORIGINS.split(",").some((o) => o.trim() === origin);
+    const allowed = origin === null || originAllowed(origin, env.ALLOWED_ORIGINS);
     if (!allowed) return httpError(403, "BAD_REQUEST", "origin not allowed");
     const cors: Record<string, string> = origin
       ? { "Access-Control-Allow-Origin": origin, Vary: "Origin" }
@@ -71,7 +70,11 @@ async function route(req: Request, env: Env): Promise<Response> {
   if (!m) return httpError(404, "BAD_REQUEST", "not found");
   const code = (m[1] ?? "").toUpperCase();
   // Validate before idFromName so garbage never instantiates a Durable Object.
-  if (!RoomCode.safeParse(code).success) return httpError(404, "ROOM_NOT_FOUND", "unknown room");
+  if (!RoomCode.safeParse(code).success) {
+    return m[2] === "ws" && req.headers.get("Upgrade")?.toLowerCase() === "websocket"
+      ? refuseSocket(CLOSE.ROOM_NOT_FOUND, "ROOM_NOT_FOUND", "unknown room")
+      : httpError(404, "ROOM_NOT_FOUND", "unknown room");
+  }
 
   if (m[2] === "join" && req.method === "POST") {
     if (await limited(env.JOIN_LIMIT))
