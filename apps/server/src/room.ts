@@ -20,7 +20,7 @@ import {
   type ServerMessage,
 } from "@tint/protocol";
 import { fallbackClue, fallbackGuess } from "./bot/fallback";
-import { grokClue, grokGuess, takeCall } from "./bot/grok";
+import { grokClue, grokDefend, grokGuess, takeCall } from "./bot/grok";
 import { projectView } from "./projection";
 import { CLOSE, cleanName, newToken, refuseSocket, sha256 } from "./util";
 
@@ -38,6 +38,9 @@ interface Meta {
   expireAt: number;
   /** Timestamps of recent xAI calls: the per-room budget (absent on rooms created before p1/grok). */
   xaiCalls?: number[];
+  /** Grok's REVEAL line for this round is due (one attempt per round, see defendRound). */
+  defend?: Timer;
+  defendRound?: number;
 }
 /** Seats a socket controls (authenticated at upgrade); `ready` once it said hello. */
 interface Attachment {
@@ -51,6 +54,8 @@ const CID_MEMORY = 64;
 const RATE = { max: 20, windowMs: 5_000 };
 const IDLE_TTL_MS = 2 * 60 * 60_000;
 const GAME_OVER_TTL_MS = 10 * 60_000;
+/** Grok speaks right after the reveal animation starts. */
+const DEFEND_DELAY_MS = 600;
 
 const isSecret = (p: GameState["phase"]): p is "SECRET_1" | "SECRET_2" =>
   p === "SECRET_1" || p === "SECRET_2";
@@ -251,7 +256,36 @@ export class Room extends DurableObject<Env> {
       this.onTimeout(key);
     }
     if (m.bot && now >= m.bot.dueAt) await this.onBot(m.bot.key);
+    if (m.defend && now >= m.defend.dueAt) await this.onDefend(m.defend.key);
     await this.commit();
+  }
+
+  /** One in-character line from Grok at REVEAL: reveal.botLine + bot.say. Never blocks round.next. */
+  private async onDefend(key: string) {
+    const g = this.game;
+    const r = g?.current;
+    const grok = g?.seats.find((s) => s.kind === "grok");
+    this.meta.defend = undefined;
+    if (!g || !r?.reveal || !grok || g.phase !== "REVEAL" || turnKey(g) !== key) return;
+    this.meta.defendRound = r.round; // one attempt per round, even if it fails
+    const line = await grokDefend(
+      this.env,
+      {
+        target: r.target,
+        clues: r.clues,
+        grokStones: r.stones.filter((s) => s.seatId === grok.id),
+        grokPoints: r.reveal.awards
+          .filter((a) => a.seatId === grok.id)
+          .reduce((n, a) => n + a.delta, 0),
+        lang: g.lang ?? "pl",
+      },
+      this.budget(),
+    );
+    // Players may have moved on while Grok was thinking.
+    const now = this.game?.current;
+    if (!line || !now?.reveal || this.game?.phase !== "REVEAL" || now.round !== r.round) return;
+    now.reveal.botLine = line;
+    this.sendAll({ type: "bot.say", seatId: grok.id, text: line });
   }
 
   /** Online only: a silent guesser is skipped; a silent cue giver gets a fallback clue. */
@@ -297,9 +331,7 @@ export class Room extends DurableObject<Env> {
     if (!r) throw new Error("no round");
     const lang = g.lang ?? "pl"; // rooms persisted before lang existed
     const llm = g.botMode === "grok";
-    this.meta.xaiCalls ??= [];
-    const calls = this.meta.xaiCalls;
-    const budget = () => takeCall(calls, Date.now());
+    const budget = this.budget();
     if (isSecret(g.phase)) {
       const input = { target: r.target, phase: g.phase, clues: r.clues, stones: r.stones, lang };
       const text = llm ? await grokClue(this.env, input, budget) : null;
@@ -323,6 +355,13 @@ export class Room extends DurableObject<Env> {
   }
 
   // ── Internals ─────────────────────────────────────────────────────────────
+
+  /** The room's xAI budget (30 calls / 10 min), persisted with the game in Meta. */
+  private budget(): () => boolean {
+    this.meta.xaiCalls ??= [];
+    const calls = this.meta.xaiCalls;
+    return () => takeCall(calls, Date.now());
+  }
 
   private async hello(ws: WebSocket, a: Attachment, m: Extract<ClientMessage, { type: "hello" }>) {
     const g = this.game;
@@ -394,9 +433,12 @@ export class Room extends DurableObject<Env> {
     for (const s of g.seats) s.connected = s.kind === "grok" || live.has(s.id);
     this.reschedule(g, now);
     await this.ctx.storage.put({ game: g, meta: this.meta });
-    const due = [this.meta.bot?.dueAt, this.meta.turn?.dueAt, this.meta.expireAt].filter(
-      (t): t is number => typeof t === "number",
-    );
+    const due = [
+      this.meta.bot?.dueAt,
+      this.meta.turn?.dueAt,
+      this.meta.defend?.dueAt,
+      this.meta.expireAt,
+    ].filter((t): t is number => typeof t === "number");
     await this.ctx.storage.setAlarm(Math.min(...due));
     for (const ws of this.ctx.getWebSockets()) {
       const a = att(ws);
@@ -412,6 +454,12 @@ export class Room extends DurableObject<Env> {
     m.expireAt = now + (g.phase === "GAME_OVER" ? GAME_OVER_TTL_MS : IDLE_TTL_MS);
     const who = actor(g);
     const key = turnKey(g);
+    const r = g.current;
+    const grok = g.seats.find((s) => s.kind === "grok");
+    if (g.phase !== "REVEAL") m.defend = undefined;
+    else if (r && grok && g.botMode === "grok" && m.defendRound !== r.round && !m.defend) {
+      m.defend = { key, dueAt: now + DEFEND_DELAY_MS };
+    }
     if (!who || !g.current) {
       m.bot = m.turn = undefined; // ponytail: pause resets the turn clock instead of freezing the remainder
       if (g.current) g.current.turnDeadline = null;
