@@ -1,0 +1,44 @@
+.brackets {
+  --bracket-out: 7px;
+  --bracket-len: 30%;
+  --bracket-w: 2.5px;
+  position: absolute;
+  inset: calc(var(--bracket-out) * -1);
+  z-index: 2;
+  pointer-events: none;
+}
+
+.corner {
+  position: absolute;
+  width: var(--bracket-len);
+  height: var(--bracket-len);
+  border: 0 solid var(--fg);
+}
+
+.tl {
+  top: 0;
+  left: 0;
+  border-top-width: var(--bracket-w);
+  border-left-width: var(--bracket-w);
+}
+
+.tr {
+  top: 0;
+  right: 0;
+  border-top-width: var(--bracket-w);
+  border-right-width: var(--bracket-w);
+}
+
+.bl {
+  bottom: 0;
+  left: 0;
+  border-bottom-width: var(--bracket-w);
+  border-left-width: var(--bracket-w);
+}
+
+.br {
+  bottom: 0;
+  right: 0;
+  border-bottom-width: var(--bracket-w);
+  border-right-width: var(--bracket-w);
+}
