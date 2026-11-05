@@ -68,7 +68,9 @@ button {
   *,
   *::before,
   *::after {
+    /* biome-ignore lint/complexity/noImportantStyles: the reduced-motion override must win */
     animation-duration: 0.01ms !important;
+    /* biome-ignore lint/complexity/noImportantStyles: the reduced-motion override must win */
     transition-duration: 0.01ms !important;
   }
 }
