@@ -1,10 +1,89 @@
-import { useParams } from "react-router";
+import { useEffect, useMemo, useRef } from "react";
+import { useNavigate, useParams, useSearchParams } from "react-router";
+import { isHost } from "../app/roles";
+import { ScreenHost } from "../app/ScreenHost";
+import { pl } from "../i18n/pl";
+import { isDemoRoom } from "../net/mock";
+import { PostureToggle } from "../posture/PostureToggle";
+import { usePosture, usePostureHotkey } from "../posture/usePosture";
+import { gameStore, useGame } from "../store";
+import s from "./RoomPage.module.css";
 
+const TOAST_MS = 4_000;
+
+/** /room/:code — store → selectScreen → privacy filter → registered screen. */
 export function RoomPage() {
-  const { code } = useParams();
+  const { code = "" } = useParams();
+  const [params] = useSearchParams();
+  const navigate = useNavigate();
+  const { posture } = usePosture();
+  usePostureHotkey(posture);
+
+  const view = useGame((st) => st.view);
+  const conn = useGame((st) => st.conn);
+  const ui = useGame((st) => st.ui);
+  const bot = useGame((st) => st.bot);
+  const pending = useGame((st) => st.pendingCount > 0);
+  const error = useGame((st) => st.error);
+  const actions = useGame((st) => st.actions);
+
+  // connect (and reconnect when the code changes)
+  useEffect(() => {
+    gameStore.getState().connect(code.toUpperCase());
+    return () => gameStore.getState().actions.leave();
+  }, [code]);
+
+  // no seat for this room in this browser → go claim one
+  useEffect(() => {
+    if (conn === "failed" && error?.code === "NO_SEAT")
+      navigate(`/join/${code}`, { replace: true });
+  }, [conn, error, code, navigate]);
+
+  // local games created from setup start right away ("Losuj odcień")
+  const autostarted = useRef(false);
+  useEffect(() => {
+    if (autostarted.current || params.get("autostart") !== "1") return;
+    if (view?.phase === "LOBBY" && view.local && isHost(view)) {
+      autostarted.current = true;
+      actions.start().catch(() => {});
+    }
+  }, [view, params, actions]);
+
+  // toasts fade on their own
+  useEffect(() => {
+    if (!error) return;
+    const t = setTimeout(() => gameStore.getState().clearError(), TOAST_MS);
+    return () => clearTimeout(t);
+  }, [error]);
+
+  const showToggle = useMemo(
+    () => !!view?.local || isDemoRoom(code) || params.has("debug"),
+    [view?.local, code, params],
+  );
+
   return (
-    <main>
-      <h1>Pokój {code}</h1>
-    </main>
+    <div className={s.room}>
+      <ScreenHost
+        view={view}
+        posture={posture}
+        ui={ui}
+        actions={actions}
+        bot={bot}
+        conn={conn}
+        pending={pending}
+        error={error?.message ?? null}
+      />
+      {conn === "reconnecting" && (
+        <div className={s.banner} role="status">
+          {pl.conn.reconnecting}
+        </div>
+      )}
+      {error && error.code !== "NO_SEAT" && (
+        <div className={s.toast} role="alert" key={error.at}>
+          {error.message}
+        </div>
+      )}
+      {showToggle && <PostureToggle posture={posture} />}
+    </div>
   );
 }
