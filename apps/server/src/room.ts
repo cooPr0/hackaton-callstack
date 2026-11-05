@@ -295,7 +295,11 @@ export class Room extends DurableObject<Env> {
     if (!g?.current || !who || turnKey(g) !== key) return;
     this.applyInternal(
       isSecret(g.phase)
-        ? { type: "clue", seatId: who, text: fallbackClue(g.current.target, g.phase) }
+        ? {
+            type: "clue",
+            seatId: who,
+            text: fallbackClue(g.current.target, g.phase, g.lang ?? "pl"),
+          }
         : { type: "skip", seatId: who, reason: "timeout" },
     );
   }
@@ -336,7 +340,7 @@ export class Room extends DurableObject<Env> {
       const input = { target: r.target, phase: g.phase, clues: r.clues, stones: r.stones, lang };
       const text = llm ? await grokClue(this.env, input, budget) : null;
       return {
-        action: { type: "clue", seatId, text: text ?? fallbackClue(r.target, g.phase) },
+        action: { type: "clue", seatId, text: text ?? fallbackClue(r.target, g.phase, lang) },
         degraded: llm && !text,
       };
     }
@@ -350,7 +354,7 @@ export class Room extends DurableObject<Env> {
         degraded: false,
       };
     }
-    const fb = fallbackGuess(r.clues, r.stones);
+    const fb = fallbackGuess(r.clues, r.stones, Math.random, lang);
     return { action: { type: "stone", seatId, x: fb.x, y: fb.y }, line: fb.line, degraded: llm };
   }
 
