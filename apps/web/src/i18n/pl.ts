@@ -1,6 +1,10 @@
 import { pluralN } from "./plural";
 
-/** All UI copy. Components never hard-code strings — add them here. */
+/**
+ * All UI copy. Components never hard-code strings — add them here.
+ * Player names are user input and cannot be declined, so every string keeps the name in
+ * the nominative ("Podpowiedź · Kuba", not "Podpowiedź Kuby").
+ */
 export const pl = {
   appName: "Tint & Tell",
   tagline: "Ludzie i Grok próbują trafić ten sam odcień samym językiem skojarzeń.",
@@ -19,7 +23,7 @@ export const pl = {
     rounds: (n: number) => `${pluralN(n, ["runda", "rundy", "rund"])}`,
     duration: (n: number) => `ok. ${Math.max(5, Math.round(n * 3.3))} min`,
     localToggle: { local: "Jeden telefon", online: "Każdy na swoim" },
-    startLocal: (name: string) => `Losuj odcień dla ${name}`,
+    startLocal: (name: string) => `Losuj odcień · zaczyna ${name}`,
     startOnline: "Utwórz pokój",
   },
 
@@ -78,9 +82,9 @@ export const pl = {
   },
 
   handoff: {
-    pass: (name: string) => `Podaj ${name}`,
-    passSub: "Teraz ona/on dostaje odcień. Reszta zgaduje.",
-    iAm: (name: string) => `Jestem ${name}, pokaż odcień`,
+    pass: (name: string) => `${name}, teraz Ty`,
+    passSub: "Podaj telefon. Ta osoba zobaczy odcień, reszta zgaduje.",
+    iAm: (name: string) => `To ja, ${name}. Pokaż odcień`,
     fold: (name: string) => `${name}, złóż telefon`,
     foldSub: "Druga podpowiedź jest tylko dla Ciebie.",
     unfold: "Rozłóż telefon na stole",
@@ -88,7 +92,7 @@ export const pl = {
   },
 
   table: {
-    clueOf: (name: string) => `Podpowiedź ${name}`,
+    clueOf: (name: string) => `Podpowiedź · ${name}`,
     firstStone: "pierwszy kamień",
     secondStone: "drugi kamień",
     yourTurn: (name: string) => `Twój ruch, ${name}`,
@@ -100,7 +104,7 @@ export const pl = {
   },
 
   reveal: {
-    shadeOf: (name: string) => `Odcień ${name}`,
+    shadeOf: (name: string) => `Odcień · ${name}`,
     stonesHome: (n: number) => `${pluralN(n, ["kamień", "kamienie", "kamieni"])} w domu`,
     next: "Dalej",
   },
