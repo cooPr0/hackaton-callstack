@@ -25,7 +25,7 @@ describe("prompts", () => {
       lang: "en",
     });
     expect(p.user).toContain("SECRET CELL: x=4, y=3");
-    expect(p.user).toContain("exactly ONE word");
+    expect(p.user).toContain("exactly ONE single word");
     expect(p.system).toContain("English");
     expect(guessPrompt({ clues: [], stones, lang: "pl" }).system).toContain("Polish");
   });
