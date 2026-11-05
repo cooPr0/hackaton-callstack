@@ -192,4 +192,14 @@ export const en: Copy = {
       roundN: (n) => `Round ${n}`,
     },
   },
+
+  board: {
+    label: "Board",
+    cell: "Cell",
+    cellSelected: "Cell, selected",
+    cellTaken: (name) => `Cell, stone: ${name}`,
+    placeHint: "Pick a cell and place your stone",
+    placing: "Placing…",
+    cancel: "Cancel",
+  },
 };
