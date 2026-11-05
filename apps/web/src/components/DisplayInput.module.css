@@ -20,6 +20,11 @@
   caret-color: var(--fg);
 }
 
+/* The blinking caret is the focus indicator; the global focus ring would box the headline. */
+.input:focus-visible {
+  outline: none;
+}
+
 .wrap[data-caret="custom"] .input {
   caret-color: transparent;
 }

@@ -1,6 +1,7 @@
 import {
   type ChangeEvent,
   type InputHTMLAttributes,
+  type Ref,
   useCallback,
   useLayoutEffect,
   useRef,
@@ -15,6 +16,7 @@ export interface DisplayInputProps
   /** Largest font size in px; the text shrinks to fit the column as it grows. */
   maxFontSize?: number;
   minFontSize?: number;
+  ref?: Ref<HTMLInputElement>;
 }
 
 /**
@@ -31,6 +33,7 @@ export function DisplayInput({
   onFocus,
   onBlur,
   onSelect,
+  ref,
   ...rest
 }: DisplayInputProps) {
   const wrap = useRef<HTMLDivElement>(null);
@@ -81,6 +84,7 @@ export function DisplayInput({
     >
       <input
         {...rest}
+        ref={ref}
         className={styles.input}
         value={value}
         spellCheck={false}

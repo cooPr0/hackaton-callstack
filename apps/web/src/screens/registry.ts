@@ -1,6 +1,7 @@
 import type { ComponentType } from "react";
 import type { ScreenId, ScreenProps } from "../app/types";
 import { Placeholder } from "./Placeholder";
+import { SecretScreen } from "./SecretScreen";
 
 /**
  * ScreenId → component. Owned by Lane B (screens/table): replace each placeholder with the
@@ -10,7 +11,7 @@ export const registry: Record<ScreenId, ComponentType<ScreenProps>> = {
   connecting: Placeholder,
   lobby: Placeholder,
   pass: Placeholder,
-  secret: Placeholder,
+  secret: SecretScreen,
   "grok-secret": Placeholder,
   "handoff-fold": Placeholder,
   "handoff-unfold": Placeholder,
