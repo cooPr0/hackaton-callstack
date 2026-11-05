@@ -20,6 +20,25 @@
   color: var(--muted);
 }
 
+/* The two panes. On the phone they are plain stacks with the page's 18px rhythm, so the
+   column looks exactly as before; the wide layout is at the bottom of this file. */
+.hero,
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.form {
+  flex: 1;
+}
+
+/* Wide-only; scoped under .hero so they beat PaletteHero's own display rule. */
+.hero .tagline,
+.hero .board {
+  display: none;
+}
+
 .title {
   font-size: clamp(44px, 14vw, 60px);
   line-height: 0.95;
@@ -297,4 +316,75 @@
   font-size: 12px;
   text-decoration: underline;
   justify-self: center;
+}
+
+/* Wide (≥ 900px, see theme/layout.css): the top bar across, the title and the full board on
+   the left, the form in a 440px column on the right. Same tokens, type and pills. */
+@media (min-width: 900px) {
+  .page {
+    max-width: var(--page-max);
+    padding: 32px var(--gutter-wide) 40px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) var(--col-form);
+    grid-template-rows: auto minmax(0, 1fr);
+    column-gap: var(--split-gap);
+    row-gap: 0;
+  }
+
+  .top {
+    grid-column: 1 / -1;
+  }
+
+  .hero {
+    align-self: center;
+    gap: 28px;
+  }
+
+  .form {
+    align-self: center;
+    gap: 16px;
+  }
+
+  .title {
+    font-size: clamp(72px, 7.5vw, 112px);
+  }
+
+  .hero .tagline {
+    display: block;
+    margin: 0;
+    max-width: 32ch;
+    font-size: 18px;
+    color: var(--muted);
+  }
+
+  .strip {
+    display: none;
+  }
+
+  .hero .board {
+    display: grid;
+    max-width: 640px;
+  }
+
+  .spacer {
+    flex: 0 0 8px;
+  }
+
+  .mode {
+    padding: 13px 14px 12px;
+  }
+
+  .chip {
+    width: 52px;
+    height: 52px;
+  }
+
+  .player {
+    width: 60px;
+  }
+
+  .stepper button {
+    width: 32px;
+    height: 32px;
+  }
 }

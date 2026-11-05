@@ -7,6 +7,7 @@ import { useCopy } from "../i18n";
 import { LangToggle } from "../i18n/LangToggle";
 import { hexAt, rows } from "../palette/palette";
 import { startDemo, useGame } from "../store";
+import { PaletteHero } from "./PaletteHero";
 import s from "./SetupPage.module.css";
 import {
   DEFAULT_PLAYERS,
@@ -99,142 +100,149 @@ export function SetupPage() {
         </span>
       </div>
 
-      <h1 className={s.title}>{t.setup.title}</h1>
+      {/* Phone: one column. Wide (≥ 900px): hero on the left, the form on the right. */}
+      <div className={s.hero}>
+        <h1 className={s.title}>{t.setup.title}</h1>
+        <p className={s.tagline}>{t.tagline}</p>
 
-      <div className={s.strip} aria-hidden>
-        {rows(0, 2)
-          .flat()
-          .map((hex) => (
-            <span key={hex} style={{ background: hex }} />
-          ))}
+        <div className={s.strip} aria-hidden>
+          {rows(0, 2)
+            .flat()
+            .map((hex) => (
+              <span key={hex} style={{ background: hex }} />
+            ))}
+        </div>
+        <PaletteHero className={s.board} />
       </div>
 
-      <fieldset className={s.modes}>
-        <legend className="visually-hidden">{t.setup.modeGroup}</legend>
-        {MODES.map((m) => {
-          const [sx, sy] = MODE_SWATCH[m];
-          return (
-            <button
-              key={m}
-              type="button"
-              className={s.mode}
-              aria-pressed={mode === m}
-              onClick={() => setMode(m)}
-            >
-              <span className={s.modeTitle}>{t.setup.modes[m].title}</span>
-              <span className={s.modeSub}>{t.setup.modes[m].sub}</span>
-              <Stones mode={m} />
-              <span className={s.swatch} aria-hidden>
-                {[0, 1].flatMap((dy) =>
-                  [0, 1].map((dx) => (
-                    <span key={`${dx}${dy}`} style={{ background: hexAt(sx + dx, sy + dy) }} />
-                  )),
+      <div className={s.form}>
+        <fieldset className={s.modes}>
+          <legend className="visually-hidden">{t.setup.modeGroup}</legend>
+          {MODES.map((m) => {
+            const [sx, sy] = MODE_SWATCH[m];
+            return (
+              <button
+                key={m}
+                type="button"
+                className={s.mode}
+                aria-pressed={mode === m}
+                onClick={() => setMode(m)}
+              >
+                <span className={s.modeTitle}>{t.setup.modes[m].title}</span>
+                <span className={s.modeSub}>{t.setup.modes[m].sub}</span>
+                <Stones mode={m} />
+                <span className={s.swatch} aria-hidden>
+                  {[0, 1].flatMap((dy) =>
+                    [0, 1].map((dx) => (
+                      <span key={`${dx}${dy}`} style={{ background: hexAt(sx + dx, sy + dy) }} />
+                    )),
+                  )}
+                </span>
+                {mode === m && (
+                  <span className={s.check} aria-hidden>
+                    ✓
+                  </span>
                 )}
-              </span>
-              {mode === m && (
-                <span className={s.check} aria-hidden>
-                  ✓
+              </button>
+            );
+          })}
+        </fieldset>
+
+        <div className={s.players}>
+          {players.map((p, i) => (
+            <div key={p.id} className={s.player}>
+              {p.kind === "grok" ? (
+                <span className={`${s.chip} ${s.chipGrok}`} aria-hidden />
+              ) : (
+                <span className={s.chip} aria-hidden>
+                  {(p.name.trim()[0] ?? "?").toUpperCase()}
                 </span>
               )}
-            </button>
-          );
-        })}
-      </fieldset>
-
-      <div className={s.players}>
-        {players.map((p, i) => (
-          <div key={p.id} className={s.player}>
-            {p.kind === "grok" ? (
-              <span className={`${s.chip} ${s.chipGrok}`} aria-hidden />
-            ) : (
-              <span className={s.chip} aria-hidden>
-                {(p.name.trim()[0] ?? "?").toUpperCase()}
-              </span>
-            )}
-            {p.kind === "grok" ? (
-              <span className={s.name}>Grok</span>
-            ) : (
-              <input
-                className={s.name}
-                value={p.name}
-                maxLength={24}
-                aria-label={t.setup.playerName(i + 1)}
-                onChange={(e) => rename(i, e.target.value)}
-              />
-            )}
-            {p.kind === "human" && humans.length > 1 && (
+              {p.kind === "grok" ? (
+                <span className={s.name}>Grok</span>
+              ) : (
+                <input
+                  className={s.name}
+                  value={p.name}
+                  maxLength={24}
+                  aria-label={t.setup.playerName(i + 1)}
+                  onChange={(e) => rename(i, e.target.value)}
+                />
+              )}
+              {p.kind === "human" && humans.length > 1 && (
+                <button
+                  type="button"
+                  className={s.remove}
+                  onClick={() => remove(i)}
+                  aria-label={t.setup.removePlayer(p.name)}
+                >
+                  ×
+                </button>
+              )}
+            </div>
+          ))}
+          {humans.length < MAX_HUMANS && (
+            <div className={s.player}>
               <button
                 type="button"
-                className={s.remove}
-                onClick={() => remove(i)}
-                aria-label={t.setup.removePlayer(p.name)}
+                className={`${s.chip} ${s.chipAdd}`}
+                onClick={add}
+                aria-label={t.setup.addPlayer}
               >
-                ×
+                +
               </button>
-            )}
+              <span className={s.name}>{t.setup.addPlayer}</span>
+            </div>
+          )}
+          <div className={s.rounds}>
+            <span className={s.stepper}>
+              <button
+                type="button"
+                onClick={() => setRounds((r) => Math.max(MIN_ROUNDS, r - 1))}
+                aria-label={t.setup.fewerRounds}
+              >
+                −
+              </button>
+              {t.setup.rounds(rounds)}
+              <button
+                type="button"
+                onClick={() => setRounds((r) => Math.min(MAX_ROUNDS, r + 1))}
+                aria-label={t.setup.moreRounds}
+              >
+                +
+              </button>
+            </span>
+            <span>{t.setup.duration(rounds)}</span>
           </div>
-        ))}
-        {humans.length < MAX_HUMANS && (
-          <div className={s.player}>
-            <button
-              type="button"
-              className={`${s.chip} ${s.chipAdd}`}
-              onClick={add}
-              aria-label={t.setup.addPlayer}
-            >
-              +
-            </button>
-            <span className={s.name}>{t.setup.addPlayer}</span>
-          </div>
-        )}
-        <div className={s.rounds}>
-          <span className={s.stepper}>
-            <button
-              type="button"
-              onClick={() => setRounds((r) => Math.max(MIN_ROUNDS, r - 1))}
-              aria-label={t.setup.fewerRounds}
-            >
-              −
-            </button>
-            {t.setup.rounds(rounds)}
-            <button
-              type="button"
-              onClick={() => setRounds((r) => Math.min(MAX_ROUNDS, r + 1))}
-              aria-label={t.setup.moreRounds}
-            >
-              +
-            </button>
-          </span>
-          <span>{t.setup.duration(rounds)}</span>
         </div>
+
+        <fieldset className={s.toggle}>
+          <legend className="visually-hidden">{t.setup.playGroup}</legend>
+          <button type="button" aria-pressed={local} onClick={() => setLocal(true)}>
+            {t.setup.localToggle.local}
+          </button>
+          <button type="button" aria-pressed={!local} onClick={() => setLocal(false)}>
+            {t.setup.localToggle.online}
+          </button>
+        </fieldset>
+
+        <div className={s.spacer} />
+        {error && (
+          <p className={s.error} role="alert">
+            {error}
+          </p>
+        )}
+        <button type="button" className={s.primary} disabled={busy || !!invalid} onClick={submit}>
+          {local ? t.setup.startLocal(firstCueGiver(mode, players)) : t.setup.startOnline}
+        </button>
+        <button
+          type="button"
+          className={s.demo}
+          onClick={() => navigate(`/room/${startDemo()}?autostart=1`)}
+        >
+          {t.setup.demo}
+        </button>
       </div>
-
-      <fieldset className={s.toggle}>
-        <legend className="visually-hidden">{t.setup.playGroup}</legend>
-        <button type="button" aria-pressed={local} onClick={() => setLocal(true)}>
-          {t.setup.localToggle.local}
-        </button>
-        <button type="button" aria-pressed={!local} onClick={() => setLocal(false)}>
-          {t.setup.localToggle.online}
-        </button>
-      </fieldset>
-
-      <div className={s.spacer} />
-      {error && (
-        <p className={s.error} role="alert">
-          {error}
-        </p>
-      )}
-      <button type="button" className={s.primary} disabled={busy || !!invalid} onClick={submit}>
-        {local ? t.setup.startLocal(firstCueGiver(mode, players)) : t.setup.startOnline}
-      </button>
-      <button
-        type="button"
-        className={s.demo}
-        onClick={() => navigate(`/room/${startDemo()}?autostart=1`)}
-      >
-        {t.setup.demo}
-      </button>
     </main>
   );
 }
