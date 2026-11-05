@@ -33,6 +33,8 @@ class SoundPlayer {
   private ctx: AudioContext | null = null;
   private buffers = new Map<string, Promise<AudioBuffer | null>>();
   private loops = new Map<SoundEvent, AudioBufferSourceNode>();
+  private speech: AudioBufferSourceNode | null = null;
+  private speechSeq = 0;
 
   constructor(private readonly specs: Record<SoundEvent, SoundSpec>) {}
 
@@ -70,6 +72,42 @@ class SoundPlayer {
 
   stopAll() {
     for (const e of [...this.loops.keys()]) this.stop(e);
+    this.stopSpeech();
+  }
+
+  /**
+   * Grok's spoken line: a one-off clip, so it is not cached, and a newer line cuts off an older
+   * one. Respects mute like every other sound; fails silently (the text is on screen anyway).
+   */
+  speak(url: string) {
+    const ctx = this.ctx;
+    if (!ctx || soundStore.getState().muted) return;
+    const seq = ++this.speechSeq;
+    void fetch(url)
+      .then((r) => (r.ok ? r.arrayBuffer() : Promise.reject(new Error(String(r.status)))))
+      .then((data) => ctx.decodeAudioData(data))
+      .then((buffer) => {
+        if (seq !== this.speechSeq || soundStore.getState().muted) return;
+        this.stopSpeech();
+        const src = ctx.createBufferSource();
+        src.buffer = buffer;
+        src.connect(ctx.destination);
+        src.start();
+        this.speech = src;
+        src.onended = () => {
+          if (this.speech === src) this.speech = null;
+        };
+      })
+      .catch(() => {});
+  }
+
+  private stopSpeech() {
+    try {
+      this.speech?.stop();
+    } catch {
+      /* already ended */
+    }
+    this.speech = null;
   }
 
   private load(url: string): Promise<AudioBuffer | null> {

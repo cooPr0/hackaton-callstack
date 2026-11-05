@@ -65,7 +65,7 @@ const initial: GameState = {
   conn: "idle",
   pendingCount: 0,
   error: null,
-  bot: { thinking: false, line: null, lineAt: null },
+  bot: { thinking: false, line: null, lineAt: null, audioUrl: null },
   ui: { secretUnlockedFor: null, pauseOpen: false, rulesOpen: false, clueDraft: "" },
 };
 
@@ -132,7 +132,15 @@ export function createGameStore(deps: GameDeps): StoreApi<GameStore> {
           set((s) => ({ bot: { ...s.bot, thinking: msg.state === "thinking" } }));
           return;
         case "bot.say":
-          set((s) => ({ bot: { ...s.bot, thinking: false, line: msg.text, lineAt: deps.now() } }));
+          set((s) => ({
+            bot: {
+              ...s.bot,
+              thinking: false,
+              line: msg.text,
+              lineAt: deps.now(),
+              audioUrl: msg.audioUrl ?? null,
+            },
+          }));
           return;
         case "error":
           set({ error: { code: msg.code, message: fromCode(msg.code).message, at: deps.now() } });

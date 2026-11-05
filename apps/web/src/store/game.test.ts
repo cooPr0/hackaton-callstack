@@ -185,7 +185,13 @@ describe("game store", () => {
       thinking: false,
       line: "Złoty, ale nie z puszki.",
       lineAt: 1000,
+      audioUrl: null,
     });
+    const audioUrl = "/api/rooms/K7PQX/say/0123456789abcdef0123456789abcdef.mp3";
+    push({ type: "bot.say", seatId: "s3", text: "Teraz na głos.", audioUrl });
+    expect(store.getState().bot.audioUrl).toBe(audioUrl);
+    push({ type: "bot.say", seatId: "s3", text: "A teraz bez." });
+    expect(store.getState().bot.audioUrl).toBeNull();
   });
 
   it("follows status and delegates posture + leave", async () => {

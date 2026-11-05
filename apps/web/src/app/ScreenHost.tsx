@@ -15,7 +15,7 @@ export interface ScreenHostProps {
   error?: string | null;
 }
 
-export const idleBot: BotState = { thinking: false, line: null, lineAt: null };
+export const idleBot: BotState = { thinking: false, line: null, lineAt: null, audioUrl: null };
 
 /**
  * The one place a view becomes pixels: selectScreen → privacy filter → registered screen.
