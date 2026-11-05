@@ -2,13 +2,16 @@ import type { Cell, PlayerView } from "@tint/protocol";
 import { useCallback, useState } from "react";
 import { cueGiverName, isMyTurn, seatById, turnName } from "../app/roles";
 import type { ScreenProps } from "../app/types";
+import { Button } from "../components/Button";
 import { PauseButton } from "../components/PauseButton";
 import { Toast } from "../components/Toast";
 import { type Copy, useCopy } from "../i18n";
 import { rankedScores } from "../screens/helpers";
-import { Overlays } from "../screens/PauseSheet";
+import { Overlays, run } from "../screens/PauseSheet";
 import { Board, type BoardStone } from "./Board";
 import { EdgeBar } from "./EdgeBar";
+import { Rings } from "./Rings";
+import { deltasLine, revealTargetOf, stoneBadges } from "./reveal";
 import styles from "./TableScreen.module.css";
 
 const isGuess = (v: PlayerView) => v.phase === "GUESS_1" || v.phase === "GUESS_2";
@@ -26,10 +29,13 @@ function edgeText(v: PlayerView, t: Copy, botLine: string | null) {
   else if (v.phase === "SECRET_2") meta = t.table.waitingForClue(name);
   else if (v.phase === "REVEAL" || v.phase === "GAME_OVER") meta = t.reveal.shadeOf(name);
 
-  const line = botLine ?? (v.phase === "REVEAL" ? (v.reveal?.botLine ?? null) : null);
+  // In REVEAL Grok defends its guess: that line beats whatever it said while guessing.
+  const line = (v.phase === "REVEAL" ? v.reveal?.botLine : null) ?? botLine;
   let turn: string | null = null;
   if (isGuess(v) && v.turnSeatId) {
     turn = isMyTurn(v) ? t.table.yourTurn(turnName(v)) : t.table.turnOf(turnName(v));
+  } else if (v.phase === "REVEAL") {
+    turn = deltasLine(v);
   }
   return {
     meta,
@@ -68,16 +74,35 @@ export function TableScreen(props: ScreenProps) {
   if (!view) return null;
 
   const portrait = !view.local && posture === "closed";
-  const stones: BoardStone[] = view.stones.map((s) => {
+  // Public reveal data only (never `secret`): present from REVEAL on.
+  const revealTarget = revealTargetOf(view);
+  const badges = revealTarget ? stoneBadges(view) : new Map<number, string>();
+  let order = 0;
+  const stones: BoardStone[] = view.stones.map((s, i) => {
     const seat = seatById(view, s.seatId);
+    const badge = badges.get(i) ?? null;
     return {
       x: s.x,
       y: s.y,
       name: seat?.name ?? "",
       grok: seat?.kind === "grok",
       second: s.n === 2,
+      badge,
+      badgeOrder: badge ? order++ : 0,
     };
   });
+  const last = view.round >= view.totalRounds;
+  const next = (flipped: boolean) =>
+    view.phase === "REVEAL" ? (
+      <Button
+        block={false}
+        disabled={pending}
+        tabIndex={flipped ? -1 : undefined}
+        onClick={() => run(actions.next())}
+      >
+        {last ? t.table.finish : t.table.nextRound}
+      </Button>
+    ) : null;
   const turnSeat = seatById(view, view.turnSeatId);
   const ghost =
     inFlight && turnSeat
@@ -97,6 +122,7 @@ export function TableScreen(props: ScreenProps) {
       scores={rankedScores(view)}
       flipped={flipped}
       compact={portrait}
+      action={next(flipped)}
     />
   );
   const pause = () => actions.openPause(true);
@@ -121,7 +147,10 @@ export function TableScreen(props: ScreenProps) {
           onPlace={onPlace}
           dimmed={isSecret(view)}
           portrait={portrait}
-        />
+          revealTarget={revealTarget}
+        >
+          {revealTarget ? <Rings target={revealTarget} /> : null}
+        </Board>
       </div>
 
       {bar(false)}

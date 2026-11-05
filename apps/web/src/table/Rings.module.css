@@ -1,0 +1,83 @@
+.ring {
+  position: relative;
+  z-index: 3;
+  pointer-events: none;
+}
+
+/* The ring sits just outside its cells, in the grout. */
+.svg {
+  position: absolute;
+  inset: -6px;
+  width: calc(100% + 12px);
+  height: calc(100% + 12px);
+  overflow: visible;
+}
+
+.far .svg {
+  inset: -7px;
+  width: calc(100% + 14px);
+  height: calc(100% + 14px);
+}
+
+.rect {
+  x: 1.5px;
+  y: 1.5px;
+  width: calc(100% - 3px);
+  height: calc(100% - 3px);
+  rx: 6px;
+  fill: none;
+}
+
+.solid {
+  stroke: var(--fg);
+  stroke-width: 2.5px;
+}
+
+.dashed {
+  stroke: var(--fg);
+  stroke-width: 1.5px;
+  stroke-dasharray: 5 4;
+}
+
+.maskRect {
+  stroke: white;
+  stroke-width: 6px;
+}
+
+/* Draw-on: the path length is normalised to 100. */
+.draw {
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  animation: draw 520ms var(--ease-out) forwards;
+}
+
+.near .draw {
+  animation-delay: 260ms;
+}
+
+.far .draw {
+  animation-delay: 420ms;
+}
+
+@keyframes draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .draw {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+
+  .ring {
+    animation: fade 200ms linear both;
+  }
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}

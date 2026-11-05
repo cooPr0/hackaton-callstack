@@ -32,7 +32,10 @@ function SecretForm(props: ScreenProps) {
   const [clueError, setClueError] = useState<string | null>(null);
 
   useEffect(() => {
-    input.current?.focus({ preventScroll: true });
+    // Focus after the current key event: this screen can mount from the F (fold) keydown,
+    // and focusing synchronously would type that "f" into the clue.
+    const id = window.setTimeout(() => input.current?.focus({ preventScroll: true }), 0);
+    return () => window.clearTimeout(id);
   }, []);
 
   const secret = view?.secret;
