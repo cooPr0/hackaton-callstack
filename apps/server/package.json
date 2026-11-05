@@ -21,6 +21,7 @@
     "typecheck": "tsc -p .",
     "test": "vitest run",
     "e2e": "node scripts/e2e.mjs",
-    "xai:probe": "node scripts/xai-probe.mjs"
+    "xai:probe": "node scripts/xai-probe.mjs",
+    "e2e:grok": "node scripts/e2e-grok.mjs"
   }
 }
