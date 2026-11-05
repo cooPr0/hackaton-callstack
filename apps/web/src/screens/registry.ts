@@ -1,6 +1,7 @@
 import type { ComponentType } from "react";
 import type { ScreenId, ScreenProps } from "../app/types";
 import { GrokSecretScreen } from "./GrokSecretScreen";
+import { HandoffFoldScreen, HandoffUnfoldScreen, PassScreen } from "./HandoffScreens";
 import { Placeholder } from "./Placeholder";
 import { SecretScreen } from "./SecretScreen";
 
@@ -11,11 +12,11 @@ import { SecretScreen } from "./SecretScreen";
 export const registry: Record<ScreenId, ComponentType<ScreenProps>> = {
   connecting: Placeholder,
   lobby: Placeholder,
-  pass: Placeholder,
+  pass: PassScreen,
   secret: SecretScreen,
   "grok-secret": GrokSecretScreen,
-  "handoff-fold": Placeholder,
-  "handoff-unfold": Placeholder,
+  "handoff-fold": HandoffFoldScreen,
+  "handoff-unfold": HandoffUnfoldScreen,
   table: Placeholder,
   "round-card": Placeholder,
   "game-over": Placeholder,
