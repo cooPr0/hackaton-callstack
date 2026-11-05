@@ -370,7 +370,7 @@ private struct ModeTile: View {
     }
 }
 
-private struct SeatStone: View {
+struct SeatStone: View {
     var player: GamePlayer
     var size: CGFloat
     var hole: Color

@@ -52,9 +52,11 @@ struct ClosedGameView: View {
     @FocusState private var isTyping: Bool
 
     private var round: ClosedRound
+    var onClue: (String) -> Void
 
-    init(round: ClosedRound) {
+    init(round: ClosedRound, onClue: @escaping (String) -> Void = { _ in }) {
         self.round = round
+        self.onClue = onClue
         _clue = State(initialValue: round.clue)
     }
 
@@ -108,6 +110,11 @@ struct ClosedGameView: View {
                         .onChange(of: clue) { _, newValue in
                             let word = ClosedGameView.oneWord(newValue)
                             if word != newValue { clue = word }
+                        }
+                        .onSubmit {
+                            let word = clue.trimmingCharacters(in: .whitespacesAndNewlines)
+                            guard !word.isEmpty else { return }
+                            onClue(word)
                         }
 
                     Text("Bez nazw kolorów i bez pozycji na planszy.")
@@ -179,12 +186,33 @@ struct ClosedGameView: View {
     }
 }
 
+/// A guess copied into the closed window. Coordinates stay off the screen.
+struct FinderStone: Identifiable, Equatable {
+    let id: UUID
+    var x: Int
+    var y: Int
+    var player: GamePlayer
+
+    /// Ola one step left and two up from the target, Grok two right and one down. Same places as the cabin mock.
+    static func sampleGuesses(around round: ClosedRound) -> [FinderStone] {
+        let ola = GamePlayer.openingTable[1]
+        let marks: [(Int, Int, GamePlayer)] = [(-1, -2, ola), (2, 1, .grok)]
+        return marks.compactMap { dx, dy, player in
+            let x = round.targetX + dx
+            let y = round.targetY + dy
+            guard (0..<BoardPalette.columns).contains(x), (0..<BoardPalette.rows).contains(y) else { return nil }
+            return FinderStone(id: UUID(), x: x, y: y, player: player)
+        }
+    }
+}
+
 /// 7 columns × 9 rows of the board, with corner brackets on the secret cell.
-private struct Viewfinder: View {
+struct Viewfinder: View {
     var originX: Int
     var originY: Int
     var targetX: Int
     var targetY: Int
+    var stones: [FinderStone] = []
 
     private let columns = 7
     private let rows = 9
@@ -196,21 +224,37 @@ private struct Viewfinder: View {
                 GeometryReader { geo in
                     let cellW = (geo.size.width - grout * CGFloat(columns - 1)) / CGFloat(columns)
                     let cellH = (geo.size.height - grout * CGFloat(rows - 1)) / CGFloat(rows)
-                    let column = targetX - originX
-                    let row = targetY - originY
-                    let rect = CGRect(
-                        x: CGFloat(column) * (cellW + grout),
-                        y: CGFloat(row) * (cellH + grout),
+                    let stoneSize = min(cellW, cellH) * 0.66
+                    let target = CGRect(
+                        x: CGFloat(targetX - originX) * (cellW + grout),
+                        y: CGFloat(targetY - originY) * (cellH + grout),
                         width: cellW,
                         height: cellH
                     )
-                    CornerBracket()
-                        .stroke(Color("Ink"), style: StrokeStyle(lineWidth: 3, lineCap: .square, lineJoin: .miter))
-                        .frame(width: rect.width + 16, height: rect.height + 16)
-                        .position(x: rect.midX, y: rect.midY)
+                    ZStack {
+                        ForEach(stones) { stone in
+                            let column = stone.x - originX
+                            let row = stone.y - originY
+                            if (0..<columns).contains(column), (0..<rows).contains(row) {
+                                SeatStone(
+                                    player: stone.player,
+                                    size: stoneSize,
+                                    hole: BoardPalette.color(x: stone.x, y: stone.y)
+                                )
+                                .position(
+                                    x: (CGFloat(column) + 0.5) * cellW + CGFloat(column) * grout,
+                                    y: (CGFloat(row) + 0.5) * cellH + CGFloat(row) * grout
+                                )
+                            }
+                        }
+                        CornerBracket()
+                            .stroke(Color("Ink"), style: StrokeStyle(lineWidth: 3, lineCap: .square, lineJoin: .miter))
+                            .frame(width: target.width + 16, height: target.height + 16)
+                            .position(x: target.midX, y: target.midY)
+                    }
                 }
             }
-            .accessibilityLabel("Wizjer odcienia")
+            .accessibilityLabel(stones.isEmpty ? "Wizjer odcienia" : "Wizjer odcienia z kopiami kamieni")
     }
 }
 
@@ -250,7 +294,7 @@ private struct CornerBracket: Shape {
 }
 
 /// Two halves of the folded Duo, the cue to open the phone onto the table.
-private struct FoldedDuoMark: View {
+struct FoldedDuoMark: View {
     var body: some View {
         Canvas { context, size in
             let scale = size.width / 36
@@ -270,18 +314,29 @@ private struct FoldedDuoMark: View {
 }
 
 struct GameShell: View {
-    @State private var round: ClosedRound?
+    private enum Phase {
+        case setup
+        case first(ClosedRound)
+        case second(ClosedRound, firstClue: String, stones: [FinderStone])
+    }
+
+    @State private var phase = Phase.setup
 
     var body: some View {
-        if let round {
-            ClosedGameView(round: round)
-        } else {
+        switch phase {
+        case .setup:
             NewGameView { mode, players in
                 let giver = mode == .grok
                     ? "Grok"
                     : (players.first { $0.kind == .human }?.name ?? "Gracz")
-                self.round = .draw(cueGiver: giver, hidesShade: mode == .grok)
+                phase = .first(.draw(cueGiver: giver, hidesShade: mode == .grok))
             }
+        case .first(let round):
+            ClosedGameView(round: round) { clue in
+                phase = .second(round, firstClue: clue, stones: FinderStone.sampleGuesses(around: round))
+            }
+        case .second(let round, let firstClue, let stones):
+            SecondPeekView(round: round, firstClue: firstClue, stones: stones)
         }
     }
 }
