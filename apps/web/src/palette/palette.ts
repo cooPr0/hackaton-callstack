@@ -13,7 +13,14 @@ if (palette.cols !== BOARD_COLS || palette.rows !== BOARD_ROWS) {
 }
 
 export function cellAt(x: number, y: number): PaletteCell {
-  const cell = palette.cells[y * BOARD_COLS + x];
+  const inside =
+    Number.isInteger(x) &&
+    Number.isInteger(y) &&
+    x >= 0 &&
+    x < BOARD_COLS &&
+    y >= 0 &&
+    y < BOARD_ROWS;
+  const cell = inside ? palette.cells[y * BOARD_COLS + x] : undefined;
   if (!cell) throw new RangeError(`no cell at (${x}, ${y})`);
   return cell;
 }
