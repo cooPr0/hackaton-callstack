@@ -79,7 +79,7 @@
 }
 
 .danger {
-  color: var(--danger);
+  color: var(--danger-text);
 }
 
 @keyframes rise {
