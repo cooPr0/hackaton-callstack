@@ -3,7 +3,27 @@ import { describe, expect, it } from "vitest";
 import { fixture } from "../dev/fixtures";
 import { copies } from "../i18n";
 import { pl } from "../i18n/pl";
-import { checkClue, normalizeClue, rankedScores, scoresInline, winnerOf } from "./helpers";
+import {
+  checkClue,
+  isFoldEmulation,
+  normalizeClue,
+  rankedScores,
+  scoresInline,
+  winnerOf,
+} from "./helpers";
+
+describe("isFoldEmulation", () => {
+  it("frames closed screens only for a local game held closed", () => {
+    expect(isFoldEmulation(fixture("local-guess1"), "closed")).toBe(true);
+    expect(isFoldEmulation(fixture("local-guess1"), "open")).toBe(false);
+  });
+
+  it("never frames online screens or the no-view state", () => {
+    expect(isFoldEmulation(fixture("secret1-cuegiver"), "closed")).toBe(false);
+    expect(isFoldEmulation(fixture("lobby"), "open")).toBe(false);
+    expect(isFoldEmulation(null, "closed")).toBe(false);
+  });
+});
 
 describe("checkClue", () => {
   it("accepts one word in SECRET_1, with Polish letters", () => {

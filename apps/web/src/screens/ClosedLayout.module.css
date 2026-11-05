@@ -8,7 +8,22 @@
   justify-content: center;
   background: var(--bg);
   color: var(--fg);
-  container-type: size;
+  container: closed / size;
+}
+
+/* Fold emulation (local game held closed): the window around the phone frame. Invisible on a
+   real phone, where the frame fills the screen. */
+.root[data-fold] {
+  background: var(--surface);
+}
+
+/* Holds the column and the overlays. A pass-through box unless it becomes the phone frame. */
+.frame {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
 }
 
 .column {
@@ -74,4 +89,35 @@
 .hingeButton:disabled {
   opacity: 0.45;
   cursor: default;
+}
+
+/* Fold emulation on a wide window: draw the closed phone (402 × 874) instead of stretching the
+   screen. The frame is its own `closed` container, so cq units and the wide rules inside it
+   behave exactly as on the phone, and toasts/sheets stay inside it. */
+@container closed (min-width: 700px) {
+  .root[data-fold] .frame {
+    container: closed / size;
+    width: 402px;
+    height: min(874px, calc(100cqh - 48px));
+    margin: auto;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: 48px;
+    background: var(--bg);
+    box-shadow: var(--shadow-card);
+  }
+}
+
+/* Wide (≥ 900px, see theme/layout.css), "split" screens: a page-wide column for a two-pane
+   body; the footer sits under the right pane so the pill keeps its phone width. */
+@container closed (min-width: 900px) {
+  .root[data-wide="split"] .column {
+    max-width: var(--page-max);
+    padding: 40px var(--gutter-wide) 36px;
+  }
+
+  .root[data-wide="split"] .footer {
+    width: min(100%, var(--col-form));
+    margin-left: auto;
+  }
 }
