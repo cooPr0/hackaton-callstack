@@ -99,6 +99,13 @@ describe("scores", () => {
     expect(rankedScores(view).map((s) => s.name)).toEqual(["Kuba", "Ola", "Grok"]);
   });
 
+  it("carries Grok's fallback flag and leaves humans unmarked", () => {
+    const view = fixture("guess1");
+    expect(rankedScores(view).every((s) => s.degraded === false)).toBe(true);
+    const seats = view.seats.map((s) => (s.kind === "grok" ? { ...s, degraded: true } : s));
+    expect(rankedScores({ ...view, seats }).find((s) => s.kind === "grok")?.degraded).toBe(true);
+  });
+
   it("finds the winner, or a tie", () => {
     expect(winnerOf(fixture("gameover"))).toEqual({ kind: "winner", id: "s2", name: "Ola" });
     expect(winnerOf(fixture("lobby"))).toEqual({ kind: "tie" });

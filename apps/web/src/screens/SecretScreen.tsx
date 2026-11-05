@@ -1,4 +1,5 @@
 import { useEffect, useId, useRef, useState } from "react";
+import { formatClock, useRemaining } from "../app/clock";
 import { cueGiverName, seatById, stonesInWindow } from "../app/roles";
 import type { ScreenProps } from "../app/types";
 import { Button } from "../components/Button";
@@ -30,6 +31,7 @@ function SecretForm(props: ScreenProps) {
   // seeded from the store so folding back (or a re-render after an unfold) keeps what was typed
   const [text, setText] = useState(props.ui.clueDraft);
   const [clueError, setClueError] = useState<string | null>(null);
+  const secondsLeft = useRemaining(view?.turnDeadline ?? null);
 
   useEffect(() => {
     // Focus after the current key event: this screen can mount from the F (fold) keydown,
@@ -112,6 +114,11 @@ function SecretForm(props: ScreenProps) {
           submit();
         }}
       >
+        {secondsLeft !== null ? (
+          <p className={styles.clock} data-urgent={secondsLeft <= 10 ? "" : undefined}>
+            {t.table.timeLeft(formatClock(secondsLeft))}
+          </p>
+        ) : null}
         <label htmlFor={inputId} className={styles.label}>
           {second ? t.secret.secondClue : t.secret.firstClue}
         </label>

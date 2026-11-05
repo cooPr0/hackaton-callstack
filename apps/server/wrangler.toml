@@ -12,7 +12,7 @@ new_sqlite_classes = ["Room"]
 
 [vars]
 # `*` matches exactly one subdomain label (Pages preview deploys). Add a LAN origin in .dev.vars.
-ALLOWED_ORIGINS = "https://tint-and-tell.pages.dev,https://*.tint-and-tell.pages.dev,http://localhost:5173"
+ALLOWED_ORIGINS = "https://tint-and-tell.pages.dev,https://*.tint-and-tell.pages.dev,https://tint-web.tint-server.workers.dev,http://localhost:5173"
 # Grok models per task (pnpm xai:probe measures them). FAST: Grok's stone and lines, where
 # everyone waits. SMART: Grok's clues as cue giver and X hints. Real Grok needs the XAI_API_KEY
 # secret and botMode "grok"; without either, Grok plays the fallback and the seat shows degraded.
