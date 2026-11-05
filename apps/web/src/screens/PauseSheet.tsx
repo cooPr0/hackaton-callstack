@@ -2,7 +2,7 @@ import { useState } from "react";
 import { isHost } from "../app/roles";
 import type { ScreenProps } from "../app/types";
 import { Sheet, SheetRow } from "../components/Sheet";
-import { pl } from "../i18n/pl";
+import { useCopy } from "../i18n";
 import { scoresInline } from "./helpers";
 import styles from "./PauseSheet.module.css";
 
@@ -13,6 +13,7 @@ export const run = (p: Promise<unknown>) => {
 
 /** The pause sheet (PDF p.3 "Pauza"): resume, clue rules, end game (host only, confirmed). */
 export function PauseSheet({ view, actions, ui }: ScreenProps) {
+  const t = useCopy();
   const [confirmEnd, setConfirmEnd] = useState(false);
   const open = !ui.rulesOpen && (ui.pauseOpen || !!view?.paused);
 
@@ -23,24 +24,24 @@ export function PauseSheet({ view, actions, ui }: ScreenProps) {
   };
 
   const sub = view
-    ? pl.closed.pause.sub(pl.round.header(view.round, view.totalRounds), scoresInline(view))
+    ? t.closed.pause.sub(t.round.header(view.round, view.totalRounds), scoresInline(view))
     : undefined;
 
   return (
-    <Sheet open={open} onClose={resume} title={pl.pause.title} sub={sub}>
-      <SheetRow onClick={resume}>{pl.pause.resume}</SheetRow>
-      <SheetRow onClick={() => actions.openRules(true)}>{pl.pause.rules}</SheetRow>
+    <Sheet open={open} onClose={resume} title={t.pause.title} sub={sub}>
+      <SheetRow onClick={resume}>{t.pause.resume}</SheetRow>
+      <SheetRow onClick={() => actions.openRules(true)}>{t.pause.rules}</SheetRow>
       {view && isHost(view) ? (
         confirmEnd ? (
           <div className={styles.confirm}>
-            <p className={styles.confirmText}>{pl.pause.endConfirm}</p>
+            <p className={styles.confirmText}>{t.pause.endConfirm}</p>
             <div className={styles.confirmButtons}>
               <button
                 type="button"
                 className={styles.confirmNo}
                 onClick={() => setConfirmEnd(false)}
               >
-                {pl.closed.pause.endNo}
+                {t.closed.pause.endNo}
               </button>
               <button
                 type="button"
@@ -50,13 +51,13 @@ export function PauseSheet({ view, actions, ui }: ScreenProps) {
                   run(actions.end());
                 }}
               >
-                {pl.closed.pause.endYes}
+                {t.closed.pause.endYes}
               </button>
             </div>
           </div>
         ) : (
           <SheetRow danger onClick={() => setConfirmEnd(true)}>
-            {pl.pause.end}
+            {t.pause.end}
           </SheetRow>
         )
       ) : null}
@@ -66,15 +67,16 @@ export function PauseSheet({ view, actions, ui }: ScreenProps) {
 
 /** "Zasady podpowiedzi": the clue rules, opened from the pause sheet. */
 export function RulesSheet({ actions, ui }: ScreenProps) {
+  const t = useCopy();
   const close = () => actions.openRules(false);
   return (
-    <Sheet open={ui.rulesOpen} onClose={close} title={pl.rules.title}>
+    <Sheet open={ui.rulesOpen} onClose={close} title={t.rules.title}>
       <ol className={styles.rules}>
-        {pl.rules.items.map((item) => (
+        {t.rules.items.map((item) => (
           <li key={item}>{item}</li>
         ))}
       </ol>
-      <SheetRow onClick={close}>{pl.closed.rulesClose}</SheetRow>
+      <SheetRow onClick={close}>{t.closed.rulesClose}</SheetRow>
     </Sheet>
   );
 }

@@ -3,7 +3,7 @@ import type { ScreenProps } from "../app/types";
 import { HingeIcon } from "../components/HingeIcon";
 import { PauseButton } from "../components/PauseButton";
 import { Toast } from "../components/Toast";
-import { pl } from "../i18n/pl";
+import { useCopy } from "../i18n";
 import styles from "./ClosedLayout.module.css";
 import { Overlays } from "./PauseSheet";
 
@@ -36,6 +36,7 @@ export function ClosedLayout({
   bodyClassName,
   children,
 }: ClosedLayoutProps) {
+  const t = useCopy();
   return (
     <div className={styles.root}>
       <div className={styles.column}>
@@ -44,7 +45,7 @@ export function ClosedLayout({
             <p className={styles.headerText}>{header}</p>
             {pause ? (
               <PauseButton
-                label={pl.closed.pauseLabel}
+                label={t.closed.pauseLabel}
                 onClick={() => screen.actions.openPause(true)}
               />
             ) : null}
