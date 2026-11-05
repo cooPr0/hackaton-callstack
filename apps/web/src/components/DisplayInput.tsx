@@ -3,6 +3,7 @@ import {
   type InputHTMLAttributes,
   type Ref,
   useCallback,
+  useEffect,
   useLayoutEffect,
   useRef,
   useState,
@@ -68,6 +69,17 @@ export function DisplayInput({
     const ro = new ResizeObserver(() => refit());
     ro.observe(w);
     return () => ro.disconnect();
+  }, [refit]);
+
+  // The webfont swap changes glyph widths. Refit then, or the headline keeps the
+  // fallback size until the next keystroke and jumps.
+  useEffect(() => {
+    const fonts = document.fonts;
+    if (!fonts) return;
+    const onDone = () => refit();
+    fonts.addEventListener("loadingdone", onDone);
+    void fonts.ready.then(onDone);
+    return () => fonts.removeEventListener("loadingdone", onDone);
   }, [refit]);
 
   const trackCaret = (el: HTMLInputElement) =>

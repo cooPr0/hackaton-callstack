@@ -1,28 +1,29 @@
-/* Archivo Expanded stand-in, self-hosted (OFL). wdth 125, weights 700 and 800.
-   Latin Extended covers Polish. See public/fonts/OFL.txt. */
+/* Archivo Expanded ExtraBold, self-hosted (OFL). The file is a static instance:
+   width 125 and weight 800 are baked in, so the browser never paints the variable
+   font's default (SemiBold) and then snaps to ExtraBold. Latin Extended is in the
+   same file, so Polish letters don't swap in a second later. See public/fonts/OFL.txt. */
 @font-face {
   font-family: "Archivo";
   font-style: normal;
-  font-weight: 700 800;
+  font-weight: 800;
   font-stretch: 125%;
   font-display: swap;
-  src: url("/fonts/archivo-latin-ext.woff2") format("woff2");
-  unicode-range:
-    U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329,
-    U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F,
-    U+A720-A7FF;
+  src: url("/fonts/archivo-800.woff2") format("woff2");
 }
 
+/* Metric-matched Arial Black, so the swap does not move headlines or the `ch` unit
+   the setup title wraps on. Overrides are percentages of the size-adjusted em.
+   size-adjust matches the "0" advance (Archivo 786/1000 vs Arial Black 1366/2048). */
 @font-face {
-  font-family: "Archivo";
+  font-family: "Archivo Fallback";
   font-style: normal;
-  font-weight: 700 800;
+  font-weight: 800;
   font-stretch: 125%;
-  font-display: swap;
-  src: url("/fonts/archivo-latin.woff2") format("woff2");
-  unicode-range:
-    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
-    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  src: local("Arial Black");
+  size-adjust: 117.81%;
+  ascent-override: 74.53%;
+  descent-override: 17.83%;
+  line-gap-override: 0%;
 }
 
 /* Brand tokens — design/Tint-and-Tell.pdf p.2 ("złamana biel i złamana czerń") and p.6.
@@ -44,7 +45,7 @@
   --on-surface-strong: var(--cold-steel);
   --glass: rgb(248 247 244 / 0.72);
 
-  --font-display: "Archivo", "Arial Black", system-ui, sans-serif;
+  --font-display: "Archivo", "Archivo Fallback", "Arial Black", system-ui, sans-serif;
   --font-body: system-ui, -apple-system, "Inter", "Segoe UI", sans-serif;
   --display-stretch: 125%;
 
