@@ -22,6 +22,18 @@ Three modes:
 - **Ty podpowiadasz**: you give the clues, and Grok alone guesses.
 - **Grok podpowiada**: Grok gives the clues, and you guess.
 
+## Watch
+
+Dark mode, English voice, a real room on the live server. Grok is the guesser.
+
+| | |
+|---|---|
+| **Web, one round** (30s) | [tint-and-tell-web-dark-30s.mp4](pitch/out/tint-and-tell-web-dark-30s.mp4) |
+| **Phone, the full round** (29s) | [tint-and-tell-mobile-30s.mp4](pitch/out/tint-and-tell-mobile-30s.mp4) |
+| **Web, the long walkthrough** (90s) | [tint-and-tell-how-it-works.mp4](pitch/out/tint-and-tell-how-it-works.mp4) |
+
+The 30-second web film is one round on the wide dark layout: the palette, the room code, the private shade, *honey*, *warm kitchen*, the shade opening, and a tie. On the phone the same round runs straight through on the closed screen, then the open table. The 90-second film is the longer pass: the three modes, then the round on the open table with a single upright clue bar.
+
 ## Why a foldable
 On a foldable phone, **the hinge is the privacy boundary**. Folded, the phone hides the secret. Unfolded, it becomes a shared table. The design follows from that:
 - The board is 24 × 12 so the fold falls in the gap between columns 12 and 13, and no swatch is cut.

@@ -27,9 +27,12 @@ DerivedData/
 .vscode/*
 !.vscode/extensions.json
 
-# pitch media (large, generated)
+# pitch media (large, generated). The finished films stay, so the README links work.
 pitch/raw/
-pitch/out/
+pitch/out/*
+!pitch/out/tint-and-tell-web-dark-30s.mp4
+!pitch/out/tint-and-tell-mobile-30s.mp4
+!pitch/out/tint-and-tell-how-it-works.mp4
 
 # Claude Code agent worktrees (local only)
 .claude/worktrees/
