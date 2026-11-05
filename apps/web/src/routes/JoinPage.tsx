@@ -2,7 +2,8 @@ import { ROOM_CODE_ALPHABET, ROOM_CODE_LENGTH } from "@tint/protocol";
 import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router";
 import { Logo } from "../components/Logo";
-import { pl } from "../i18n/pl";
+import { useCopy } from "../i18n";
+import { LangToggle } from "../i18n/LangToggle";
 import { useGame } from "../store";
 import s from "./Form.module.css";
 
@@ -25,6 +26,7 @@ function lastName(): string {
 
 /** /join/:code — claim an open seat in an online room (QR from the lobby lands here). */
 export function JoinPage() {
+  const t = useCopy();
   const params = useParams();
   const navigate = useNavigate();
   const joinRoom = useGame((st) => st.joinRoom);
@@ -57,13 +59,14 @@ export function JoinPage() {
   return (
     <form className={s.page} onSubmit={submit}>
       <div className={s.top}>
-        <Link to="/" aria-label={pl.notFound.back} style={{ color: "inherit" }}>
+        <Link to="/" aria-label={t.notFound.back} style={{ color: "inherit" }}>
           <Logo size={22} />
         </Link>
+        <LangToggle />
       </div>
-      <h1 className={s.title}>{pl.join.title}</h1>
+      <h1 className={s.title}>{t.join.title}</h1>
       <label className={s.label}>
-        {pl.join.code}
+        {t.join.code}
         <input
           className={`${s.input} ${s.code}`}
           value={code}
@@ -76,7 +79,7 @@ export function JoinPage() {
         />
       </label>
       <label className={s.label}>
-        {pl.join.name}
+        {t.join.name}
         <input
           className={s.input}
           value={name}
@@ -92,10 +95,10 @@ export function JoinPage() {
         </p>
       )}
       <button type="submit" className={s.primary} disabled={!ready || busy}>
-        {pl.join.submit}
+        {t.join.submit}
       </button>
       <Link to="/" className={s.link}>
-        {pl.setup.title}
+        {t.setup.title}
       </Link>
     </form>
   );

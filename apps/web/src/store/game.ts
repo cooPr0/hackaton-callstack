@@ -205,7 +205,7 @@ export function createGameStore(deps: GameDeps): StoreApi<GameStore> {
             ...initial,
             code,
             conn: "failed",
-            error: { code: "NO_SEAT", message: "Nie masz miejsca w tym pokoju.", at: deps.now() },
+            error: { code: "NO_SEAT", message: fromCode("NO_SEAT").message, at: deps.now() },
           });
           return;
         }

@@ -1,9 +1,10 @@
 import type { Posture } from "../app/types";
-import { pl } from "../i18n/pl";
+import { useCopy } from "../i18n";
 import { usePostureOverride } from "./postureStore";
 
 /** Floating "Złóż / Rozłóż" pill for fold emulation (local mode, /dev, ?debug). */
 export function PostureToggle({ posture }: { posture: Posture }) {
+  const t = useCopy();
   const { override, setOverride } = usePostureOverride();
   const next: Posture = posture === "open" ? "closed" : "open";
   return (
@@ -26,7 +27,7 @@ export function PostureToggle({ posture }: { posture: Posture }) {
       <button
         type="button"
         onClick={() => setOverride(next)}
-        title={pl.posture.hint}
+        title={t.posture.hint}
         style={{
           border: 0,
           borderRadius: 999,
@@ -36,7 +37,7 @@ export function PostureToggle({ posture }: { posture: Posture }) {
           fontWeight: 600,
         }}
       >
-        {next === "closed" ? pl.posture.fold : pl.posture.unfold}
+        {next === "closed" ? t.posture.fold : t.posture.unfold}
       </button>
       {override && (
         <button
