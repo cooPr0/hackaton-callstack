@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import type { RankedScore } from "../screens/helpers";
 import styles from "./EdgeBar.module.css";
 
@@ -18,6 +19,8 @@ export interface EdgeBarProps {
   /** The far side of the table: the whole bar is turned 180°. */
   flipped?: boolean;
   compact?: boolean;
+  /** A button above the scores (REVEAL: "Następna runda"). */
+  action?: ReactNode;
 }
 
 /**
@@ -34,6 +37,7 @@ export function EdgeBar({
   scores,
   flipped = false,
   compact = false,
+  action = null,
 }: EdgeBarProps) {
   const longest = Math.max(0, ...clues.map((c) => c.length));
   const cls = [styles.bar, flipped ? styles.flipped : "", compact ? styles.compact : ""]
@@ -70,14 +74,17 @@ export function EdgeBar({
             {turn}
           </p>
         ) : null}
-        <ol className={styles.scores}>
-          {scores.map((s) => (
-            <li key={s.id} className={styles.score}>
-              <span className={styles.scoreName}>{s.name}</span>
-              <span className={`display ${styles.scoreValue}`}>{s.score}</span>
-            </li>
-          ))}
-        </ol>
+        <div className={styles.scoresRow}>
+          {action ? <div className={styles.action}>{action}</div> : null}
+          <ol className={styles.scores}>
+            {scores.map((s) => (
+              <li key={s.id} className={styles.score}>
+                <span className={styles.scoreName}>{s.name}</span>
+                <span className={`display ${styles.scoreValue}`}>{s.score}</span>
+              </li>
+            ))}
+          </ol>
+        </div>
       </div>
     </section>
   );

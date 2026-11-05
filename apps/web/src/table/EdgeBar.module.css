@@ -63,6 +63,23 @@
   text-align: right;
 }
 
+/* The reveal's "Następna runda" sits beside the scores, so the bar keeps its height. */
+.scoresRow {
+  display: flex;
+  align-items: flex-end;
+  gap: 20px;
+}
+
+.action {
+  padding-bottom: 2px;
+}
+
+.action button {
+  min-height: 44px;
+  padding: 0 22px;
+  font-size: 15px;
+}
+
 .bot {
   margin: 0;
   font-size: 15px;
