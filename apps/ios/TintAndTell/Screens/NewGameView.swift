@@ -498,6 +498,72 @@ enum PartyCopy {
         return name
     }
 
+    /// „Podaj Oli”, „Podaj Kubie”, „Podaj Grokowi”.
+    static func podaj(_ name: String) -> String {
+        if name.compare("grok", options: .caseInsensitive) == .orderedSame {
+            return prefixed(name, "Grokowi")
+        }
+        let lower = name.lowercased()
+        if lower.hasSuffix("ia"), name.count > 2 {
+            return String(name.dropLast(1))
+        }
+        if lower.hasSuffix("ja"), name.count > 2 {
+            return String(name.dropLast(2)) + "i"
+        }
+        if lower.hasSuffix("a"), name.count > 1 {
+            let stem = String(name.dropLast())
+            let soft = ["ś", "ź", "ć", "ń", "j", "l", "dz", "dź", "dż", "rz", "cz", "sz"]
+            if soft.contains(where: { stem.lowercased().hasSuffix($0) }) {
+                return stem + "i"
+            }
+            return stem + "ie"
+        }
+        return name
+    }
+
+    /// „Jestem Olą”, „Jestem Kubą”, „Jestem Grokiem”.
+    static func jestem(_ name: String) -> String {
+        if name.compare("grok", options: .caseInsensitive) == .orderedSame {
+            return prefixed(name, "Grokiem")
+        }
+        if name.lowercased().hasSuffix("a"), name.count > 1 {
+            return String(name.dropLast()) + "ą"
+        }
+        return name
+    }
+
+    static func inHouse(_ count: Int) -> String {
+        switch count {
+        case 0: return "Żaden kamień w domu"
+        case 1: return "1 kamień w domu"
+        default:
+            let mod10 = count % 10
+            let mod100 = count % 100
+            if (2...4).contains(mod10), !(12...14).contains(mod100) {
+                return "\(count) kamienie w domu"
+            }
+            return "\(count) kamieni w domu"
+        }
+    }
+
+    static func handoff(next: String, guessers: [String]) -> String {
+        let others = joined(guessers)
+        if next == "Ola" {
+            return "Teraz ona dostaje odcień. \(others) zgadują."
+        }
+        return "Teraz \(next) dostaje odcień. \(others) zgadują."
+    }
+
+    private static func joined(_ names: [String]) -> String {
+        switch names.count {
+        case 0: ""
+        case 1: names[0]
+        case 2: "\(names[0]) i \(names[1])"
+        default:
+            "\(names.dropLast().joined(separator: ", ")) i \(names.last ?? "")"
+        }
+    }
+
     private static func prefixed(_ original: String, _ declined: String) -> String {
         guard let first = original.first, first.isLowercase else { return declined }
         return declined.prefix(1).lowercased() + declined.dropFirst()
