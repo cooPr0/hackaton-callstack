@@ -74,7 +74,7 @@ export function cluePrompt(input: {
       "",
       `You are the clue giver. SECRET CELL: x=${input.target.x}, y=${input.target.y} (${describeCell(input.target)}).`,
       first
-        ? "TASK: give the first clue: exactly ONE word."
+        ? 'TASK: give the first clue: exactly ONE single word, no spaces, no phrase (good: "rosół", "asfalt", "bakłażan"; bad: "nocne niebo", "marchewka z ogrodu").'
         : `TASK: give the second clue: ONE or TWO words that refine your first clue ${JSON.stringify(input.clues[0] ?? "")}. Guessers' stones so far (x,y): ${cells(input.stones)}. Steer them toward the secret cell.`,
       `The clue must be a concrete association (food, nature, objects, places, weather, moods) in ${LANG_NAME[input.lang]}. Never a color name, no numbers, letters and single spaces only, max 24 characters. Return it as "word".`,
     ].join("\n"),
