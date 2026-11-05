@@ -1,5 +1,5 @@
 import SwiftUI
-import UIKit
+import TintDesign
 
 /// Row-major hexes from `shared/palette.json` (24 × 12). The setup screen only
 /// paints crops of the board; the game never reads coordinates out loud.
@@ -47,7 +47,7 @@ enum BoardPalette {
 
     static func color(x: Int, y: Int) -> Color {
         let index = y * columns + x
-        guard hexes.indices.contains(index) else { return Color("Ink") }
+        guard hexes.indices.contains(index) else { return .ink }
         return Color(hex: hexes[index])
     }
 }
@@ -97,28 +97,5 @@ extension Color {
         let green = Double((parsed >> 8) & 0xFF) / 255
         let blue = Double(parsed & 0xFF) / 255
         self.init(red: red, green: green, blue: blue)
-    }
-
-    static let cabinGold = Color(hex: "E9B005")
-    static let cocoa = Color(hex: "191815")
-    static let coldSteel = Color(hex: "F8F7F4")
-
-    static let ink2 = Color(uiColor: UIColor { traits in
-        traits.userInterfaceStyle == .dark ? UIColor(hex: 0xC9C6BF) : UIColor(hex: 0x4A4843)
-    })
-
-    static let ink3 = Color(uiColor: UIColor { traits in
-        traits.userInterfaceStyle == .dark ? UIColor(hex: 0x97948D) : UIColor(hex: 0x6B6862)
-    })
-}
-
-extension UIColor {
-    convenience init(hex: UInt32) {
-        self.init(
-            red: CGFloat((hex >> 16) & 0xFF) / 255,
-            green: CGFloat((hex >> 8) & 0xFF) / 255,
-            blue: CGFloat(hex & 0xFF) / 255,
-            alpha: 1
-        )
     }
 }
