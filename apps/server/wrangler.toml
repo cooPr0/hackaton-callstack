@@ -13,8 +13,11 @@ new_sqlite_classes = ["Room"]
 [vars]
 # `*` matches exactly one subdomain label (Pages preview deploys). Add a LAN origin in .dev.vars.
 ALLOWED_ORIGINS = "https://tint-and-tell.pages.dev,https://*.tint-and-tell.pages.dev,http://localhost:5173"
-# Confirm the model id on docs.x.ai (p1/grok). Unused until the xAI client lands.
-XAI_MODEL = ""
+# Grok models per task (pnpm xai:probe measures them). FAST: Grok's stone and lines, where
+# everyone waits. SMART: Grok's clues as cue giver and X hints. Real Grok needs the XAI_API_KEY
+# secret and botMode "grok"; without either, Grok plays the fallback and the seat shows degraded.
+XAI_MODEL_FAST = "grok-4.20-0309-non-reasoning"
+XAI_MODEL_SMART = "grok-4.7"
 # Online stone timeout. Overridable so e2e can run fast: --var TURN_TIMEOUT_MS:1500
 TURN_TIMEOUT_MS = "60000"
 

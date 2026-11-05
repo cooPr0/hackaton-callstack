@@ -20,6 +20,7 @@ import {
   type ServerMessage,
 } from "@tint/protocol";
 import { fallbackClue, fallbackGuess } from "./bot/fallback";
+import { grokClue, grokGuess, takeCall } from "./bot/grok";
 import { projectView } from "./projection";
 import { CLOSE, cleanName, newToken, refuseSocket, sha256 } from "./util";
 
@@ -35,6 +36,8 @@ interface Meta {
   bot?: Timer;
   turn?: Timer;
   expireAt: number;
+  /** Timestamps of recent xAI calls: the per-room budget (absent on rooms created before p1/grok). */
+  xaiCalls?: number[];
 }
 /** Seats a socket controls (authenticated at upgrade); `ready` once it said hello. */
 interface Attachment {
@@ -274,24 +277,49 @@ export class Room extends DurableObject<Env> {
     // Messages are processed while think() awaits. If the turn moved on (timeout, pause, end), drop the move.
     if (!this.game || turnKey(this.game) !== key) return;
     this.meta.bot = undefined;
+    const seat = this.game.seats.find((s) => s.id === who);
+    if (seat) seat.degraded = move.degraded;
     if (move.line) this.sendAll({ type: "bot.say", seatId: who, text: move.line });
     this.sendAll({ type: "bot.status", seatId: who, state: "idle" });
     this.applyInternal(move.action);
   }
 
   /**
-   * Grok's move. ponytail: fallback only. The xAI call (p1/grok) plugs in here and keeps the
-   * stale-turn guard in onBot(). Mark the seat degraded while a "grok" room runs on the fallback.
+   * Grok's move: xAI when the room plays real Grok, else (or on any failure) the deterministic
+   * fallback. Never mutates state: it awaits the network, so onBot() re-checks the turn and
+   * applies `degraded` only if the move still belongs to it.
    */
-  private async think(g: GameState, seatId: string): Promise<{ action: Action; line?: string }> {
-    const seat = g.seats.find((s) => s.id === seatId);
-    if (seat) seat.degraded = g.botMode === "grok";
+  private async think(
+    g: GameState,
+    seatId: string,
+  ): Promise<{ action: Action; line?: string; degraded: boolean }> {
     const r = g.current;
     if (!r) throw new Error("no round");
-    if (isSecret(g.phase))
-      return { action: { type: "clue", seatId, text: fallbackClue(r.target, g.phase) } };
-    const { x, y, line } = fallbackGuess(r.clues, r.stones);
-    return { action: { type: "stone", seatId, x, y }, line };
+    const lang = g.lang ?? "pl"; // rooms persisted before lang existed
+    const llm = g.botMode === "grok";
+    this.meta.xaiCalls ??= [];
+    const calls = this.meta.xaiCalls;
+    const budget = () => takeCall(calls, Date.now());
+    if (isSecret(g.phase)) {
+      const input = { target: r.target, phase: g.phase, clues: r.clues, stones: r.stones, lang };
+      const text = llm ? await grokClue(this.env, input, budget) : null;
+      return {
+        action: { type: "clue", seatId, text: text ?? fallbackClue(r.target, g.phase) },
+        degraded: llm && !text,
+      };
+    }
+    const move = llm
+      ? await grokGuess(this.env, { clues: r.clues, stones: r.stones, lang }, budget)
+      : null;
+    if (move) {
+      return {
+        action: { type: "stone", seatId, x: move.x, y: move.y },
+        line: move.line,
+        degraded: false,
+      };
+    }
+    const fb = fallbackGuess(r.clues, r.stones);
+    return { action: { type: "stone", seatId, x: fb.x, y: fb.y }, line: fb.line, degraded: llm };
   }
 
   // ── Internals ─────────────────────────────────────────────────────────────
