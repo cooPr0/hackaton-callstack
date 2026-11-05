@@ -14,5 +14,10 @@
     "fixtures:check": "pnpm --filter @tint/protocol fixtures:check",
     "palette": "pnpm --filter @tint/game-core palette",
     "playtest": "pnpm --filter @tint/playtester --silent playtest"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.6.5",
+    "lefthook": "^2.2.2",
+    "typescript": "^7.0.2"
   }
 }
