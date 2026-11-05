@@ -17,6 +17,9 @@
       "path": "TintDesign",
     }, {
       "kind": "local",
+      "path": "TintKit",
+    }, {
+      "kind": "local",
       "path": "TintCore",
     }, {
       "kind": "remote",
@@ -47,6 +50,7 @@
       "dependencies": [
         { "kind": "package", "package": "TintDesign", "product-name": "TintDesign" },
         { "kind": "package", "package": "TintCore", "product-name": "TintCore" },
+        { "kind": "package", "package": "TintKit", "product-name": "TintKit" },
         { "kind": "package", "package": "Inject", "product-name": "Inject" },
       ],
       "build-phases": [
@@ -67,6 +71,10 @@
           "package": "TintDesign",
           "product-name": "TintDesign",
           "build-phase": { "build-phase": "frameworks" },
+        }, {
+          "package": "TintKit",
+          "product-name": "TintKit",
+          "build-phase": { "build-phase": "frameworks" },
         },
       ],
       "build-settings": {
@@ -82,6 +90,7 @@
         "INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]": "YES",
         "INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]": "YES",
         "INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphonesimulator*]": "YES",
+        "INFOPLIST_KEY_NSAppTransportSecurity_NSAllowsLocalNetworking": "YES",
         "INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphoneos*]": "YES",
         "INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphonesimulator*]": "YES",
         "INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]": "UIStatusBarStyleDefault",
