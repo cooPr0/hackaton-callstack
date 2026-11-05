@@ -1,5 +1,6 @@
 import Inject
 import SwiftUI
+import TintDesign
 
 /// Who gives the clue, and who is left to guess.
 enum PartyMode: String, CaseIterable, Identifiable {
@@ -118,8 +119,8 @@ struct NewGameView: View {
                     .padding(.bottom, 14)
             }
         }
-        .background(Color("Paper").ignoresSafeArea())
-        .tint(Color("Ink"))
+        .background(Color.ground.ignoresSafeArea())
+        .tint(Color.ink)
         .sensoryFeedback(.selection, trigger: mode)
         .sensoryFeedback(.impact(weight: .medium), trigger: drawCount)
         .alert("Dodaj gracza", isPresented: $isAdding) {
@@ -134,7 +135,11 @@ struct NewGameView: View {
 
     private var header: some View {
         HStack(alignment: .center) {
-            CabinMark()
+            Image.logo
+                .resizable()
+                .scaledToFit()
+                .frame(width: 34, height: 34)
+                .accessibilityLabel("Tint & Tell")
             Spacer(minLength: 12)
             Text("\(PartyCopy.playerCount(players.count)) · telefon złożony")
                 .font(.system(size: 13, weight: .semibold))
@@ -151,7 +156,7 @@ struct NewGameView: View {
         }
         .font(.system(size: 56, weight: .heavy).width(.expanded))
         .tracking(-1.7)
-        .foregroundStyle(Color("Ink"))
+        .foregroundStyle(Color.ink)
         .padding(.top, 20)
         .accessibilityElement(children: .combine)
     }
@@ -201,12 +206,12 @@ struct NewGameView: View {
             drawCount += 1
             onDrawShade(mode, orderedPlayers)
         } label: {
-            Text("Losuj odcień dla \(PartyCopy.dla(shadeOwner))")
+            Text("Losuj odcień · zaczyna \(shadeOwner)")
                 .font(.system(size: 17, weight: .semibold))
-                .foregroundStyle(Color("Paper"))
+                .foregroundStyle(Color.ground)
                 .frame(maxWidth: .infinity)
                 .frame(height: 54)
-                .background(Color("Ink"), in: Capsule())
+                .background(Color.ink, in: Capsule())
         }
         .buttonStyle(.plain)
         .accessibilityHint("Zaczyna partię od sekretnego odcienia")
@@ -237,7 +242,7 @@ struct NewGameView: View {
 
     private func playerChip(_ player: GamePlayer) -> some View {
         let chip = VStack(spacing: 8) {
-            SeatStone(player: player, size: 44, hole: Color("Paper"))
+            SeatStone(player: player, size: 44, hole: Color.ground)
             Text(player.name)
                 .font(.system(size: 13, weight: .medium))
                 .foregroundStyle(Color.ink2)
@@ -301,10 +306,10 @@ private struct ModeTile: View {
             VStack(alignment: .leading, spacing: 0) {
                 Text(mode.title)
                     .font(.system(size: 17, weight: .semibold))
-                    .foregroundStyle(isSelected ? Color("Paper") : Color("Ink"))
+                    .foregroundStyle(isSelected ? Color.ground : Color.ink)
                 Text(mode.subtitle)
                     .font(.system(size: 15))
-                    .foregroundStyle(isSelected ? Color("Paper").opacity(0.72) : Color.ink2)
+                    .foregroundStyle(isSelected ? Color.ground.opacity(0.72) : Color.ink2)
                     .padding(.top, 2)
                 seatRow
                     .padding(.top, 8)
@@ -316,16 +321,16 @@ private struct ModeTile: View {
         }
         .padding(EdgeInsets(top: 16, leading: 16, bottom: 14, trailing: 16))
         .frame(minHeight: 100, alignment: .bottom)
-        .background(isSelected ? Color("Ink") : Color.clear, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .background(isSelected ? Color.ink : Color.clear, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
         .overlay {
             RoundedRectangle(cornerRadius: 16, style: .continuous)
-                .strokeBorder(isSelected ? Color("Ink") : Color.ink2, lineWidth: 1)
+                .strokeBorder(isSelected ? Color.ink : Color.ink2, lineWidth: 1)
         }
         .overlay(alignment: .topTrailing) {
             if isSelected {
                 CheckStroke()
                     .stroke(
-                        Color("Paper"),
+                        Color.ground,
                         style: StrokeStyle(lineWidth: 2.4, lineCap: .round, lineJoin: .round)
                     )
                     .frame(width: 18, height: 14)
@@ -341,7 +346,7 @@ private struct ModeTile: View {
 
     /// Light hole on the cocoa stone, so Grok stays readable on the filled tile.
     private var grokHole: Color {
-        isSelected ? Color.coldSteel : Color("Paper")
+        isSelected ? Color.bone : Color.ground
     }
 
     private var seatRow: some View {
@@ -353,17 +358,17 @@ private struct ModeTile: View {
                 }
             case .ty:
                 if let human = players.first(where: { $0.kind == .human }) {
-                    SeatStone(player: human, size: 26, hole: Color("Paper"))
+                    SeatStone(player: human, size: 26, hole: Color.ground)
                     FlowArrow()
-                        .foregroundStyle(isSelected ? Color("Paper").opacity(0.72) : Color.ink2)
+                        .foregroundStyle(isSelected ? Color.ground.opacity(0.72) : Color.ink2)
                     SeatStone(player: .grok, size: 26, hole: grokHole, onFilledTile: isSelected)
                 }
             case .grok:
                 SeatStone(player: .grok, size: 26, hole: grokHole, onFilledTile: isSelected)
                 FlowArrow()
-                    .foregroundStyle(isSelected ? Color("Paper").opacity(0.72) : Color.ink2)
+                    .foregroundStyle(isSelected ? Color.ground.opacity(0.72) : Color.ink2)
                 if let human = players.first(where: { $0.kind == .human }) {
-                    SeatStone(player: human, size: 26, hole: Color("Paper"))
+                    SeatStone(player: human, size: 26, hole: Color.ground)
                 }
             }
         }
@@ -387,10 +392,10 @@ struct SeatStone: View {
                     .fill(hole)
                     .frame(width: size * 0.30, height: size * 0.30)
                 if scheme == .dark || onFilledTile {
-                    Circle().strokeBorder(Color.coldSteel, lineWidth: 1.5)
+                    Circle().strokeBorder(Color.bone, lineWidth: 1.5)
                 }
             } else {
-                Circle().fill(scheme == .dark ? Color.coldSteel : Color.white)
+                Circle().fill(Color.bone)
                 Circle().strokeBorder(Color.cocoa, lineWidth: 1.5)
                 Text(player.initial)
                     .font(.system(size: size * 0.39, weight: .bold))
@@ -423,150 +428,27 @@ private struct CheckStroke: Shape {
     }
 }
 
-private struct CabinMark: View {
-    var side: CGFloat = 34
-
-    var body: some View {
-        Canvas { context, size in
-            let scale = size.width / 256
-            func polygon(_ points: [CGFloat]) -> Path {
-                var path = Path()
-                var cursor = 0
-                var first = true
-                while cursor + 1 < points.count {
-                    let point = CGPoint(x: points[cursor] * scale, y: points[cursor + 1] * scale)
-                    if first {
-                        path.move(to: point)
-                        first = false
-                    } else {
-                        path.addLine(to: point)
-                    }
-                    cursor += 2
-                }
-                path.closeSubpath()
-                return path
-            }
-            context.fill(
-                polygon([24, 40, 120, 40, 120, 84, 94, 84, 94, 216, 50, 216, 50, 84, 24, 84]),
-                with: .color(.cabinGold)
-            )
-            context.fill(
-                polygon([232, 216, 136, 216, 136, 172, 162, 172, 162, 40, 206, 40, 206, 172, 232, 172]),
-                with: .color(Color("Ink"))
-            )
-        }
-        .frame(width: side, height: side)
-        .accessibilityLabel("Tint & Tell")
-    }
-}
-
+/// Polish UI copy shared with the web client. Names stay in the nominative.
 enum PartyCopy {
     static func playerCount(_ count: Int) -> String {
-        let mod10 = count % 10
-        let mod100 = count % 100
-        if count == 1 { return "1 gracz" }
-        if (2...4).contains(mod10), !(12...14).contains(mod100) {
-            return "\(count) gracze"
-        }
-        return "\(count) graczy"
-    }
-
-    /// Best-effort genitive so the button reads „dla Kuby”, „dla Oli”, „dla Groka”.
-    static func dla(_ name: String) -> String {
-        if name.compare("grok", options: .caseInsensitive) == .orderedSame {
-            return prefixed(name, "Groka")
-        }
-        let lower = name.lowercased()
-        if lower.hasSuffix("ja"), name.count > 2 {
-            return String(name.dropLast(2)) + "i"
-        }
-        if lower.hasSuffix("ia"), name.count > 2 {
-            return String(name.dropLast(1))
-        }
-        if lower.hasSuffix("a"), name.count > 1 {
-            let stem = String(name.dropLast())
-            let soft = ["ś", "ź", "ć", "ń", "j", "l", "dz", "dź", "dż", "rz", "cz", "sz"]
-            if soft.contains(where: { stem.lowercased().hasSuffix($0) }) {
-                return stem + "i"
-            }
-            return stem + "y"
-        }
-        let vowels = Set("aeiouyąęó")
-        if let last = lower.last, !vowels.contains(last) {
-            return name + "a"
-        }
-        return name
-    }
-
-    /// „Podaj Oli”, „Podaj Kubie”, „Podaj Grokowi”.
-    static func podaj(_ name: String) -> String {
-        if name.compare("grok", options: .caseInsensitive) == .orderedSame {
-            return prefixed(name, "Grokowi")
-        }
-        let lower = name.lowercased()
-        if lower.hasSuffix("ia"), name.count > 2 {
-            return String(name.dropLast(1))
-        }
-        if lower.hasSuffix("ja"), name.count > 2 {
-            return String(name.dropLast(2)) + "i"
-        }
-        if lower.hasSuffix("a"), name.count > 1 {
-            let stem = String(name.dropLast())
-            let soft = ["ś", "ź", "ć", "ń", "j", "l", "dz", "dź", "dż", "rz", "cz", "sz"]
-            if soft.contains(where: { stem.lowercased().hasSuffix($0) }) {
-                return stem + "i"
-            }
-            return stem + "ie"
-        }
-        return name
-    }
-
-    /// „Jestem Olą”, „Jestem Kubą”, „Jestem Grokiem”.
-    static func jestem(_ name: String) -> String {
-        if name.compare("grok", options: .caseInsensitive) == .orderedSame {
-            return prefixed(name, "Grokiem")
-        }
-        if name.lowercased().hasSuffix("a"), name.count > 1 {
-            return String(name.dropLast()) + "ą"
-        }
-        return name
+        "\(count) \(plural(count, one: "gracz", few: "graczy", many: "graczy"))"
     }
 
     static func inHouse(_ count: Int) -> String {
-        switch count {
-        case 0: return "Żaden kamień w domu"
-        case 1: return "1 kamień w domu"
-        default:
-            let mod10 = count % 10
-            let mod100 = count % 100
-            if (2...4).contains(mod10), !(12...14).contains(mod100) {
-                return "\(count) kamienie w domu"
-            }
-            return "\(count) kamieni w domu"
-        }
+        "\(count) \(plural(count, one: "kamień", few: "kamienie", many: "kamieni")) w domu"
     }
 
-    static func handoff(next: String, guessers: [String]) -> String {
-        let others = joined(guessers)
-        if next == "Ola" {
-            return "Teraz ona dostaje odcień. \(others) zgadują."
-        }
-        return "Teraz \(next) dostaje odcień. \(others) zgadują."
+    static func inFrame(_ count: Int) -> String {
+        if count == 0 { return "Żadnego kamienia w kadrze" }
+        return "\(count) \(plural(count, one: "kamień", few: "kamienie", many: "kamieni")) w kadrze"
     }
 
-    private static func joined(_ names: [String]) -> String {
-        switch names.count {
-        case 0: ""
-        case 1: names[0]
-        case 2: "\(names[0]) i \(names[1])"
-        default:
-            "\(names.dropLast().joined(separator: ", ")) i \(names.last ?? "")"
-        }
-    }
-
-    private static func prefixed(_ original: String, _ declined: String) -> String {
-        guard let first = original.first, first.isLowercase else { return declined }
-        return declined.prefix(1).lowercased() + declined.dropFirst()
+    private static func plural(_ count: Int, one: String, few: String, many: String) -> String {
+        let mod10 = count % 10
+        let mod100 = count % 100
+        if count == 1 { return one }
+        if (2...4).contains(mod10), !(12...14).contains(mod100) { return few }
+        return many
     }
 }
 

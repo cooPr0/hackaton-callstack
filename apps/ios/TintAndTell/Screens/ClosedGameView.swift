@@ -1,5 +1,6 @@
 import Inject
 import SwiftUI
+import TintDesign
 
 /// The secret the closed phone is allowed to show: a 7 × 9 window, never a coordinate.
 struct ClosedRound: Equatable {
@@ -73,7 +74,7 @@ struct ClosedGameView: View {
                     Text("Grok zna\nodcień")
                         .font(.system(size: 56, weight: .heavy).width(.expanded))
                         .tracking(-1.7)
-                        .foregroundStyle(Color("Ink"))
+                        .foregroundStyle(Color.ink)
                     Text("Nikt nie musi patrzeć. Rozłóż telefon, Grok poda podpowiedź na stole.")
                         .font(.system(size: 15))
                         .foregroundStyle(Color.ink2)
@@ -98,7 +99,7 @@ struct ClosedGameView: View {
                     TextField("słowo", text: $clue)
                         .font(.system(size: 56, weight: .heavy).width(.expanded))
                         .tracking(-1.7)
-                        .foregroundStyle(Color("Ink"))
+                        .foregroundStyle(Color.ink)
                         .textFieldStyle(.plain)
                         .textInputAutocapitalization(.words)
                         .submitLabel(.done)
@@ -133,7 +134,7 @@ struct ClosedGameView: View {
             .padding(.top, 14)
             .frame(width: geo.size.width, height: geo.size.height, alignment: .top)
         }
-        .background(Color("Paper").ignoresSafeArea())
+        .background(Color.ground.ignoresSafeArea())
         .onAppear {
             if clue.isEmpty, !round.hidesShade { isTyping = true }
         }
@@ -150,7 +151,7 @@ struct ClosedGameView: View {
             Button {} label: {
                 Image(systemName: "pause.fill")
                     .font(.system(size: 13, weight: .semibold))
-                    .foregroundStyle(Color("Ink"))
+                    .foregroundStyle(Color.ink)
                     .frame(width: 44, height: 44)
             }
             .buttonStyle(.glass)
@@ -164,7 +165,7 @@ struct ClosedGameView: View {
         if round.hidesShade {
             "Runda \(round.round) z \(round.totalRounds) · podpowiada Grok"
         } else {
-            "Runda \(round.round) z \(round.totalRounds) · patrzy tylko \(round.cueGiver)"
+            "Runda \(round.round) z \(round.totalRounds) · złożone, patrzy tylko \(round.cueGiver)"
         }
     }
 
@@ -173,7 +174,7 @@ struct ClosedGameView: View {
             FoldedDuoMark()
             Text("Rozłóż telefon na stole")
                 .font(.system(size: 17, weight: .semibold))
-                .foregroundStyle(Color("Ink"))
+                .foregroundStyle(Color.ink)
         }
         .accessibilityElement(children: .combine)
         .accessibilityLabel("Rozłóż telefon na stole")
@@ -248,7 +249,7 @@ struct Viewfinder: View {
                             }
                         }
                         CornerBracket()
-                            .stroke(Color("Ink"), style: StrokeStyle(lineWidth: 3, lineCap: .square, lineJoin: .miter))
+                            .stroke(Color.ink, style: StrokeStyle(lineWidth: 3, lineCap: .square, lineJoin: .miter))
                             .frame(width: target.width + 16, height: target.height + 16)
                             .position(x: target.midX, y: target.midY)
                     }
@@ -307,8 +308,8 @@ struct FoldedDuoMark: View {
                 )
             }
             let stroke = StrokeStyle(lineWidth: 2.4 * scale, lineJoin: .round)
-            context.stroke(half(1.5), with: .color(Color("Ink")), style: stroke)
-            context.stroke(half(20.5), with: .color(Color("Ink")), style: stroke)
+            context.stroke(half(1.5), with: .color(Color.ink), style: stroke)
+            context.stroke(half(20.5), with: .color(Color.ink), style: stroke)
         }
         .frame(width: 36, height: 24)
         .accessibilityHidden(true)
@@ -321,6 +322,7 @@ struct GameShell: View {
         case first(ClosedRound)
         case second(ClosedRound, firstClue: String, stones: [FinderStone])
         case roundEnd(RoundCard)
+        case pass(RoundCard)
     }
 
     @State private var phase = Phase.setup
@@ -359,6 +361,10 @@ struct GameShell: View {
         case .roundEnd(let card):
             RoundEndView(card: card) {
                 guard !card.isLastRound else { return }
+                phase = .pass(card)
+            }
+        case .pass(let card):
+            PassTurnView(card: card) {
                 phase = .first(
                     .draw(
                         cueGiver: card.nextPlayer,

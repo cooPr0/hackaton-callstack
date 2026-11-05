@@ -1,5 +1,6 @@
 import Inject
 import SwiftUI
+import TintDesign
 
 /// Closed Duo when someone else holds the shade: the card back, a sealed swatch, and their name.
 struct ShadeSealView: View {
@@ -30,7 +31,7 @@ struct ShadeSealView: View {
                 Text("\(knower) zna\nodcień")
                     .font(.system(size: 56, weight: .heavy).width(.expanded))
                     .tracking(-1.7)
-                    .foregroundStyle(Color("Ink"))
+                    .foregroundStyle(Color.ink)
                     .padding(.horizontal, 24)
 
                 if isGrok {
@@ -52,7 +53,7 @@ struct ShadeSealView: View {
                     FoldedDuoMark()
                     Text("Rozłóż telefon na stole")
                         .font(.system(size: 17, weight: .semibold))
-                        .foregroundStyle(Color("Ink"))
+                        .foregroundStyle(Color.ink)
                 }
                 .padding(.top, 28)
                 .padding(.horizontal, 24)
@@ -61,7 +62,7 @@ struct ShadeSealView: View {
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-        .background(Color("Paper").ignoresSafeArea())
+        .background(Color.ground.ignoresSafeArea())
         .enableInjection()
     }
 
@@ -75,7 +76,7 @@ struct ShadeSealView: View {
             Button {} label: {
                 Image(systemName: "pause.fill")
                     .font(.system(size: 13, weight: .semibold))
-                    .foregroundStyle(Color("Ink"))
+                    .foregroundStyle(Color.ink)
                     .frame(width: 44, height: 44)
             }
             .buttonStyle(.glass)
@@ -96,10 +97,10 @@ private struct ShadeCard: View {
             RoundedRectangle(cornerRadius: 22, style: .continuous)
                 .fill(Color.cocoa)
             RoundedRectangle(cornerRadius: 22, style: .continuous)
-                .strokeBorder(Color.coldSteel.opacity(scheme == .dark ? 0.45 : 0), lineWidth: 1.5)
+                .strokeBorder(Color.bone.opacity(scheme == .dark ? 0.45 : 0), lineWidth: 1.5)
 
             RoundedRectangle(cornerRadius: 12, style: .continuous)
-                .strokeBorder(Color.coldSteel.opacity(0.22), lineWidth: 2)
+                .strokeBorder(Color.bone.opacity(0.22), lineWidth: 2)
                 .padding(18)
 
             ZStack {
@@ -107,12 +108,12 @@ private struct ShadeCard: View {
                     .fill(Color(hex: "0A0A0A"))
                     .frame(width: 120, height: 120)
                 CornerBracket(armLength: 18)
-                    .stroke(Color.coldSteel, style: StrokeStyle(lineWidth: 3, lineCap: .square, lineJoin: .miter))
+                    .stroke(Color.bone, style: StrokeStyle(lineWidth: 3, lineCap: .square, lineJoin: .miter))
                     .frame(width: 148, height: 148)
             }
 
             Circle()
-                .fill(Color("Paper"))
+                .fill(Color.ground)
                 .frame(width: 30, height: 30)
                 .overlay {
                     Circle().strokeBorder(Color.black.opacity(0.35), lineWidth: 1)

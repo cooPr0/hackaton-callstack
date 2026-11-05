@@ -1,5 +1,6 @@
 import Inject
 import SwiftUI
+import TintDesign
 
 struct ScoreLine: Identifiable, Equatable {
     var name: String
@@ -7,7 +8,7 @@ struct ScoreLine: Identifiable, Equatable {
     var id: String { name }
 }
 
-/// What the closed phone shows once the round is over: the shade, its name, and who is next.
+/// What the closed phone shows once the round is over: the shade, the clues, then the next round.
 struct RoundCard: Equatable {
     var finishedRound: Int
     var totalRounds: Int
@@ -73,35 +74,35 @@ struct RoundEndView: View {
                         .accessibilityLabel("Odcień rundy")
 
                     VStack(alignment: .leading, spacing: 6) {
-                        Text("Odcień \(PartyCopy.dla(card.cueGiver)) · \(PartyCopy.inHouse(card.stonesInHouse))")
+                        Text("Odcień · \(card.cueGiver) · \(PartyCopy.inHouse(card.stonesInHouse))")
                             .font(.system(size: 13, weight: .semibold))
-                            .foregroundStyle(Color("Paper").opacity(0.72))
+                            .foregroundStyle(Color.ground.opacity(0.72))
                         Text(card.caption)
                             .font(.system(size: 34, weight: .heavy).width(.expanded))
                             .tracking(-0.7)
-                            .foregroundStyle(Color("Paper"))
+                            .foregroundStyle(Color.ground)
                             .fixedSize(horizontal: false, vertical: true)
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(EdgeInsets(top: 16, leading: 18, bottom: 18, trailing: 18))
-                    .background(Color("Ink"))
+                    .background(Color.ink)
                 }
                 .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
                 .shadow(color: .black.opacity(0.25), radius: 0, y: 1)
                 .padding(.top, 18)
 
-                Text(card.isLastRound ? "Koniec partii" : "Podaj \(PartyCopy.podaj(card.nextPlayer))")
+                Text(card.isLastRound ? "Wyniki" : "Następna runda")
                     .font(.system(size: 56, weight: .heavy).width(.expanded))
                     .tracking(-1.7)
-                    .foregroundStyle(Color("Ink"))
-                    .minimumScaleFactor(0.6)
+                    .foregroundStyle(Color.ink)
+                    .minimumScaleFactor(0.5)
                     .lineLimit(1)
                     .padding(.top, 36)
 
                 Text(
                     card.isLastRound
-                        ? "To była ostatnia runda."
-                        : PartyCopy.handoff(next: card.nextPlayer, guessers: card.guessers)
+                        ? "To była ostatnia runda. Czas na wyniki."
+                        : "Podajcie telefon dalej. Następny odcień czeka."
                 )
                 .font(.system(size: 15))
                 .foregroundStyle(Color.ink2)
@@ -121,12 +122,12 @@ struct RoundEndView: View {
                 }
 
                 Button(action: onDrawNext) {
-                    Text(card.isLastRound ? "Koniec partii" : "Jestem \(PartyCopy.jestem(card.nextPlayer)), losuj")
+                    Text("Dalej")
                         .font(.system(size: 17, weight: .semibold))
-                        .foregroundStyle(Color("Paper"))
+                        .foregroundStyle(Color.ground)
                         .frame(maxWidth: .infinity)
                         .frame(height: 54)
-                        .background(Color("Ink"), in: Capsule())
+                        .background(Color.ink, in: Capsule())
                 }
                 .buttonStyle(.plain)
                 .disabled(card.isLastRound)
@@ -137,7 +138,7 @@ struct RoundEndView: View {
             .padding(.top, 14)
             .frame(width: geo.size.width, height: geo.size.height, alignment: .top)
         }
-        .background(Color("Paper").ignoresSafeArea())
+        .background(Color.ground.ignoresSafeArea())
         .enableInjection()
     }
 
@@ -150,7 +151,7 @@ struct RoundEndView: View {
             Button {} label: {
                 Image(systemName: "pause.fill")
                     .font(.system(size: 13, weight: .semibold))
-                    .foregroundStyle(Color("Ink"))
+                    .foregroundStyle(Color.ink)
                     .frame(width: 44, height: 44)
             }
             .buttonStyle(.glass)
@@ -165,11 +166,100 @@ struct RoundEndView: View {
     }
 }
 
-#Preview("Podaj Oli") {
+/// Privacy gate before the next shade. No colour: the phone changes hands first.
+struct PassTurnView: View {
+    @ObserveInjection private var inject
+    var card: RoundCard
+    var onConfirm: () -> Void
+
+    init(card: RoundCard, onConfirm: @escaping () -> Void = {}) {
+        self.card = card
+        self.onConfirm = onConfirm
+    }
+
+    var body: some View {
+        GeometryReader { geo in
+            VStack(alignment: .leading, spacing: 0) {
+                header
+
+                Spacer(minLength: 24)
+
+                SeatStone(player: nextSeat, size: 72, hole: Color.ground)
+
+                Text("\(card.nextPlayer), teraz Ty")
+                    .font(.system(size: 56, weight: .heavy).width(.expanded))
+                    .tracking(-1.7)
+                    .foregroundStyle(Color.ink)
+                    .minimumScaleFactor(0.45)
+                    .lineLimit(2)
+                    .padding(.top, 28)
+
+                Text("Podaj telefon. Ta osoba zobaczy odcień, reszta zgaduje.")
+                    .font(.system(size: 15))
+                    .foregroundStyle(Color.ink2)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(.top, 12)
+
+                Spacer(minLength: 16)
+
+                Text(scoreLine)
+                    .font(.system(size: 15, weight: .semibold))
+                    .foregroundStyle(Color.ink2)
+
+                Button(action: onConfirm) {
+                    Text("To ja, \(card.nextPlayer). Pokaż odcień")
+                        .font(.system(size: 17, weight: .semibold))
+                        .foregroundStyle(Color.ground)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.7)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 54)
+                        .background(Color.ink, in: Capsule())
+                }
+                .buttonStyle(.plain)
+                .padding(.top, 16)
+                .padding(.bottom, 14)
+            }
+            .padding(.horizontal, 24)
+            .padding(.top, 14)
+            .frame(width: geo.size.width, height: geo.size.height, alignment: .top)
+        }
+        .background(Color.ground.ignoresSafeArea())
+        .enableInjection()
+    }
+
+    private var header: some View {
+        Text("Runda \(min(card.finishedRound + 1, card.totalRounds)) z \(card.totalRounds)")
+            .font(.system(size: 13, weight: .semibold))
+            .foregroundStyle(Color.ink2)
+            .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
+    }
+
+    private var nextSeat: GamePlayer {
+        if card.nextPlayer.compare("Grok", options: .caseInsensitive) == .orderedSame {
+            return .grok
+        }
+        return GamePlayer(
+            id: UUID(uuidString: "00000000-0000-0000-0000-0000000000ff")!,
+            name: card.nextPlayer,
+            kind: .human
+        )
+    }
+
+    private var scoreLine: String {
+        card.scores.map { "\($0.name) \($0.score)" }.joined(separator: " · ")
+    }
+}
+
+#Preview("Następna runda") {
     RoundEndView(card: .cabin)
 }
 
 #Preview("Ciemny") {
     RoundEndView(card: .cabin)
         .preferredColorScheme(.dark)
+}
+
+#Preview("Teraz Ty") {
+    PassTurnView(card: .cabin)
 }

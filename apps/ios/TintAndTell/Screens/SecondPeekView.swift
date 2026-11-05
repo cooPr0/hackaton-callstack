@@ -1,5 +1,6 @@
 import Inject
 import SwiftUI
+import TintDesign
 
 /// Closed Duo, second look: the same 7 × 9 window, now with the guesses, and up to two more words.
 struct SecondPeekView: View {
@@ -61,7 +62,7 @@ struct SecondPeekView: View {
                 TextField("słowa", text: $clue)
                     .font(.system(size: 44, weight: .heavy).width(.expanded))
                     .tracking(-1.3)
-                    .foregroundStyle(Color("Ink"))
+                    .foregroundStyle(Color.ink)
                     .textFieldStyle(.plain)
                     .textInputAutocapitalization(.never)
                     .submitLabel(.done)
@@ -86,7 +87,7 @@ struct SecondPeekView: View {
                     FoldedDuoMark()
                     Text("Rozłóż, żeby pokazać")
                         .font(.system(size: 17, weight: .semibold))
-                        .foregroundStyle(Color("Ink"))
+                        .foregroundStyle(Color.ink)
                 }
                 .padding(.bottom, 20)
                 .accessibilityElement(children: .combine)
@@ -95,7 +96,7 @@ struct SecondPeekView: View {
             .padding(.top, 14)
             .frame(width: geo.size.width, height: geo.size.height, alignment: .top)
         }
-        .background(Color("Paper").ignoresSafeArea())
+        .background(Color.ground.ignoresSafeArea())
         .onAppear {
             if clue.isEmpty { isTyping = true }
         }
@@ -112,7 +113,7 @@ struct SecondPeekView: View {
             Button {} label: {
                 Image(systemName: "pause.fill")
                     .font(.system(size: 13, weight: .semibold))
-                    .foregroundStyle(Color("Ink"))
+                    .foregroundStyle(Color.ink)
                     .frame(width: 44, height: 44)
             }
             .buttonStyle(.glass)
@@ -128,12 +129,7 @@ struct SecondPeekView: View {
             let row = stone.y - round.originY
             return (0..<7).contains(column) && (0..<9).contains(row)
         }.count
-        switch inside {
-        case 0: return "Żaden kamień w kadrze"
-        case 1: return "Jeden kamień w kadrze"
-        case 2: return "Oba kamienie w kadrze"
-        default: return "\(inside) kamienie w kadrze"
-        }
+        return PartyCopy.inFrame(inside)
     }
 
     /// Second clue is one or two words, at most 24 characters.
