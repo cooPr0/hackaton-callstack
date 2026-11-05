@@ -240,6 +240,16 @@ Values used below:
   - The `p2/unfold-polish` branch self-hosts the woff2 in `public/fonts`, so the demo works on bad venue Wi-Fi.
 - All copy lives in `i18n/pl.ts`. No hard-coded strings in components.
 
+### Wide windows (laptop, desktop, open fold)
+The PDF only shows the phone. On wide windows the web keeps the same identity but a different composition, so it doesn't read as a phone screen floating in empty space.
+- **Breakpoint**: 900 px wide, the same as `OPEN_SHAPE_QUERY`. Below it, every page and closed screen is the phone column, pixel-identical to the design.
+- **Sizes** (`theme/layout.css`): `--page-max` 1120 px, `--col-form` 440 px, `--gutter-wide` 48 px, `--split-gap` 64 px. Colours stay in `tokens.css`; no new colours.
+- **Two panes**: the visual on the left (display type, the palette board, QR, viewfinder) and the controls on the right (form, list, primary pill). The primary pill is never wider than `--col-form`.
+- **Routes** (`/`, `/join/:code`, `*`) use `@media (min-width: 900px)`; they always fill the window. The left pane shows the title, `t.tagline` and `PaletteHero`, the full 24 × 12 board with the hinge seam (decorative, nothing from a round).
+- **Closed screens** use `@container` queries on `ClosedLayout`, so the `/dev` gallery's 1036-wide frames show the wide variant too.
+- **Table**: no split. It keeps the full-width board and two edge bars. `PauseSheet` stays a bottom sheet (max 464 px) everywhere.
+- The typeset `Wordmark` is a stand-in and is not used as a hero; use `Logo`.
+
 ## 11. Security, accessibility, performance
 - The secret is only rendered by `secret`. `publicView` is enforced and unit-tested with `secretLeak`.
 - No `console.log(view)` in production builds (`import.meta.env.DEV` guard).
