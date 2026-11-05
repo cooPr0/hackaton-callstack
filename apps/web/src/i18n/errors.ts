@@ -3,7 +3,12 @@ import { currentLang } from "./lang";
 import type { Lang } from "./types";
 
 /** Client-side codes on top of the protocol's ErrorCode. */
-export type ClientErrorCode = "NETWORK" | "TIMEOUT" | "BAD_RESPONSE" | "NO_SEAT";
+export type ClientErrorCode =
+  | "NETWORK"
+  | "TIMEOUT"
+  | "BAD_RESPONSE"
+  | "NO_SEAT"
+  | "SEAT_TAKEN_OVER";
 
 type Messages = Record<ErrorCode | ClientErrorCode, string>;
 
@@ -27,6 +32,7 @@ export const errorMessages: Record<Lang, Messages> = {
     TIMEOUT: "Serwer nie odpowiedział.",
     BAD_RESPONSE: "Serwer odpowiedział w nieznanym formacie.",
     NO_SEAT: "Nie masz miejsca w tym pokoju.",
+    SEAT_TAKEN_OVER: "Ta gra jest otwarta w innej karcie albo na innym urządzeniu.",
   },
   en: {
     PROTOCOL_MISMATCH: "This version of the game is out of date. Refresh the page.",
@@ -47,6 +53,7 @@ export const errorMessages: Record<Lang, Messages> = {
     TIMEOUT: "The server didn't respond.",
     BAD_RESPONSE: "The server sent an unexpected response.",
     NO_SEAT: "You don't have a seat in this room.",
+    SEAT_TAKEN_OVER: "This game is open in another tab or on another device.",
   },
 };
 

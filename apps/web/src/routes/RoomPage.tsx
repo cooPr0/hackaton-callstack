@@ -34,10 +34,12 @@ export function RoomPage() {
     return () => gameStore.getState().actions.leave();
   }, [code]);
 
-  // no seat for this room in this browser → go claim one
+  // no (valid) seat for this room in this browser → go claim one; expired room → home
   useEffect(() => {
-    if (conn === "failed" && error?.code === "NO_SEAT")
+    if (conn !== "failed" || !error) return;
+    if (error.code === "NO_SEAT" || error.code === "BAD_TOKEN")
       navigate(`/join/${code}`, { replace: true });
+    if (error.code === "ROOM_NOT_FOUND") navigate("/", { replace: true });
   }, [conn, error, code, navigate]);
 
   // local games created from setup start right away ("Losuj odcień")
