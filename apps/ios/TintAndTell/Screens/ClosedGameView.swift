@@ -318,14 +318,21 @@ struct GameShell: View {
         case setup
         case first(ClosedRound)
         case second(ClosedRound, firstClue: String, stones: [FinderStone])
+        case roundEnd(RoundCard)
     }
 
     @State private var phase = Phase.setup
+    @State private var players = GamePlayer.openingTable
+    @State private var mode = PartyMode.stol
+    @State private var scores: [String: Int] = [:]
 
     var body: some View {
         switch phase {
         case .setup:
             NewGameView { mode, players in
+                self.mode = mode
+                self.players = players
+                self.scores = Dictionary(uniqueKeysWithValues: players.map { ($0.name, 0) })
                 let giver = mode == .grok
                     ? "Grok"
                     : (players.first { $0.kind == .human }?.name ?? "Gracz")
@@ -336,8 +343,52 @@ struct GameShell: View {
                 phase = .second(round, firstClue: clue, stones: FinderStone.sampleGuesses(around: round))
             }
         case .second(let round, let firstClue, let stones):
-            SecondPeekView(round: round, firstClue: firstClue, stones: stones)
+            SecondPeekView(round: round, firstClue: firstClue, stones: stones) { second in
+                phase = .roundEnd(card(round: round, firstClue: firstClue, secondClue: second, stones: stones))
+            }
+        case .roundEnd(let card):
+            RoundEndView(card: card) {
+                guard !card.isLastRound else { return }
+                phase = .first(
+                    .draw(
+                        cueGiver: card.nextPlayer,
+                        hidesShade: card.nextPlayer == "Grok",
+                        round: card.finishedRound + 1,
+                        totalRounds: card.totalRounds
+                    )
+                )
+            }
         }
+    }
+
+    private func card(round: ClosedRound, firstClue: String, secondClue: String, stones: [FinderStone]) -> RoundCard {
+        let next = nextCueGiver(after: round.cueGiver)
+        let inHouse = stones.filter {
+            max(abs($0.x - round.targetX), abs($0.y - round.targetY)) <= 1
+        }.count
+        let guessers = players.map(\.name).filter { $0 != next.name }
+        return RoundCard(
+            finishedRound: round.round,
+            totalRounds: round.totalRounds,
+            cueGiver: round.cueGiver,
+            targetX: round.targetX,
+            targetY: round.targetY,
+            firstClue: firstClue,
+            secondClue: secondClue,
+            stonesInHouse: inHouse,
+            nextPlayer: next.name,
+            guessers: guessers,
+            scores: players.map { ScoreLine(name: $0.name, score: scores[$0.name] ?? 0) }
+        )
+    }
+
+    private func nextCueGiver(after name: String) -> GamePlayer {
+        if mode == .grok { return .grok }
+        let humans = players.filter { $0.kind == .human }
+        guard let index = humans.firstIndex(where: { $0.name == name }), !humans.isEmpty else {
+            return humans.first ?? .grok
+        }
+        return humans[(index + 1) % humans.count]
     }
 }
 

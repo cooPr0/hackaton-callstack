@@ -10,11 +10,19 @@ struct SecondPeekView: View {
     private var round: ClosedRound
     private var firstClue: String
     private var stones: [FinderStone]
+    var onClue: (String) -> Void
 
-    init(round: ClosedRound, firstClue: String, stones: [FinderStone], clue: String = "") {
+    init(
+        round: ClosedRound,
+        firstClue: String,
+        stones: [FinderStone],
+        clue: String = "",
+        onClue: @escaping (String) -> Void = { _ in }
+    ) {
         self.round = round
         self.firstClue = firstClue
         self.stones = stones
+        self.onClue = onClue
         _clue = State(initialValue: clue)
     }
 
@@ -65,6 +73,11 @@ struct SecondPeekView: View {
                     .onChange(of: clue) { _, newValue in
                         let words = SecondPeekView.twoWords(newValue)
                         if words != newValue { clue = words }
+                    }
+                    .onSubmit {
+                        let words = clue.trimmingCharacters(in: .whitespacesAndNewlines)
+                        guard !words.isEmpty else { return }
+                        onClue(words)
                     }
 
                 Spacer(minLength: 16)
