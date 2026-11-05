@@ -16,6 +16,9 @@
       "kind": "local",
       "path": "TintDesign",
     }, {
+      "kind": "local",
+      "path": "TintCore",
+    }, {
       "kind": "remote",
       "repository": "https://github.com/krzysztofzablocki/Inject",
       "version": {
@@ -43,6 +46,7 @@
       "product-type": "application",
       "dependencies": [
         { "kind": "package", "package": "TintDesign", "product-name": "TintDesign" },
+        { "kind": "package", "package": "TintCore", "product-name": "TintCore" },
         { "kind": "package", "package": "Inject", "product-name": "Inject" },
       ],
       "build-phases": [
@@ -58,6 +62,10 @@
         }, {
           "package": "TintDesign",
           "product-name": "TintDesign",
+          "build-phase": { "build-phase": "frameworks" },
+        }, {
+          "package": "TintCore",
+          "product-name": "TintCore",
           "build-phase": { "build-phase": "frameworks" },
         },
       ],

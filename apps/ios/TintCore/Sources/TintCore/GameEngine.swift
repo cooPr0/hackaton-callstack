@@ -11,8 +11,11 @@ public enum GameBackend: Sendable, Equatable {
 public enum GameEngineError: Error, Sendable, Equatable {
     case wrongPhase(GamePhase)
     case notHost
-    /// Clue, stone, and skip need scoring, turn order, or clue checks that still live in `game-core`.
-    case rulesNotPorted
+    case notYourTurn
+    case invalidClue
+    case cellTaken
+    case outOfBounds
+    case paused
     case transport(String)
 }
 

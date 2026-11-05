@@ -85,21 +85,30 @@ struct LocalEngineTransitionTests {
         }
     }
 
-    @Test(
-        "Clue, stone, and skip are not ported",
-        arguments: [
-            GameIntent.clue(seatId: "s1", text: "Basen"),
-            GameIntent.stone(seatId: "s2", x: 4, y: 4),
-            GameIntent.skip(seatId: "s2", reason: .timeout),
-        ]
-    )
-    func unportedIntentsThrow(_ intent: GameIntent) async throws {
+    @Test("A clue opens guessing, and the last stone opens the second clue")
+    func clueThenStones() async throws {
         let engine = try Support.engine()
-        let before = try #require(await engine.round)
-        await #expect(throws: GameEngineError.rulesNotPorted) {
-            try await engine.send(intent)
+        try await engine.send(.start(by: Support.host))
+        try await engine.send(.clue(seatId: "s1", text: "Rosół"))
+        let guessing = try #require(await engine.round)
+        #expect(guessing.phase == .guess1)
+        #expect(guessing.turnSeatId == "s2")
+        #expect(await engine.clueTexts == ["Rosół"])
+
+        try await engine.send(.stone(seatId: "s2", x: 1, y: 1))
+        #expect((await engine.round)?.turnSeatId == "s3")
+        try await engine.send(.stone(seatId: "s3", x: 2, y: 2))
+        let second = try #require(await engine.round)
+        #expect(second.phase == .secret2)
+        #expect(second.turnSeatId == nil)
+
+        await #expect(throws: GameEngineError.invalidClue) {
+            try await engine.send(.clue(seatId: "s1", text: "niebieski"))
         }
-        #expect(await engine.round == before)
+        await #expect(throws: GameEngineError.cellTaken) {
+            try await engine.send(.clue(seatId: "s1", text: "Garnek"))
+            try await engine.send(.stone(seatId: "s2", x: 1, y: 1))
+        }
     }
 
     @Test("Pause does not change the round")

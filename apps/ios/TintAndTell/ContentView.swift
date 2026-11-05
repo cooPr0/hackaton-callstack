@@ -6,22 +6,28 @@ struct ContentView: View {
     @ObserveInjection var inject
 
     var body: some View {
-        VStack(spacing: 28) {
-            Image.lockup
-                .resizable()
-                .scaledToFit()
-                .frame(maxWidth: 320)
-                .accessibilityLabel(Text(.appName))
-            Text(.appTagline)
-                .font(.body)
-                .multilineTextAlignment(.center)
-                .foregroundStyle(.ink2)
-                .frame(maxWidth: 420)
+        NavigationStack {
+            VStack(spacing: 28) {
+                Image.lockup
+                    .resizable()
+                    .scaledToFit()
+                    .frame(maxWidth: 320)
+                    .accessibilityLabel(Text(.appName))
+                Text(.appTagline)
+                    .font(.body)
+                    .multilineTextAlignment(.center)
+                    .foregroundStyle(.ink2)
+                    .frame(maxWidth: 420)
+                NavigationLink("Graj z Grokiem") {
+                    LocalTableView()
+                }
+                .buttonStyle(.borderedProminent)
+            }
+            .padding(24)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(.ground)
+            .tint(.ink)
         }
-        .padding(24)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(.ground)
-        .tint(.ink)
         .enableInjection()
     }
 }

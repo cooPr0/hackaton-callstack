@@ -12,6 +12,7 @@ coverage/
 .env.*.local
 .dev.vars
 *.pem
+apps/ios/TintAndTell/GrokSecrets.json
 
 # iOS. apps/ios/TintAndTell.xcodeproj is the committed JSON project.
 xcuserdata/
