@@ -13,6 +13,16 @@ Party game · iOS (SwiftUI) + Web (React) · real-time cross-play · Grok as a p
 
 </div>
 
+
+
+https://github.com/user-attachments/assets/00531298-f5cc-4fd0-bdcb-350bfcd9fba0
+
+
+
+https://github.com/user-attachments/assets/c3ecc70f-1c36-40c4-8bcb-42f183909e7b
+
+
+
 ---
 
 ## The game in 30 seconds
@@ -25,6 +35,18 @@ Three modes:
 - **Stół**: everyone takes turns as cue giver, and Grok always guesses.
 - **Ty podpowiadasz**: you give the clues, and Grok alone guesses.
 - **Grok podpowiada**: Grok gives the clues, and you guess.
+
+## Watch
+
+Dark mode, English voice, a real room on the live server. Grok is the guesser.
+
+| | |
+|---|---|
+| **Web, one round** (30s) | [tint-and-tell-web-dark-30s.mp4](pitch/out/tint-and-tell-web-dark-30s.mp4) |
+| **Phone, the full round** (29s) | [tint-and-tell-mobile-30s.mp4](pitch/out/tint-and-tell-mobile-30s.mp4) |
+| **Web, the long walkthrough** (90s) | [tint-and-tell-how-it-works.mp4](pitch/out/tint-and-tell-how-it-works.mp4) |
+
+The 30-second web film is one round on the wide dark layout: the palette, the room code, the private shade, *honey*, *warm kitchen*, the shade opening, and a tie. On the phone the same round runs straight through on the closed screen, then the open table. The 90-second film is the longer pass: the three modes, then the round on the open table with a single upright clue bar.
 
 ## Why a foldable
 On a foldable phone, **the hinge is the privacy boundary**. Folded, the phone hides the secret. Unfolded, it becomes a shared table. The design follows from that:
