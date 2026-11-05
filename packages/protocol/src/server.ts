@@ -57,6 +57,26 @@ export const GrokHint = z.object({
   citations: z.array(Citation).max(2),
 });
 
+/**
+ * v1.1: an ephemeral xAI realtime secret for one seat, sent to the asking socket only.
+ * Connect to `url` with `Sec-WebSocket-Protocol: xai-client-secret.<value>`, send `session`
+ * as the first message, then stream PCM16. Audio never goes through our server.
+ */
+export const VoiceReady = z.object({
+  type: z.literal("voice.ready"),
+  seatId: SeatId,
+  value: z.string().min(1).max(512),
+  /** Epoch seconds; the secret only opens a session before this. */
+  expiresAt: z.number().int(),
+  url: z.string().regex(/^wss:\/\/api\.x\.ai\/v1\/realtime\?model=[A-Za-z0-9._-]{1,64}$/),
+  model: z.string().min(1).max(64),
+  voice: z.string().min(1).max(32),
+  session: z.object({
+    type: z.literal("session.update"),
+    session: z.record(z.string(), z.unknown()),
+  }),
+});
+
 export const Ack = z.object({ type: z.literal("ack"), cid: Cid });
 export const ErrorMessage = z.object({
   type: z.literal("error"),
@@ -72,6 +92,7 @@ export const ServerMessage = z.discriminatedUnion("type", [
   BotStatus,
   BotSay,
   GrokHint,
+  VoiceReady,
   Ack,
   ErrorMessage,
   Pong,
