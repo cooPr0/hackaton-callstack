@@ -66,7 +66,10 @@
 }
 
 .row {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
   width: 100%;
   min-height: 56px;
   padding: 16px 0;
@@ -76,6 +79,10 @@
   text-align: left;
   font-size: 17px;
   color: var(--fg);
+}
+
+.aside {
+  color: var(--muted);
 }
 
 .row:last-child {

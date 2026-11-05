@@ -3,6 +3,7 @@ import { isHost } from "../app/roles";
 import type { ScreenProps } from "../app/types";
 import { Sheet, SheetRow } from "../components/Sheet";
 import { useCopy } from "../i18n";
+import { useMuted } from "../sound/useSound";
 import { scoresInline } from "./helpers";
 import styles from "./PauseSheet.module.css";
 
@@ -15,6 +16,7 @@ export const run = (p: Promise<unknown>) => {
 export function PauseSheet({ view, actions, ui }: ScreenProps) {
   const t = useCopy();
   const [confirmEnd, setConfirmEnd] = useState(false);
+  const { muted, setMuted } = useMuted();
   const open = !ui.rulesOpen && (ui.pauseOpen || !!view?.paused);
 
   const resume = () => {
@@ -31,6 +33,13 @@ export function PauseSheet({ view, actions, ui }: ScreenProps) {
     <Sheet open={open} onClose={resume} title={t.pause.title} sub={sub}>
       <SheetRow onClick={resume}>{t.pause.resume}</SheetRow>
       <SheetRow onClick={() => actions.openRules(true)}>{t.pause.rules}</SheetRow>
+      <SheetRow
+        onClick={() => setMuted(!muted)}
+        pressed={!muted}
+        aside={muted ? t.pause.soundOff : t.pause.soundOn}
+      >
+        {t.pause.sound}
+      </SheetRow>
       {view && isHost(view) ? (
         confirmEnd ? (
           <div className={styles.confirm}>

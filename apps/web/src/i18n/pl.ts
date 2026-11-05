@@ -124,6 +124,9 @@ export const pl = {
     rules: "Zasady podpowiedzi",
     end: "Zakończ partię",
     endConfirm: "Na pewno zakończyć?",
+    sound: "Dźwięk",
+    soundOn: "Włączony",
+    soundOff: "Wyłączony",
   },
 
   rules: {

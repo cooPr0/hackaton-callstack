@@ -120,6 +120,9 @@ export const en: Copy = {
     rules: "Clue rules",
     end: "End game",
     endConfirm: "End the game?",
+    sound: "Sound",
+    soundOn: "On",
+    soundOff: "Off",
   },
 
   rules: {

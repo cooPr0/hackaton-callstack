@@ -58,18 +58,26 @@ export function SheetRow({
   children,
   onClick,
   danger = false,
+  aside,
+  pressed,
 }: {
   children: ReactNode;
   onClick: () => void;
   danger?: boolean;
+  /** Muted value on the right, e.g. the state of a toggle. */
+  aside?: ReactNode;
+  /** Makes the row a toggle button (aria-pressed). */
+  pressed?: boolean;
 }) {
   return (
     <button
       type="button"
       className={`${styles.row} ${danger ? styles.danger : ""}`}
       onClick={onClick}
+      aria-pressed={pressed}
     >
-      {children}
+      <span>{children}</span>
+      {aside ? <span className={styles.aside}>{aside}</span> : null}
     </button>
   );
 }
