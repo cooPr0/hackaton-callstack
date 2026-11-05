@@ -1,0 +1,19 @@
+{
+  "type": "voice.ready",
+  "seatId": "s2",
+  "value": "xai-realtime-client-secret-fixture",
+  "expiresAt": 1762358520,
+  "url": "wss://api.x.ai/v1/realtime?model=grok-voice-latest",
+  "model": "grok-voice-latest",
+  "voice": "eve",
+  "session": {
+    "type": "session.update",
+    "session": {
+      "voice": "eve",
+      "turn_detection": {
+        "type": "server_vad"
+      },
+      "instructions": "Jesteś Grokiem przy stole gry Tint & Tell. Mówisz krótko i zmysłowo. Nie znasz sekretnego odcienia. Nigdy nie nazywasz kolorów."
+    }
+  }
+}

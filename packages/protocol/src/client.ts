@@ -24,6 +24,9 @@ export const Ping = msg("ping", {});
  * v1.1: ask Grok for a hint grounded in recent X posts. Answered with `grok.hint` to this socket
  * only. `draft` (SECRET_* only, the cue giver's candidate word) must pass the clue rules.
  */
+/** v1.1: ask for a short-lived realtime voice secret. Answered with `voice.ready` to this socket only. */
+export const VoiceTicket = msg("voice.ticket", { seatId: SeatId });
+
 export const GrokAsk = msg("grok.ask", {
   seatId: SeatId,
   draft: z.string().trim().min(1).max(CLUE_MAX_CHARS).optional(),
@@ -39,6 +42,7 @@ export const ClientMessage = z.discriminatedUnion("type", [
   GameEnd,
   Ping,
   GrokAsk,
+  VoiceTicket,
 ]);
 export type ClientMessage = z.infer<typeof ClientMessage>;
 export type ClientMessageType = ClientMessage["type"];

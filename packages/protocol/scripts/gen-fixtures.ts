@@ -161,6 +161,7 @@ const messages: Record<string, unknown> = {
   "client.game.end": { type: "game.end", cid: "c-0007" },
   "client.ping": { type: "ping", cid: "c-0008" },
   "client.grok.ask": { type: "grok.ask", cid: "c-0009", seatId: "s1", draft: "Rosół" },
+  "client.voice.ticket": { type: "voice.ticket", cid: "c-0010", seatId: "s2" },
   // server → client
   "server.welcome": { type: "welcome", seatIds: ["s2"], serverTime: T0, protocol: 1 },
   "server.view": { type: "view", seq: 42, view: views.guess1 },
@@ -178,6 +179,24 @@ const messages: Record<string, unknown> = {
     citations: [
       { handle: "kuchnia_pl", url: "https://x.com/kuchnia_pl/status/1854000000000000001" },
     ],
+  },
+  "server.voice.ready": {
+    type: "voice.ready",
+    seatId: "s2",
+    value: "xai-realtime-client-secret-fixture",
+    expiresAt: T0 / 1000 + 120,
+    url: "wss://api.x.ai/v1/realtime?model=grok-voice-latest",
+    model: "grok-voice-latest",
+    voice: "eve",
+    session: {
+      type: "session.update",
+      session: {
+        voice: "eve",
+        turn_detection: { type: "server_vad" },
+        instructions:
+          "Jesteś Grokiem przy stole gry Tint & Tell. Mówisz krótko i zmysłowo. Nie znasz sekretnego odcienia. Nigdy nie nazywasz kolorów.",
+      },
+    },
   },
   "server.ack": { type: "ack", cid: "c-0004" },
   "server.error": {

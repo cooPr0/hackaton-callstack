@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { BotSay, Citation, GrokHint, SayAudioPath, sayAudioPath } from "./server";
+import { BotSay, Citation, GrokHint, SayAudioPath, sayAudioPath, VoiceReady } from "./server";
 
 const id = "0123456789abcdef0123456789abcdef";
 
@@ -46,5 +46,31 @@ describe("grok.hint citations", () => {
     const c = { handle: "a", url: "https://x.com/a/status/1" };
     const hint = { type: "grok.hint", seatId: "s1", text: "x", citations: [c, c, c] };
     expect(GrokHint.safeParse(hint).success).toBe(false);
+  });
+});
+
+describe("voice.ready", () => {
+  const ready = (url: string) =>
+    VoiceReady.safeParse({
+      type: "voice.ready",
+      seatId: "s2",
+      value: "secret",
+      expiresAt: 1,
+      url,
+      model: "grok-voice-latest",
+      voice: "eve",
+      session: { type: "session.update", session: {} },
+    }).success;
+
+  it("only points clients at xAI's realtime endpoint", () => {
+    expect(ready("wss://api.x.ai/v1/realtime?model=grok-voice-latest")).toBe(true);
+    for (const bad of [
+      "ws://api.x.ai/v1/realtime?model=grok-voice-latest",
+      "wss://api.x.ai.evil.com/v1/realtime?model=a",
+      "wss://evil.com/v1/realtime?model=a",
+      "wss://api.x.ai/v1/realtime?model=a&key=b",
+    ]) {
+      expect(ready(bad), bad).toBe(false);
+    }
   });
 });
