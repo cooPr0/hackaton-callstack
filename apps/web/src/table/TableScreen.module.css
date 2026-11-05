@@ -1,0 +1,58 @@
+.root {
+  position: relative;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--fg);
+}
+
+/* The board's own size container: it fits the space left between the edge bars. */
+.boardArea {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 0;
+  padding: 8px 44px;
+  container-type: size;
+  z-index: 1;
+}
+
+/* The fold: a hairline down the middle, under the board. */
+.hinge {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 1px;
+  translate: -0.5px 0;
+  background: var(--line);
+  pointer-events: none;
+}
+
+.hingePause {
+  position: absolute;
+  left: 50%;
+  translate: -50% 0;
+  z-index: 2;
+}
+
+.top {
+  top: 16px;
+}
+
+.bottom {
+  bottom: 16px;
+}
+
+/* Portrait (online, closed posture): one edge bar, the board turned 90°. */
+.portraitRoot .boardArea {
+  padding: 4px 16px;
+}
+
+.portraitTop {
+  display: flex;
+  justify-content: flex-end;
+  padding: max(16px, env(safe-area-inset-top)) 20px 0;
+}

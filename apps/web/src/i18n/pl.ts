@@ -197,4 +197,15 @@ export const pl = {
       roundN: (n: number) => `Runda ${n}`,
     },
   },
+
+  /** The open-phone board (Lane B). Never coordinates, never colour names. */
+  board: {
+    label: "Plansza",
+    cell: "Kratka",
+    cellSelected: "Kratka, wybrana",
+    cellTaken: (name: string) => `Kratka, kamień: ${name}`,
+    placeHint: "Wybierz kratkę i postaw kamień",
+    placing: "Stawiam…",
+    cancel: "Anuluj",
+  },
 } as const;
