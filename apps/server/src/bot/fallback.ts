@@ -7,7 +7,7 @@ import {
   START_HUE,
   TOP_ROW_L,
 } from "@tint/game-core";
-import { BOARD_COLS, BOARD_ROWS, type Cell, type Stone } from "@tint/protocol";
+import { BOARD_COLS, BOARD_ROWS, type Cell, type Lang, type Stone } from "@tint/protocol";
 
 /**
  * Deterministic Grok stand-in: used when botMode is "fallback", when xAI fails or is over
@@ -15,31 +15,50 @@ import { BOARD_COLS, BOARD_ROWS, type Cell, type Stone } from "@tint/protocol";
  * stall the game, so every clue passes validateClue and every guess is a free cell (tested).
  */
 
-// [OKLCH hue°, light word, dark word]
-const HUE_WORDS: [number, string, string][] = [
-  [0, "flaming", "wino"],
-  [30, "łosoś", "cegła"],
-  [60, "morela", "rdza"],
-  [90, "rosół", "miód"],
-  [110, "cytryna", "musztarda"],
-  [135, "pistacja", "oliwka"],
-  [155, "groszek", "mech"],
-  [180, "mięta", "butelka"],
-  [210, "lód", "morze"],
-  [240, "niebo", "dżinsy"],
-  [270, "lawenda", "jagoda"],
-  [300, "wrzos", "bakłażan"],
-  [330, "landrynka", "burak"],
-];
+// [OKLCH hue°, light word, dark word] per room language
+const HUE_WORDS: Record<Lang, [number, string, string][]> = {
+  pl: [
+    [0, "flaming", "wino"],
+    [30, "łosoś", "cegła"],
+    [60, "morela", "rdza"],
+    [90, "rosół", "miód"],
+    [110, "cytryna", "musztarda"],
+    [135, "pistacja", "oliwka"],
+    [155, "groszek", "mech"],
+    [180, "mięta", "butelka"],
+    [210, "lód", "morze"],
+    [240, "niebo", "dżinsy"],
+    [270, "lawenda", "jagoda"],
+    [300, "wrzos", "bakłażan"],
+    [330, "landrynka", "burak"],
+  ],
+  en: [
+    [0, "flamingo", "wine"],
+    [30, "salmon", "brick"],
+    [60, "apricot", "rust"],
+    [90, "broth", "honey"],
+    [110, "lemon", "mustard"],
+    [135, "pistachio", "olive"],
+    [155, "peas", "moss"],
+    [180, "mint", "bottle"],
+    [210, "ice", "sea"],
+    [240, "sky", "denim"],
+    [270, "lavender", "blueberry"],
+    [300, "heather", "eggplant"],
+    [330, "candy", "beet"],
+  ],
+};
 const LIGHT_L = 0.78;
 const DARK_L = 0.46;
 
 /** Folded keyword → [hue°, lightness]. Matched as a prefix, so inflections hit (rosołu, marchewką). */
 const KEYWORDS = new Map<string, [number, number]>([
-  ...HUE_WORDS.flatMap(([h, light, dark]): [string, [number, number]][] => [
-    [foldWord(light), [h, LIGHT_L]],
-    [foldWord(dark), [h, DARK_L]],
-  ]),
+  ...[...HUE_WORDS.pl, ...HUE_WORDS.en].flatMap(
+    ([h, light, dark]): [string, [number, number]][] => [
+      [foldWord(light), [h, LIGHT_L]],
+      [foldWord(dark), [h, DARK_L]],
+    ],
+  ),
   ...(
     [
       ["pomidor", 30, 0.6],
@@ -74,13 +93,26 @@ const KEYWORDS = new Map<string, [number, number]>([
   ).map(([k, h, l]): [string, [number, number]] => [k, [h, l]]),
 ]);
 
-const LINES = [
-  "Biorę kratkę głębiej.",
-  "Czyli rosół z piątku.",
-  "Stawiam tu. Bez wahania.",
-  "Czuję to w kościach.",
-  "Hmm… tak, tutaj.",
-];
+const LINES: Record<Lang, string[]> = {
+  pl: [
+    "Biorę kratkę głębiej.",
+    "Czyli rosół z piątku.",
+    "Stawiam tu. Bez wahania.",
+    "Czuję to w kościach.",
+    "Hmm… tak, tutaj.",
+  ],
+  en: [
+    "So, Friday's chicken soup.",
+    "Smells like Sunday lunch.",
+    "Going here. No doubts.",
+    "I can feel it in my bones.",
+    "Hmm… yes, right here.",
+  ],
+};
+const SECOND_CLUE: Record<Lang, [string, string]> = {
+  pl: ["w słońcu", "w cieniu"],
+  en: ["in sunlight", "in shadow"],
+};
 
 const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
 const hueDist = (a: number, b: number) => Math.abs(((a - b + 540) % 360) - 180);
@@ -128,23 +160,34 @@ export function aimFor(clues: string[]): Cell {
   return { x: hash(words.join(" ")) % BOARD_COLS, y: Math.floor(BOARD_ROWS / 2) };
 }
 
-export function fallbackGuess(clues: string[], stones: Stone[], rand = Math.random) {
+export function fallbackGuess(
+  clues: string[],
+  stones: Stone[],
+  rand = Math.random,
+  lang: Lang = "pl",
+) {
   const aim = aimFor(clues);
   const jitter = () => Math.floor(rand() * 3) - 1;
   const noisy = {
     x: clamp(aim.x + jitter(), 0, BOARD_COLS - 1),
     y: clamp(aim.y + jitter(), 0, BOARD_ROWS - 1),
   };
-  const line = LINES[Math.floor(rand() * LINES.length)] ?? "Hmm… tak, tutaj.";
+  const lines = LINES[lang];
+  const line = lines[Math.floor(rand() * lines.length)] ?? lines[0] ?? "…";
   return { ...nearestFree(noisy, stones), line };
 }
 
 /** A clue for `target`: a hue-bucket word in SECRET_1, a light/shade hint in SECRET_2. */
-export function fallbackClue(target: Cell, phase: "SECRET_1" | "SECRET_2"): string {
+export function fallbackClue(
+  target: Cell,
+  phase: "SECRET_1" | "SECRET_2",
+  lang: Lang = "pl",
+): string {
   const light = rowLightness(target.y) >= 0.62;
-  if (phase === "SECRET_2") return light ? "w słońcu" : "w cieniu";
+  if (phase === "SECRET_2") return SECOND_CLUE[lang][light ? 0 : 1];
   const h = columnHue(target.x);
-  let best = HUE_WORDS[0] as (typeof HUE_WORDS)[number];
-  for (const hw of HUE_WORDS) if (hueDist(hw[0], h) < hueDist(best[0], h)) best = hw;
+  const table = HUE_WORDS[lang];
+  let best = table[0] as (typeof table)[number];
+  for (const hw of table) if (hueDist(hw[0], h) < hueDist(best[0], h)) best = hw;
   return light ? best[1] : best[2];
 }

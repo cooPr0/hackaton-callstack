@@ -9,16 +9,22 @@ const allCells = Array.from({ length: BOARD_COLS * BOARD_ROWS }, (_, i) => ({
 }));
 
 describe("fallback bot", () => {
-  it("every clue it can produce passes validateClue", () => {
+  it.each(["pl", "en"] as const)("every %s clue it can produce passes validateClue", (lang) => {
     for (const c of allCells) {
       for (const phase of ["SECRET_1", "SECRET_2"] as const) {
-        const text = fallbackClue(c, phase);
+        const text = fallbackClue(c, phase, lang);
         expect(validateClue(text, phase), `${phase} ${text} @${c.x},${c.y}`).toEqual({
           ok: true,
           text,
         });
       }
     }
+  });
+
+  it("speaks the room language", () => {
+    expect(fallbackClue({ x: 0, y: 0 }, "SECRET_2", "en")).toBe("in sunlight");
+    expect(fallbackGuess(["broth"], [], () => 0, "en").line).toBe("So, Friday's chicken soup.");
+    expect(fallbackGuess(["rosół"], [], () => 0).line).toBe("Biorę kratkę głębiej.");
   });
 
   it("aims near the clue's hue, inflections included", () => {
