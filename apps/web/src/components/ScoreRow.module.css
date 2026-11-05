@@ -1,0 +1,30 @@
+.row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.row p {
+  margin: 0;
+}
+
+.scores {
+  font-size: 16px;
+  font-weight: 700;
+  min-width: 0;
+}
+
+.entry {
+  white-space: nowrap;
+}
+
+.sep {
+  font-weight: 700;
+}
+
+.right {
+  flex: none;
+  font-size: 16px;
+  color: var(--muted);
+}
