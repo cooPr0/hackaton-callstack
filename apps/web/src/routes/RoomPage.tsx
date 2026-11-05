@@ -6,6 +6,7 @@ import { useCopy } from "../i18n";
 import { isDemoRoom } from "../net/mock";
 import { PostureToggle } from "../posture/PostureToggle";
 import { usePosture, usePostureHotkey } from "../posture/usePosture";
+import { useAudioUnlock, useGameSounds } from "../sound/useSound";
 import { gameStore, useGame } from "../store";
 import s from "./RoomPage.module.css";
 
@@ -27,6 +28,8 @@ export function RoomPage() {
   const pending = useGame((st) => st.pendingCount > 0);
   const error = useGame((st) => st.error);
   const actions = useGame((st) => st.actions);
+  useAudioUnlock();
+  useGameSounds(view, bot, posture, error?.at ?? null);
 
   // connect (and reconnect when the code changes)
   useEffect(() => {
