@@ -11,7 +11,8 @@ tag = "v1"
 new_sqlite_classes = ["Room"]
 
 [vars]
-ALLOWED_ORIGINS = "https://tint-and-tell.pages.dev,http://localhost:5173"
+# `*` matches exactly one subdomain label (Pages preview deploys). Add a LAN origin in .dev.vars.
+ALLOWED_ORIGINS = "https://tint-and-tell.pages.dev,https://*.tint-and-tell.pages.dev,http://localhost:5173"
 # Confirm the model id on docs.x.ai (p1/grok). Unused until the xAI client lands.
 XAI_MODEL = ""
 # Online stone timeout. Overridable so e2e can run fast: --var TURN_TIMEOUT_MS:1500

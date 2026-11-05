@@ -97,6 +97,12 @@ check(
   created.status === 200 && created.body.seats.length === 1,
   "online create returns only the host token",
 );
+if (created.status === 429) {
+  console.error(
+    "Create is rate limited: a previous run's last check used this IP's budget. Wait 60 s and rerun.",
+  );
+  process.exit(2);
+}
 const code = created.body.code;
 const ola = await post(`/api/rooms/${code}/join`, { name: "Ola\u0000‮", platform: "ios" });
 const kuba = await post(`/api/rooms/${code}/join`, { name: "Kuba", platform: "web" });
@@ -112,6 +118,17 @@ check(
   "lowercase code resolves to the same room",
 );
 check((await post("/api/rooms", "{not json")).status === 400, "malformed body → 400");
+const preview = await fetch(`${BASE}/api/health`, {
+  headers: { Origin: "https://abc123.tint-and-tell.pages.dev" },
+});
+check(
+  preview.headers.get("access-control-allow-origin") === "https://abc123.tint-and-tell.pages.dev",
+  "Pages preview origin gets CORS",
+);
+const lookalike = await fetch(`${BASE}/api/health`, {
+  headers: { Origin: "https://tint-and-tell.pages.dev.evil.com" },
+});
+check(lookalike.status === 403, "look-alike origin → 403");
 check(
   (
     await post("/api/rooms", {
@@ -124,13 +141,38 @@ check(
   "grok as host → BAD_REQUEST",
 );
 
-check(
-  !(await new Client("forged", code, ["0".repeat(32)]).opened),
-  "forged token can't open a socket",
+// Refusals are an error frame + a 44xx close the client treats as fatal (no reconnect loop).
+async function refused(label, c, close, errCode) {
+  const closeCode = await c.closed;
+  const err = await c.waitFor((m) => m.type === "error", 500);
+  check(
+    closeCode === close && err?.code === errCode && !c.log.some((m) => m.type === "view"),
+    label,
+  );
+}
+await refused(
+  "forged token → error BAD_TOKEN + close 4401",
+  new Client("forged", code, ["0".repeat(32)]),
+  4401,
+  "BAD_TOKEN",
 );
-check(
-  !(await new Client("pv2", code, [created.body.seats[0].token], 2).opened),
-  "protocol mismatch can't open a socket",
+await refused(
+  "protocol mismatch → close 4426",
+  new Client("pv2", code, [created.body.seats[0].token], 2),
+  4426,
+  "PROTOCOL_MISMATCH",
+);
+await refused(
+  "unknown room → close 4404",
+  new Client("ghost", "ZZZZZ", ["x"]),
+  4404,
+  "ROOM_NOT_FOUND",
+);
+await refused(
+  "garbage room code → close 4404",
+  new Client("junk", "abc", ["x"]),
+  4404,
+  "ROOM_NOT_FOUND",
 );
 
 const host = new Client("host", code, [created.body.seats[0].token]);
@@ -140,7 +182,10 @@ await Promise.all([host.opened, o.opened, k1.opened]);
 for (const c of [host, o]) await c.send({ type: "hello", pv: 1, platform: "web" });
 const k2 = new Client("kuba", code, [kuba.body.token]);
 await k2.opened;
-check((await k1.closed) === 4001, "a second socket for the same seat replaces the first");
+check(
+  (await k1.closed) === 4409,
+  "a second socket for the same seat replaces the first (close 4409)",
+);
 await k2.send({ type: "hello", pv: 1, platform: "ios" });
 check(
   (await k2.waitFor((m) => m.type === "welcome"))?.seatIds?.join() === kuba.body.seatId,
