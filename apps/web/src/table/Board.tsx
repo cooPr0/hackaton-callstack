@@ -55,6 +55,8 @@ export interface BoardProps {
   revealTarget?: Cell | null;
   /** Bump to play the unfold (halves slide out from the hinge). 0 = no intro. */
   intro?: number;
+  /** Online: fade the halves in. No slide from the hinge. */
+  soft?: boolean;
   /** Extra grid items laid over the board (reveal rings). */
   children?: ReactNode;
 }
@@ -157,6 +159,7 @@ export function Board({
   portrait = false,
   revealTarget = null,
   intro = 0,
+  soft = false,
   children,
 }: BoardProps) {
   const t = useCopy();
@@ -176,7 +179,8 @@ export function Board({
     const running = halves.flatMap(([el, from]) => {
       if (!el) return [];
       el.style.opacity = "0";
-      if (reduced) return [animate(el, { opacity: [0, 1] }, { duration: 0.2, ease: "linear" })];
+      if (reduced || soft)
+        return [animate(el, { opacity: [0, 1] }, { duration: 0.2, ease: "linear" })];
       el.style.transform = `translateX(${from})`;
       return [
         animate(
@@ -196,7 +200,7 @@ export function Board({
         }
       }
     };
-  }, [intro, reduced]);
+  }, [intro, reduced, soft]);
 
   const byCell = new Map<number, BoardStone>();
   for (const s of stones) byCell.set(key(s.x, s.y), s);

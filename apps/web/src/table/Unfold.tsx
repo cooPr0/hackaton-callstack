@@ -16,22 +16,38 @@ export const UNFOLD = {
 const isGuess = (p: Phase | undefined) => p === "GUESS_1" || p === "GUESS_2";
 const isSecret = (p: Phase | undefined) => p === "SECRET_1" || p === "SECRET_2";
 
+export interface UnfoldIntro {
+  /** Grows by one each time the intro should play. 0 = the board is already there. */
+  token: number;
+  /**
+   * `full` is the phone unfold (local: one device just opened).
+   * `fade` is the online stand-in: a 200 ms crossfade, no hinge, no seal, no write-on.
+   */
+  kind: "full" | "fade";
+}
+
 /**
- * When the table should play the unfold. Returns a token that grows by one per unfold.
- * - Local: the table mounts in a guess phase — the phone was just opened (closed → open).
- * - Online (or a local Grok round watched open): the phase goes SECRET_n → GUESS_n.
+ * When the table should introduce the board.
+ * - Local: the table mounts in a guess phase — the phone was just opened (closed → open),
+ *   or a Grok round watched open goes SECRET_n → GUESS_n. Full timeline.
+ * - Online: SECRET_n → GUESS_n crossfades. Each player already has their own screen.
  */
-export function useUnfoldIntro(view: PlayerView | null): number {
+export function useUnfoldIntro(view: PlayerView | null): UnfoldIntro {
   const phase = view?.phase;
-  const [token, setToken] = useState(() => (view?.local && isGuess(phase) ? 1 : 0));
+  const local = !!view?.local;
+  const [intro, setIntro] = useState<UnfoldIntro>(() =>
+    local && isGuess(phase) ? { token: 1, kind: "full" } : { token: 0, kind: "fade" },
+  );
   const prev = useRef(phase);
   // Layout effect: the new token renders before paint, so the halves never flash in place.
   useLayoutEffect(() => {
     const was = prev.current;
     prev.current = phase;
-    if (isSecret(was) && isGuess(phase)) setToken((n) => n + 1);
-  }, [phase]);
-  return token;
+    if (isSecret(was) && isGuess(phase)) {
+      setIntro((n) => ({ token: n.token + 1, kind: local ? "full" : "fade" }));
+    }
+  }, [phase, local]);
+  return intro;
 }
 
 const CORNERS = [

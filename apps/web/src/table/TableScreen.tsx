@@ -56,6 +56,7 @@ export function TableScreen(props: ScreenProps) {
   const [sel, setSel] = useState<{ key: string; cell: Cell | null }>({ key: "", cell: null });
   const [sent, setSent] = useState<{ key: string; cell: Cell } | null>(null);
   const intro = useUnfoldIntro(view);
+  const full = intro.kind === "full" && intro.token > 0;
 
   const key = view ? boardKey(view) : "";
   const selected = sel.key === key ? sel.cell : null;
@@ -124,7 +125,7 @@ export function TableScreen(props: ScreenProps) {
       scores={rankedScores(view)}
       flipped={flipped}
       compact={portrait}
-      writeOn={intro}
+      writeOn={full ? intro.token : 0}
       action={next(flipped)}
     />
   );
@@ -141,7 +142,7 @@ export function TableScreen(props: ScreenProps) {
       )}
 
       <div className={styles.boardArea}>
-        {intro > 0 ? <UnfoldSeal key={intro} /> : null}
+        {full ? <UnfoldSeal key={intro.token} /> : null}
         <Board
           stones={stones}
           interactive={canPlace}
@@ -152,7 +153,8 @@ export function TableScreen(props: ScreenProps) {
           dimmed={isSecret(view)}
           portrait={portrait}
           revealTarget={revealTarget}
-          intro={intro}
+          intro={intro.token}
+          soft={!full}
         >
           {revealTarget ? <Rings target={revealTarget} /> : null}
         </Board>
