@@ -32,6 +32,11 @@ describe("verifiedCitations", () => {
     ]);
   });
 
+  it('accepts handles the model wrote as "@name"', () => {
+    const out = verifiedCitations([{ handle: "@ola", url: "https://x.com/ola/status/111" }], real);
+    expect(out).toEqual([{ handle: "ola", url: "https://x.com/ola/status/111" }]);
+  });
+
   it("drops links off x.com / twitter.com and malformed entries", () => {
     const out = verifiedCitations(
       [c("ola", "111", "evil.com"), { handle: "ola" }, "nope", c("ewa", "222", "twitter.com")],

@@ -20,7 +20,12 @@ export function verifiedCitations(claimed: unknown, annotationUrls: string[]): C
   const real = new Set(annotationUrls.map(statusId).filter(Boolean));
   const out: Citation[] = [];
   for (const c of Array.isArray(claimed) ? claimed : []) {
-    const parsed = Citation.safeParse(c);
+    // The model writes handles as "@name"; the contract wants the bare name.
+    const bare =
+      c && typeof c === "object" && typeof c.handle === "string"
+        ? { ...c, handle: c.handle.replace(/^@/, "") }
+        : c;
+    const parsed = Citation.safeParse(bare);
     if (!parsed.success) continue;
     const id = statusId(parsed.data.url);
     if (!id || !real.has(id) || out.some((o) => statusId(o.url) === id)) continue;
