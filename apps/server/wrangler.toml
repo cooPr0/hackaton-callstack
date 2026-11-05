@@ -18,6 +18,9 @@ ALLOWED_ORIGINS = "https://tint-and-tell.pages.dev,https://*.tint-and-tell.pages
 # secret and botMode "grok"; without either, Grok plays the fallback and the seat shows degraded.
 XAI_MODEL_FAST = "grok-4.20-0309-non-reasoning"
 XAI_MODEL_SMART = "grok-4.7"
+# Grok speaks its lines (xAI /v1/tts, one MP3 per line). "off" is the kill switch.
+XAI_TTS = "on"
+XAI_TTS_VOICE = "eve"
 # Online stone timeout. Overridable so e2e can run fast: --var TURN_TIMEOUT_MS:1500
 TURN_TIMEOUT_MS = "60000"
 
@@ -36,6 +39,12 @@ simple = { limit = 60, period = 60 }
 [[ratelimits]]
 name = "WS_LIMIT"
 namespace_id = "1003"
+simple = { limit = 300, period = 60 }
+
+# One fetch per Grok line per player: generous, but it stops a script hammering the MP3 route.
+[[ratelimits]]
+name = "SAY_LIMIT"
+namespace_id = "1004"
 simple = { limit = 300, period = 60 }
 
 # Secrets: wrangler secret put XAI_API_KEY (never in this file). Local: .dev.vars (gitignored).
