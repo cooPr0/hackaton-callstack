@@ -96,7 +96,9 @@ export function RoomPage() {
           {t.conn.reconnecting}
         </div>
       )}
-      {error && error.code !== "NO_SEAT" && (
+      {/* Once a view exists every screen shows `error` in its own toast; this one only covers
+          the connecting screen (fatal errors before the first view). */}
+      {!view && error && error.code !== "NO_SEAT" && (
         <div className={s.toast} role="alert" key={error.at}>
           {error.message}
         </div>

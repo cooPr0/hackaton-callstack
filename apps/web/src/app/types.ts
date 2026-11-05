@@ -36,6 +36,8 @@ export interface BotState {
   /** Latest `bot.say` line and when it arrived (ms). */
   line: string | null;
   lineAt: number | null;
+  /** v1.1: that line as speech, a path relative to the API base (absent = text only). */
+  audioUrl: string | null;
 }
 
 export type ConnState = "idle" | "connecting" | "open" | "reconnecting" | "closed" | "failed";

@@ -1,6 +1,7 @@
 import type { PlayerView } from "@tint/protocol";
 import { useEffect, useRef } from "react";
 import { useStore } from "zustand";
+import { apiBase } from "../app/config";
 import type { BotState, Posture } from "../app/types";
 import { soundEventsFor } from "./events";
 import { sound, soundStore } from "./player";
@@ -42,6 +43,11 @@ export function useGameSounds(
     if (view?.local && prevPosture.current === "open" && posture === "closed") sound.play("fold");
     prevPosture.current = posture;
   }, [posture, view?.local]);
+
+  // Grok's line as speech (v1.1). Keyed on lineAt so a repeated line still plays.
+  useEffect(() => {
+    if (bot.audioUrl && bot.lineAt) sound.speak(`${apiBase()}${bot.audioUrl}`);
+  }, [bot.audioUrl, bot.lineAt]);
 
   useEffect(() => {
     if (errorAt) sound.play("error");
