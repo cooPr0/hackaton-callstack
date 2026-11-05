@@ -1,0 +1,76 @@
+.wrap {
+  position: relative;
+  width: 100%;
+  line-height: 1.15;
+  cursor: text;
+}
+
+.input {
+  display: block;
+  width: 100%;
+  height: 1.25em;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  font: inherit;
+  letter-spacing: inherit;
+  color: var(--fg);
+  caret-color: var(--fg);
+}
+
+.wrap[data-caret="custom"] .input {
+  caret-color: transparent;
+}
+
+.mirror {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  white-space: pre;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.text {
+  color: transparent;
+}
+
+.caret {
+  flex: none;
+  width: max(2px, 0.045em);
+  height: 1.02em;
+  margin-left: 0.05em;
+  background: var(--fg);
+  animation: blink 1.06s steps(1, end) infinite;
+}
+
+/* Unfocused and empty: a quiet static caret, so the field still reads as "type here". */
+.resting {
+  animation: none;
+  opacity: 0.35;
+}
+
+/* The native caret is in use (mid-text editing) or the field is unfocused with text. */
+.hidden {
+  animation: none;
+  opacity: 0;
+}
+
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .caret {
+    animation: none;
+  }
+}
