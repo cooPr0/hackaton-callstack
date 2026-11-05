@@ -1,0 +1,68 @@
+/* Brand tokens — design/Tint-and-Tell.pdf p.2 ("złamana biel i złamana czerń") and p.6.
+   Cold Steel / Cocoa Spice share a warm undertone (hue ≈ 92°) with near-zero chroma,
+   so the background never tints the board. Do not use pure white or black. */
+:root {
+  color-scheme: light;
+  --cold-steel: #f8f7f4;
+  --cocoa-spice: #191815;
+  --gold: #e9b005;
+  --danger: #d1242f;
+
+  --bg: var(--cold-steel);
+  --fg: var(--cocoa-spice);
+  --muted: #6b6963;
+  --line: rgb(25 24 21 / 0.12);
+  --surface: #efede8;
+  --surface-strong: var(--cocoa-spice);
+  --on-surface-strong: var(--cold-steel);
+  --glass: rgb(248 247 244 / 0.72);
+
+  --font-display: "Archivo", "Arial Black", system-ui, sans-serif;
+  --font-body: system-ui, -apple-system, "Inter", "Segoe UI", sans-serif;
+  --display-stretch: 125%;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+
+  --radius-cell: 4px;
+  --radius-control: 999px;
+  --radius-card: 20px;
+  --cell-gap: 3px;
+  --hinge: 10px;
+
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --shadow-card: 0 1px 2px rgb(25 24 21 / 0.06), 0 8px 24px rgb(25 24 21 / 0.08);
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: var(--cocoa-spice);
+  --fg: var(--cold-steel);
+  --muted: #a3a097;
+  --line: rgb(248 247 244 / 0.14);
+  --surface: #24231f;
+  --surface-strong: var(--cold-steel);
+  --on-surface-strong: var(--cocoa-spice);
+  --glass: rgb(25 24 21 / 0.72);
+  --shadow-card: 0 1px 2px rgb(0 0 0 / 0.3), 0 8px 24px rgb(0 0 0 / 0.35);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: var(--cocoa-spice);
+    --fg: var(--cold-steel);
+    --muted: #a3a097;
+    --line: rgb(248 247 244 / 0.14);
+    --surface: #24231f;
+    --surface-strong: var(--cold-steel);
+    --on-surface-strong: var(--cocoa-spice);
+    --glass: rgb(25 24 21 / 0.72);
+    --shadow-card: 0 1px 2px rgb(0 0 0 / 0.3), 0 8px 24px rgb(0 0 0 / 0.35);
+  }
+}

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <title>Tint &amp; Tell</title>
+  <style>
+    .bg { fill: #f8f7f4 } .ink { fill: #191815 }
+    @media (prefers-color-scheme: dark) { .bg { fill: #191815 } .ink { fill: #f8f7f4 } }
+  </style>
+  <rect class="bg" width="64" height="64" rx="14"/>
+  <g transform="translate(8 12) scale(0.1493 0.2)">
+    <rect x="0" y="0" width="124" height="34" fill="#e9b005"/>
+    <rect x="39" y="0" width="46" height="200" fill="#e9b005"/>
+    <rect class="ink" x="144" y="166" width="124" height="34"/>
+    <rect class="ink" x="183" y="0" width="46" height="200"/>
+  </g>
+</svg>
