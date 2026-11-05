@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "format": "m4a",
+  "events": {
+    "ui.tap": { "file": null, "gain": 0.4 },
+    "seal": { "file": null, "gain": 0.8 },
+    "unfold": { "file": null, "gain": 0.7 },
+    "fold": { "file": null, "gain": 0.6 },
+    "clue.write": { "file": null, "gain": 0.6 },
+    "turn.yours": { "file": null, "gain": 0.6 },
+    "grok.thinking": { "file": null, "gain": 0.35, "loop": true },
+    "stone.grok": { "file": null, "gain": 0.9 },
+    "stone.place": { "file": null, "gain": 0.8 },
+    "stone.reject": { "file": null, "gain": 0.6 },
+    "reveal": { "file": null, "gain": 0.7 },
+    "score.exact": { "file": null, "gain": 0.8 },
+    "score.near": { "file": null, "gain": 0.7 },
+    "score.far": { "file": null, "gain": 0.6 },
+    "round.end": { "file": null, "gain": 0.7 },
+    "game.win": { "file": null, "gain": 0.9 },
+    "error": { "file": null, "gain": 0.5 }
+  }
+}
