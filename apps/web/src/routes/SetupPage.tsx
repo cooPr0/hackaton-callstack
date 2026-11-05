@@ -163,7 +163,7 @@ export function SetupPage() {
                 onClick={() => remove(i)}
                 aria-label={`Usuń ${p.name}`}
               >
-                usuń
+                ×
               </button>
             )}
           </div>
