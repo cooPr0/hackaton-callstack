@@ -139,21 +139,26 @@ private struct RulesPage: View {
 }
 
 private struct EndConfirm: View {
+    @Environment(\.colorScheme) private var scheme
     var onCancel: () -> Void
     var onEnd: () -> Void
+
+    private var danger: Color {
+        scheme == .dark ? Color(hex: "F2626B") : Color(hex: "B3261E")
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Na pewno zakończyć?")
                 .font(.system(size: 17, weight: .semibold))
-                .foregroundStyle(Color(hex: "B3261E"))
+                .foregroundStyle(danger)
             HStack(spacing: 10) {
                 Button("Anuluj", action: onCancel)
                     .buttonStyle(.bordered)
                     .frame(maxWidth: .infinity)
                 Button("Tak, zakończ", action: onEnd)
                     .buttonStyle(.glass)
-                    .tint(Color(hex: "B3261E"))
+                    .tint(danger)
                     .frame(maxWidth: .infinity)
             }
             .controlSize(.large)
@@ -163,16 +168,21 @@ private struct EndConfirm: View {
 }
 
 private struct PauseRow: View {
+    @Environment(\.colorScheme) private var scheme
     var title: String
     var danger: Bool = false
     var action: () -> Void
+
+    private var dangerColor: Color {
+        scheme == .dark ? Color(hex: "F2626B") : Color(hex: "B3261E")
+    }
 
     var body: some View {
         VStack(spacing: 0) {
             Button(action: action) {
                 Text(title)
                     .font(.system(size: 17))
-                    .foregroundStyle(danger ? Color(hex: "B3261E") : Color.ink)
+                    .foregroundStyle(danger ? dangerColor : Color.ink)
                     .frame(maxWidth: .infinity, minHeight: 56, alignment: .leading)
             }
             .buttonStyle(.plain)
@@ -199,4 +209,23 @@ private struct PauseRow: View {
             .presentationDragIndicator(.visible)
             .presentationCornerRadius(38)
         }
+}
+
+#Preview("Pauza, ciemny") {
+    Color.ground
+        .ignoresSafeArea()
+        .sheet(isPresented: .constant(true)) {
+            PauseSheet(
+                round: 3,
+                totalRounds: 6,
+                scoreLine: "Ola 7, Grok 6, Kuba 5",
+                onResume: {},
+                onPassRole: {},
+                onEnd: {}
+            )
+            .presentationDetents([.height(380)])
+            .presentationDragIndicator(.visible)
+            .presentationCornerRadius(38)
+        }
+        .preferredColorScheme(.dark)
 }

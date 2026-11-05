@@ -354,11 +354,11 @@ private struct ModeTile: View {
             switch mode {
             case .stol:
                 ForEach(players) { player in
-                    SeatStone(player: player, size: 26, hole: grokHole, onFilledTile: isSelected && player.kind == .grok)
+                    SeatStone(player: player, size: 26, hole: grokHole, onFilledTile: isSelected)
                 }
             case .ty:
                 if let human = players.first(where: { $0.kind == .human }) {
-                    SeatStone(player: human, size: 26, hole: Color.ground)
+                    SeatStone(player: human, size: 26, hole: Color.ground, onFilledTile: isSelected)
                     FlowArrow()
                         .foregroundStyle(isSelected ? Color.ground.opacity(0.72) : Color.ink2)
                     SeatStone(player: .grok, size: 26, hole: grokHole, onFilledTile: isSelected)
@@ -368,7 +368,7 @@ private struct ModeTile: View {
                 FlowArrow()
                     .foregroundStyle(isSelected ? Color.ground.opacity(0.72) : Color.ink2)
                 if let human = players.first(where: { $0.kind == .human }) {
-                    SeatStone(player: human, size: 26, hole: Color.ground)
+                    SeatStone(player: human, size: 26, hole: Color.ground, onFilledTile: isSelected)
                 }
             }
         }
@@ -395,11 +395,14 @@ struct SeatStone: View {
                     Circle().strokeBorder(Color.bone, lineWidth: 1.5)
                 }
             } else {
-                Circle().fill(Color.bone)
-                Circle().strokeBorder(Color.cocoa, lineWidth: 1.5)
+                // A selected tile flips to cold steel in the dark, so the stone flips with it.
+                let onLightTile = onFilledTile && scheme == .dark
+                let mark = onLightTile ? Color.bone : Color.cocoa
+                Circle().fill(onLightTile ? Color.cocoa : Color.bone)
+                Circle().strokeBorder(mark, lineWidth: 1.5)
                 Text(player.initial)
                     .font(.system(size: size * 0.39, weight: .bold))
-                    .foregroundStyle(Color.cocoa)
+                    .foregroundStyle(mark)
                     .minimumScaleFactor(0.7)
             }
         }
