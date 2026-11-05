@@ -1,0 +1,16 @@
+/* Same geometry as the table (table/Board.module.css): two halves of 12 columns with a wider
+   seam at the hinge, square cells, small radius. */
+.board {
+  display: grid;
+  grid-template-columns:
+    repeat(var(--cols), minmax(0, 1fr))
+    calc(var(--hinge) - 2 * var(--cell-gap))
+    repeat(var(--cols), minmax(0, 1fr));
+  gap: var(--cell-gap);
+  width: 100%;
+}
+
+.cell {
+  aspect-ratio: 1;
+  border-radius: var(--radius-cell);
+}
