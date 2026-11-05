@@ -98,7 +98,8 @@ export async function grokClue(
     if (left < 500 || !budget()) return null;
     const out = (await chatJson(cfg(env), {
       task: "clue",
-      model: models(env).smart,
+      // The reasoning model answers in ~15 s (probe, Nov 2026): too slow while the table waits.
+      model: models(env).fast,
       ...p,
       schemaName: "clue",
       schema: CLUE_SCHEMA,
