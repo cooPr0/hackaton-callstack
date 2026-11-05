@@ -1,6 +1,6 @@
 import type { PlayerView } from "@tint/protocol";
 import { CLUE_MAX_CHARS, CLUE_MAX_WORDS } from "@tint/protocol";
-import { pl } from "../i18n/pl";
+import { type Copy, getCopy } from "../i18n";
 
 /**
  * Pure display helpers for the closed screens. No game rules here: the clue check is only a
@@ -13,17 +13,21 @@ export type ClueCheck = { ok: true; clue: string } | { ok: false; message: strin
 export const normalizeClue = (text: string): string => text.replace(/\s+/g, " ").trim();
 
 /** Letters (any script) and spaces only, ≤ CLUE_MAX_CHARS, word count for the phase. */
-export function checkClue(text: string, phase: "SECRET_1" | "SECRET_2"): ClueCheck {
+export function checkClue(
+  text: string,
+  phase: "SECRET_1" | "SECRET_2",
+  t: Copy = getCopy(),
+): ClueCheck {
   const clue = normalizeClue(text);
-  if (!clue) return { ok: false, message: pl.clueErrors.empty };
-  if (!/^[\p{L} ]+$/u.test(clue)) return { ok: false, message: pl.clueErrors.letters };
+  if (!clue) return { ok: false, message: t.clueErrors.empty };
+  if (!/^[\p{L} ]+$/u.test(clue)) return { ok: false, message: t.clueErrors.letters };
   if (clue.length > CLUE_MAX_CHARS)
-    return { ok: false, message: pl.clueErrors.tooLong(CLUE_MAX_CHARS) };
+    return { ok: false, message: t.clueErrors.tooLong(CLUE_MAX_CHARS) };
   const words = clue.split(" ").length;
   if (words > CLUE_MAX_WORDS[phase]) {
     return {
       ok: false,
-      message: phase === "SECRET_1" ? pl.clueErrors.oneWord : pl.clueErrors.twoWords,
+      message: phase === "SECRET_1" ? t.clueErrors.oneWord : t.clueErrors.twoWords,
     };
   }
   return { ok: true, clue };
