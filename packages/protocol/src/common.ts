@@ -2,6 +2,7 @@ import { z } from "zod";
 import {
   BOARD_COLS,
   BOARD_ROWS,
+  LANGS,
   MODES,
   PHASES,
   PLATFORMS,
@@ -16,6 +17,8 @@ export const Phase = z.enum(PHASES);
 export type Phase = z.infer<typeof Phase>;
 export const SeatKind = z.enum(SEAT_KINDS);
 export type SeatKind = z.infer<typeof SeatKind>;
+export const Lang = z.enum(LANGS);
+export type Lang = z.infer<typeof Lang>;
 export const Platform = z.enum(PLATFORMS);
 export type Platform = z.infer<typeof Platform>;
 

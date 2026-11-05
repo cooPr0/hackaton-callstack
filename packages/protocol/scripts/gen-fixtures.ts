@@ -42,6 +42,7 @@ const base: PlayerView = {
   roomCode: "K7PQX",
   mode: "stol",
   local: false,
+  lang: "pl",
   phase: "SECRET_1",
   round: 3,
   totalRounds: 6,
@@ -188,6 +189,7 @@ const messages: Record<string, unknown> = {
       { name: "Grok", kind: "grok" },
     ],
     botMode: "grok",
+    lang: "pl",
   },
   "http.create-room.response": {
     code: "K7PQX",

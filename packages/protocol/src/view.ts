@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { Cell, Mode, Phase, Platform, RoomCode, SeatId, SeatKind, Stone } from "./common";
+import { Cell, Lang, Mode, Phase, Platform, RoomCode, SeatId, SeatKind, Stone } from "./common";
 import { VIEWFINDER_H, VIEWFINDER_W } from "./constants";
 
 export const SeatView = z.object({
@@ -58,6 +58,8 @@ export const PlayerView = z.object({
   roomCode: RoomCode,
   mode: Mode,
   local: z.boolean(),
+  /** v1.1: room language. Absent from v1 servers: treat as "pl". */
+  lang: Lang.optional(),
   phase: Phase,
   /** 0 in LOBBY, then 1..totalRounds */
   round: z.number().int().min(0),
