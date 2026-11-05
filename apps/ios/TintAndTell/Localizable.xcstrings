@@ -1407,6 +1407,204 @@
         }
       }
     },
+    "join.failed" : {
+      "comment" : "Join screen. The room could not be claimed.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Could not join."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nie udało się dołączyć."
+          }
+        }
+      }
+    },
+    "join.full" : {
+      "comment" : "Join screen. Every human seat is taken.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No open seat."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nie ma wolnego miejsca."
+          }
+        }
+      }
+    },
+    "join.leave" : {
+      "comment" : "Leaves the joined room and returns to setup.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leave"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wyjdź"
+          }
+        }
+      }
+    },
+    "join.missing" : {
+      "comment" : "Join screen. The code does not match a live room.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No such room."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nie ma takiego pokoju."
+          }
+        }
+      }
+    },
+    "join.name" : {
+      "comment" : "Join screen field for the player's name.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your name"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Twoje imię"
+          }
+        }
+      }
+    },
+    "join.code" : {
+      "comment" : "Join screen field. A pasted room link is accepted.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Room code"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kod pokoju"
+          }
+        }
+      }
+    },
+    "join.seated" : {
+      "comment" : "Shown after joining, when the table is not up.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You are in the room."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jesteś w pokoju."
+          }
+        }
+      }
+    },
+    "join.submit" : {
+      "comment" : "Join screen primary button.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Join"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dołącz"
+          }
+        }
+      }
+    },
+    "join.title" : {
+      "comment" : "Join screen title.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Join a game"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dołącz do gry"
+          }
+        }
+      }
+    },
+    "join.waiting" : {
+      "comment" : "Lobby after this phone has claimed a seat.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Waiting for players…"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Czekamy na graczy…"
+          }
+        }
+      }
+    },
+    "setup.join" : {
+      "comment" : "Setup screen link to the join screen.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Join a game"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dołącz do gry"
+          }
+        }
+      }
+    },
     "setup.title" : {
       "comment" : "Setup screen title.",
       "extractionState" : "manual",

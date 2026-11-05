@@ -1,0 +1,13 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["SATYASXVS5.com.tintandtell.app"],
+        "components": [
+          { "/": "/join/*" },
+          { "/": "/room/*" }
+        ]
+      }
+    ]
+  }
+}

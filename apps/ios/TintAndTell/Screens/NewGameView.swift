@@ -77,17 +77,20 @@ struct NewGameView: View {
     @State private var players: [GamePlayer]
     @State private var drawCount = 0
 
+    var onJoin: () -> Void
     var onDrawShade: (PartyMode, [GamePlayer]) -> Void
 
     init(
         mode: PartyMode = .stol,
         players: [GamePlayer] = GamePlayer.openingTable,
+        onJoin: @escaping () -> Void = {},
         onDrawShade: @escaping (PartyMode, [GamePlayer]) -> Void = { _, _ in }
     ) {
         _mode = State(initialValue: mode)
         var seated = players.filter { $0.kind == .human }
         seated.append(.grok)
         _players = State(initialValue: seated)
+        self.onJoin = onJoin
         self.onDrawShade = onDrawShade
     }
 
@@ -116,7 +119,15 @@ struct NewGameView: View {
                 drawButton
                     .padding(.horizontal, 24)
                     .padding(.top, 28)
-                    .padding(.bottom, 14)
+                Button(action: onJoin) {
+                    Text(.setupJoin)
+                        .font(.system(size: 17, weight: .semibold))
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 44)
+                }
+                .buttonStyle(.plain)
+                .padding(.horizontal, 24)
+                .padding(.bottom, 14)
             }
         }
         .background(Color.ground.ignoresSafeArea())
