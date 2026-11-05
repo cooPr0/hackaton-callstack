@@ -49,3 +49,17 @@ export function secretLeak(view: PlayerView): boolean {
   if (view.phase === "REVEAL" || view.phase === "GAME_OVER") return false;
   return !(view.cueGiverSeatId && view.you.includes(view.cueGiverSeatId));
 }
+
+/**
+ * Grok's hint and voice payloads go to one socket that may be a guesser, and they're built from
+ * model output. They must carry nothing about the board: no target/secret/window, no x/y
+ * coordinates, no hex colors.
+ */
+export function boardLeak(msg: unknown): boolean {
+  const json = JSON.stringify(msg);
+  return /"(target|secret|window|x|y)":/.test(json) || /#[0-9a-fA-F]{6}\b/.test(json);
+}
+
+/** Fixture files whose payload is unicast Grok output and must pass `boardLeak`. */
+export const isGrokUnicast = (file: string) =>
+  file.startsWith("server.grok.hint") || file.startsWith("server.voice.ready");
