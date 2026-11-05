@@ -3,7 +3,7 @@ import { cueGiverName, seatById, stonesInWindow } from "../app/roles";
 import type { ScreenProps } from "../app/types";
 import { Button } from "../components/Button";
 import { DisplayInput } from "../components/DisplayInput";
-import { pl } from "../i18n/pl";
+import { useCopy } from "../i18n";
 import { ClosedLayout, HingeRow } from "./ClosedLayout";
 import { checkClue } from "./helpers";
 import { run } from "./PauseSheet";
@@ -21,6 +21,7 @@ export function SecretScreen(props: ScreenProps) {
 }
 
 function SecretForm(props: ScreenProps) {
+  const t = useCopy();
   const { view, actions, pending, error } = props;
   const formId = useId();
   const inputId = useId();
@@ -41,8 +42,8 @@ function SecretForm(props: ScreenProps) {
 
   const second = phase === "SECRET_2";
   const name = cueGiverName(view);
-  const header = `${pl.round.header(view.round, view.totalRounds)} · ${
-    second && view.local ? pl.closed.foldedOnlyLooks(name) : pl.round.onlyLooks(name)
+  const header = `${t.round.header(view.round, view.totalRounds)} · ${
+    second && view.local ? t.closed.foldedOnlyLooks(name) : t.round.onlyLooks(name)
   }`;
   const stones: ViewfinderStone[] = second
     ? stonesInWindow(view).map((s) => {
@@ -54,7 +55,7 @@ function SecretForm(props: ScreenProps) {
 
   const submit = () => {
     if (pending) return;
-    const check = checkClue(text, phase);
+    const check = checkClue(text, phase, t);
     if (!check.ok) {
       setClueError(check.message);
       return;
@@ -68,11 +69,11 @@ function SecretForm(props: ScreenProps) {
       submit
       form={formId}
       disabled={pending}
-      label={second ? pl.secret.unfoldToShow : pl.secret.unfoldToSend}
+      label={second ? t.secret.unfoldToShow : t.secret.unfoldToSend}
     />
   ) : (
     <Button type="submit" form={formId} disabled={pending}>
-      {pl.secret.send}
+      {t.secret.send}
     </Button>
   );
 
@@ -86,8 +87,8 @@ function SecretForm(props: ScreenProps) {
       />
       {second ? (
         <p className={styles.caption}>
-          <span>{pl.secret.bothStonesInFrame(stones.length)}</span>
-          {view.clues[0] ? <span>{pl.secret.was(view.clues[0])}</span> : null}
+          <span>{t.secret.bothStonesInFrame(stones.length)}</span>
+          {view.clues[0] ? <span>{t.secret.was(view.clues[0])}</span> : null}
         </p>
       ) : null}
       <form
@@ -99,7 +100,7 @@ function SecretForm(props: ScreenProps) {
         }}
       >
         <label htmlFor={inputId} className={styles.label}>
-          {second ? pl.secret.secondClue : pl.secret.firstClue}
+          {second ? t.secret.secondClue : t.secret.firstClue}
         </label>
         <DisplayInput
           id={inputId}
@@ -114,7 +115,7 @@ function SecretForm(props: ScreenProps) {
           aria-describedby={errorId}
         />
         <p id={errorId} className={shownError ? styles.error : styles.helper} role="status">
-          {shownError ?? pl.secret.rules}
+          {shownError ?? t.secret.rules}
         </p>
       </form>
     </ClosedLayout>

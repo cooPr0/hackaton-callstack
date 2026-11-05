@@ -1,7 +1,7 @@
 import type { Cell } from "@tint/protocol";
 import { Brackets } from "../components/Brackets";
 import { StoneDisc } from "../components/StoneDisc";
-import { pl } from "../i18n/pl";
+import { useCopy } from "../i18n";
 import { hexAt } from "../palette/palette";
 import styles from "./Viewfinder.module.css";
 
@@ -25,6 +25,7 @@ export interface ViewfinderProps {
  * rendered or exposed — the cells are anonymous squares.
  */
 export function Viewfinder({ window: w, target, stones = [], reservePx = 400 }: ViewfinderProps) {
+  const t = useCopy();
   const cells = [];
   for (let y = w.y0; y < w.y0 + w.h; y++) {
     for (let x = w.x0; x < w.x0 + w.w; x++) {
@@ -42,7 +43,7 @@ export function Viewfinder({ window: w, target, stones = [], reservePx = 400 }: 
     <div
       className={styles.grid}
       role="img"
-      aria-label={pl.closed.viewfinder}
+      aria-label={t.closed.viewfinder}
       style={{
         gridTemplateColumns: `repeat(${w.w}, 1fr)`,
         ["--vf-reserve" as string]: `${reservePx}px`,
