@@ -20,6 +20,7 @@
     "types": "wrangler types --include-runtime=false --strict-vars=false && biome format --write worker-configuration.d.ts",
     "typecheck": "tsc -p .",
     "test": "vitest run",
-    "e2e": "node scripts/e2e.mjs"
+    "e2e": "node scripts/e2e.mjs",
+    "xai:probe": "node scripts/xai-probe.mjs"
   }
 }
