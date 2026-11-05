@@ -7,6 +7,7 @@
   "localizations": {
     "development": "pl",
     "supported": [
+      "en",
       "Base",
     ],
   },
