@@ -5,8 +5,9 @@
     "Release",
   ],
   "localizations": {
-    "development": "en",
+    "development": "pl",
     "supported": [
+      "en",
       "Base",
     ],
   },
