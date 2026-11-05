@@ -18,7 +18,10 @@ export interface EdgeBarProps {
   scores: readonly RankedScore[];
   /** The far side of the table: the whole bar is turned 180°. */
   flipped?: boolean;
+  /** Portrait phone: one narrow edge. */
   compact?: boolean;
+  /** Online, one screen per player: the clue can use the width. There is no hinge to clear. */
+  solo?: boolean;
   /** A button above the scores (REVEAL: "Następna runda"). */
   action?: ReactNode;
 }
@@ -37,10 +40,16 @@ export function EdgeBar({
   scores,
   flipped = false,
   compact = false,
+  solo = false,
   action = null,
 }: EdgeBarProps) {
   const longest = Math.max(0, ...clues.map((c) => c.length));
-  const cls = [styles.bar, flipped ? styles.flipped : "", compact ? styles.compact : ""]
+  const cls = [
+    styles.bar,
+    flipped ? styles.flipped : "",
+    compact ? styles.compact : "",
+    solo ? styles.solo : "",
+  ]
     .join(" ")
     .trim();
   return (

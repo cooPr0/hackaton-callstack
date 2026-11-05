@@ -122,6 +122,16 @@
   line-height: 0.95;
 }
 
+/* Online: one player, one screen. No hinge in the middle to keep clear. */
+.solo .clue,
+.solo .side {
+  max-width: none;
+}
+
+.solo .side {
+  max-width: 42%;
+}
+
 /* Portrait (one edge, narrow screen). */
 .compact {
   padding: 14px 20px 22px;
