@@ -75,7 +75,7 @@ export function EdgeBar({
           </p>
         ) : null}
         <div className={styles.scoresRow}>
-          {action ? <div className={styles.action}>{action}</div> : null}
+          {action && !compact ? <div className={styles.action}>{action}</div> : null}
           <ol className={styles.scores}>
             {scores.map((s) => (
               <li key={s.id} className={styles.score}>
@@ -86,6 +86,8 @@ export function EdgeBar({
           </ol>
         </div>
       </div>
+      {/* Narrow screens: the action gets its own full-width row under the bar. */}
+      {action && compact ? <div className={styles.actionRow}>{action}</div> : null}
     </section>
   );
 }

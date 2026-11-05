@@ -128,8 +128,38 @@
   gap: 14px;
 }
 
+.compact {
+  flex-wrap: wrap;
+}
+
 .compact .clue {
   max-width: none;
+  flex-basis: 0;
+}
+
+/* Narrow: Grok's line and the turn/deltas get full-width rows above the clue and scores. */
+.compact .side {
+  display: contents;
+}
+
+.compact .bot,
+.compact .turn {
+  flex: 1 0 100%;
+  order: -1;
+  text-align: right;
+}
+
+.compact .scoresRow {
+  flex: none;
+}
+
+.actionRow {
+  flex: 1 0 100%;
+}
+
+.actionRow button {
+  width: 100%;
+  min-height: 48px;
 }
 
 .compact .words {
@@ -138,7 +168,7 @@
 
 .compact .words[data-lines="2"],
 .compact .words[data-long] {
-  font-size: 28px;
+  font-size: 25px;
 }
 
 .compact .words[data-xlong] {
