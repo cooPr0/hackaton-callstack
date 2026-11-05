@@ -1,23 +1,27 @@
 import Inject
 import SwiftUI
+import TintDesign
 
 struct ContentView: View {
     @ObserveInjection var inject
 
     var body: some View {
-        VStack(spacing: 12) {
-            Text("Tint & Tell")
-                .font(.largeTitle.weight(.semibold))
-                .foregroundStyle(Color("Ink"))
-            Text("Złożony telefon trzyma sekret, rozłożony staje się stołem.")
+        VStack(spacing: 28) {
+            Image.lockup
+                .resizable()
+                .scaledToFit()
+                .frame(maxWidth: 320)
+                .accessibilityLabel(Text(.appName))
+            Text(.appTagline)
                 .font(.body)
                 .multilineTextAlignment(.center)
-                .foregroundStyle(Color("Ink").opacity(0.72))
+                .foregroundStyle(.ink2)
                 .frame(maxWidth: 420)
         }
         .padding(24)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color("Paper"))
+        .background(.ground)
+        .tint(.ink)
         .enableInjection()
     }
 }
