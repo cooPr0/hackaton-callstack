@@ -7,6 +7,7 @@
 - `apps/ios/Config/**`
 - `apps/ios/TintKit/**`
 - `apps/ios/TintDesign/**`
+- `apps/ios/TintCore/**`
 - `apps/ios/TintAndTell/{App,Store,Screens,Posture,Resources}/**`
 
 **Not yours**: `apps/ios/TintAndTell/Table/**` (P4).
