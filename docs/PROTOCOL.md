@@ -83,7 +83,7 @@ Anything else (`1006`, `1001`, …) is transient: reconnect with backoff.
 ## PlayerView (per connection)
 See `packages/protocol/src/view.ts`. Key fields:
 - `you`: the seats this connection controls. Use them to decide your role: cue giver if `you ∋ cueGiverSeatId`, your turn if `you ∋ turnSeatId`.
-- `secret`: **only** for the cue giver's connection (or everyone in REVEAL/GAME_OVER). The server must never broadcast one shared payload. It builds `projectView(state, seatIds)` per socket.
+- `secret`: **only** for the cue giver's connection during SECRET_1..GUESS_2, or for everyone in REVEAL. GAME_OVER omits it; past targets are in `history`. The server must never broadcast one shared payload. It builds `projectView(state, seatIds)` per socket.
 - `reveal`: present in REVEAL, with per-stone awards and Grok's optional line.
 
 ## Flows
@@ -127,7 +127,9 @@ All fields below are optional or new message types. v1 clients keep working: unk
 | C→S `voice.ticket {seatId}` | ask for a realtime voice secret | Seat must be yours. |
 | S→C `voice.ready {seatId, value, expiresAt, url, model, voice, session}` | unicast ephemeral xAI secret | Open `url` with `Sec-WebSocket-Protocol: xai-client-secret.<value>` before `expiresAt`, send `session` first, then PCM16. Audio never touches our server. |
 
-Error codes `VOICE_UNAVAILABLE` and `HINT_UNAVAILABLE` arrive with the server PRs that emit them, together with the web copy (web keeps one message per error code).
+**Spoken lines (server, shipped).** `GET /api/rooms/:code/say/:lineId.mp3` returns `audio/mpeg` for a line Grok said in that room (the id is 128-bit and only exists for such lines). It is synthesized on first request (xAI TTS, ~0.7 s), cached for a day, and answers `404` when speech is off, the room's budget (4000 characters) is spent, or the id is unknown. Only rooms with real Grok (`botMode: "grok"`) announce `audioUrl`. A client that gets a non-200 simply shows the text.
+
+`voice.ticket` and `grok.ask` are in the schema. The Room DO does not handle them yet: a client that sends one gets `error` `BAD_REQUEST`. `voice.ready` and `grok.hint` stay optional on the way back. Error codes `VOICE_UNAVAILABLE` and `HINT_UNAVAILABLE` arrive with the server PR that emits them, together with the web copy (web keeps one message per error code).
 
 ### Deviations from `docs/GROK-LIVE.md`
 1. **Global spend guard for voice.** An xAI client secret can't lock instructions or tools, so per-room caps alone would let anyone who creates rooms spend voice minutes. The server adds a global daily quota and a per-IP limit, and only issues tickets in started rooms with at least two connected humans.

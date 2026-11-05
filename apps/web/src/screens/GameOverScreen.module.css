@@ -32,11 +32,25 @@
 .name {
   flex: 1;
   min-width: 0;
+  display: flex;
+  flex-direction: column;
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.nameText {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-size: 17px;
+}
+
+.degraded {
+  display: block;
+  margin-top: 2px;
+  font-size: 13px;
   font-weight: 600;
+  color: var(--muted);
+  white-space: nowrap;
 }
 
 .points {

@@ -1,5 +1,6 @@
 import type { Cell, PlayerView } from "@tint/protocol";
 import { useCallback, useState } from "react";
+import { formatClock, useRemaining } from "../app/clock";
 import { cueGiverName, isMyTurn, seatById, turnName } from "../app/roles";
 import type { ScreenProps } from "../app/types";
 import { Button } from "../components/Button";
@@ -21,7 +22,7 @@ const isSecret = (v: PlayerView) => v.phase === "SECRET_1" || v.phase === "SECRE
 /** Selection/sent state only lives for one board state; a new view (stone, turn) resets it. */
 const boardKey = (v: PlayerView) => `${v.round}:${v.phase}:${v.stones.length}:${v.turnSeatId}`;
 
-function edgeText(v: PlayerView, t: Copy, botLine: string | null) {
+function edgeText(v: PlayerView, t: Copy, botLine: string | null, clock: string | null) {
   const name = cueGiverName(v);
   const secret = isSecret(v);
   let meta: string = t.table.clueOf(name);
@@ -38,6 +39,10 @@ function edgeText(v: PlayerView, t: Copy, botLine: string | null) {
   } else if (v.phase === "REVEAL") {
     turn = deltasLine(v);
   }
+  if (clock && (secret || isGuess(v))) {
+    const left = t.table.timeLeft(clock);
+    turn = turn ? `${turn} · ${left}` : left;
+  }
   return {
     meta,
     waiting: secret && v.clues.length === 0 ? t.table.waitingForClue(name) : null,
@@ -47,12 +52,16 @@ function edgeText(v: PlayerView, t: Copy, botLine: string | null) {
 }
 
 /**
- * The open phone: the shared table (PDF p.4). Reads only the public view — `secret` is
- * stripped by ScreenHost before it gets here and is never touched.
+ * The shared board. Reads only the public view — `secret` is stripped by ScreenHost
+ * before it gets here and is never touched.
+ *
+ * Local (one device on the table): two edge bars, the far one rotated 180°, pause on the hinge.
+ * Online: one upright bar and one pause. Each player has their own screen.
  */
 export function TableScreen(props: ScreenProps) {
   const t = useCopy();
   const { view, actions, posture, bot, pending, error } = props;
+  const secondsLeft = useRemaining(view?.turnDeadline ?? null);
   const [sel, setSel] = useState<{ key: string; cell: Cell | null }>({ key: "", cell: null });
   const [sent, setSent] = useState<{ key: string; cell: Cell } | null>(null);
   const intro = useUnfoldIntro(view);
@@ -77,6 +86,8 @@ export function TableScreen(props: ScreenProps) {
   if (!view) return null;
 
   const portrait = !view.local && posture === "closed";
+  // One laptop passed around keeps the open-phone table. Online does not.
+  const shared = view.local;
   // Public reveal data only (never `secret`): present from REVEAL on.
   const revealTarget = revealTargetOf(view);
   const badges = revealTarget ? stoneBadges(view) : new Map<number, string>();
@@ -112,7 +123,8 @@ export function TableScreen(props: ScreenProps) {
       ? { ...inFlight, name: turnSeat.name, grok: turnSeat.kind === "grok" }
       : null;
 
-  const text = edgeText(view, t, bot.line);
+  const clock = secondsLeft === null ? null : formatClock(secondsLeft);
+  const text = edgeText(view, t, bot.line, clock);
   const grokTurn = turnSeat?.kind === "grok";
   const bar = (flipped: boolean) => (
     <EdgeBar
@@ -122,9 +134,11 @@ export function TableScreen(props: ScreenProps) {
       botLine={text.botLine}
       turn={text.turn}
       thinking={bot.thinking && grokTurn}
+      urgent={secondsLeft !== null && secondsLeft <= 10}
       scores={rankedScores(view)}
       flipped={flipped}
       compact={portrait}
+      solo={!shared && !portrait}
       writeOn={full ? intro.token : 0}
       action={next(flipped)}
     />
@@ -133,12 +147,12 @@ export function TableScreen(props: ScreenProps) {
 
   return (
     <div className={`${styles.root} ${portrait ? styles.portraitRoot : ""}`}>
-      {portrait ? (
-        <div className={styles.portraitTop}>
+      {shared ? (
+        bar(true)
+      ) : (
+        <div className={portrait ? styles.portraitTop : styles.soloTop}>
           <PauseButton label={t.closed.pauseLabel} onClick={pause} />
         </div>
-      ) : (
-        bar(true)
       )}
 
       <div className={styles.boardArea}>
@@ -162,7 +176,7 @@ export function TableScreen(props: ScreenProps) {
 
       {bar(false)}
 
-      {portrait ? null : (
+      {shared ? (
         <>
           <span className={styles.hinge} aria-hidden="true" />
           <div className={`${styles.hingePause} ${styles.top}`}>
@@ -172,7 +186,7 @@ export function TableScreen(props: ScreenProps) {
             <PauseButton label={t.closed.pauseLabel} onClick={pause} />
           </div>
         </>
-      )}
+      ) : null}
 
       <Toast message={error} />
       <Overlays {...props} />

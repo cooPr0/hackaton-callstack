@@ -96,10 +96,31 @@ export async function runSmoke(o: SmokeOptions): Promise<Report> {
   for (const c of clients) c.close();
 
   const violations = checks.flatMap((inv) => inv.finish());
+  violations.push(...(await audioViolations(o.base, clients[0], !!o.realGrok)));
   if (done.includes(false)) violations.push("timed out before GAME_OVER");
   const seen = new Set<string>();
   return report(
     violations.filter((v) => !seen.has(v) && seen.add(v)),
     clients,
   );
+}
+
+/**
+ * Spoken lines: a fallback room never announces audio; a real-Grok room's audioUrl must serve an MP3.
+ * (A line may legitimately lack audioUrl: speech off, budget spent.)
+ */
+async function audioViolations(base: string, c: PlaytestClient | undefined, real: boolean) {
+  const urls = (c?.frames ?? []).flatMap((f) =>
+    f.msg?.type === "bot.say" && f.msg.audioUrl ? [f.msg.audioUrl] : [],
+  );
+  if (!real) return urls.length ? [`fallback room announced audio: ${urls[0]}`] : [];
+  const out: string[] = [];
+  for (const u of urls.slice(0, 2)) {
+    const r = await fetch(base + u).catch(() => null);
+    const size = r?.ok ? (await r.arrayBuffer()).byteLength : 0;
+    if (!r?.ok || r.headers.get("content-type") !== "audio/mpeg" || size === 0) {
+      out.push(`audioUrl ${u} did not serve an MP3 (${r?.status ?? "no response"})`);
+    }
+  }
+  return out;
 }

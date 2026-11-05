@@ -13,7 +13,9 @@ public enum GamePhase: String, Sendable, Equatable, Codable, CaseIterable {
         self == .guess1 || self == .guess2
     }
 
-    /// REVEAL and GAME_OVER may show the target to every seat.
+    /// REVEAL shows the target to every seat on the wire.
+    /// GAME_OVER views omit `secret`; past targets live in `PlayerView.history`.
+    /// The local engine still returns its stored target at game over, because it has no history.
     public var revealsSecretToAll: Bool {
         self == .reveal || self == .gameOver
     }

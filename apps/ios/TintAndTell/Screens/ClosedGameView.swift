@@ -148,15 +148,7 @@ struct ClosedGameView: View {
                 .foregroundStyle(Color.ink2)
                 .lineLimit(2)
                 .frame(maxWidth: .infinity, alignment: .leading)
-            Button {} label: {
-                Image(systemName: "pause.fill")
-                    .font(.system(size: 13, weight: .semibold))
-                    .foregroundStyle(Color.ink)
-                    .frame(width: 44, height: 44)
-            }
-            .buttonStyle(.glass)
-            .buttonBorderShape(.circle)
-            .accessibilityLabel("Pauza")
+            PauseButton()
         }
         .frame(minHeight: 44)
     }
@@ -329,8 +321,36 @@ struct GameShell: View {
     @State private var players = GamePlayer.openingTable
     @State private var mode = PartyMode.stol
     @State private var scores: [String: Int] = [:]
+    @State private var isPaused = false
 
     var body: some View {
+        Group {
+            phaseContent
+        }
+        .environment(\.openPause, { isPaused = true })
+        .sheet(isPresented: $isPaused) {
+            let context = pauseContext
+            PauseSheet(
+                round: context.round,
+                totalRounds: context.total,
+                scoreLine: context.scores,
+                onResume: { isPaused = false },
+                onPassRole: { isPaused = false },
+                onEnd: {
+                    isPaused = false
+                    phase = .setup
+                    scores = Dictionary(uniqueKeysWithValues: players.map { ($0.name, 0) })
+                }
+            )
+            .presentationDetents([.height(400)])
+            .presentationDragIndicator(.visible)
+            .presentationCornerRadius(38)
+        }
+        .onAppear { BackgroundMusic.start() }
+    }
+
+    @ViewBuilder
+    private var phaseContent: some View {
         switch phase {
         case .setup:
             NewGameView { mode, players in
@@ -374,6 +394,27 @@ struct GameShell: View {
                     )
                 )
             }
+        }
+    }
+
+    private var pauseContext: (round: Int, total: Int, scores: String) {
+        let line = players
+            .enumerated()
+            .sorted { left, right in
+                let leftScore = scores[left.element.name] ?? 0
+                let rightScore = scores[right.element.name] ?? 0
+                if leftScore != rightScore { return leftScore > rightScore }
+                return left.offset < right.offset
+            }
+            .map { "\($0.element.name) \(scores[$0.element.name] ?? 0)" }
+            .joined(separator: ", ")
+        switch phase {
+        case .setup:
+            return (1, 6, line)
+        case .first(let round), .second(let round, _, _):
+            return (round.round, round.totalRounds, line)
+        case .roundEnd(let card), .pass(let card):
+            return (card.finishedRound, card.totalRounds, line)
         }
     }
 

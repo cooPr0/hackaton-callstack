@@ -52,6 +52,13 @@ export type HealthResponse = z.infer<typeof HealthResponse>;
 export const HttpError = z.object({ code: z.string(), message: z.string() });
 export type HttpError = z.infer<typeof HttpError>;
 
-/** WS URL: `${base}/api/rooms/${code}/ws?token=${token}&pv=1` */
-export const wsPath = (code: string, token: string) =>
-  `/api/rooms/${code}/ws?token=${encodeURIComponent(token)}&pv=${PROTOCOL_VERSION}`;
+/**
+ * WS path. Repeat `token` once per seat this socket controls (local pass-and-play sends every
+ * human token; online sends the one seat). `pv` stays last.
+ */
+export const wsPath = (code: string, token: string | readonly string[]) => {
+  const params = new URLSearchParams();
+  for (const t of typeof token === "string" ? [token] : token) params.append("token", t);
+  params.set("pv", String(PROTOCOL_VERSION));
+  return `/api/rooms/${code}/ws?${params}`;
+};

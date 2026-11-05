@@ -1,6 +1,9 @@
-import { PROTOCOL_VERSION } from "@tint/protocol";
+import { wsPath } from "@tint/protocol";
 
-/** Server base URL (no trailing slash). `VITE_API_URL` at build time, else same host on :8787. */
+/**
+ * Server base URL (no trailing slash). `VITE_API_URL` at build time
+ * (production: `https://tint-server.tint-server.workers.dev`), else same host on :8787.
+ */
 export function apiBase(): string {
   const env = import.meta.env.VITE_API_URL as string | undefined;
   if (env) return env.replace(/\/+$/, "");
@@ -9,14 +12,12 @@ export function apiBase(): string {
 }
 
 /**
- * WebSocket URL for a room. Multiple tokens = one socket controlling several seats
- * (local pass-and-play; proposed additive protocol change — see docs/web/PLAN.md §1).
+ * WebSocket URL for a room. One `token` per seat this socket controls
+ * (local pass-and-play sends every human token).
  */
 export function wsUrl(base: string, code: string, tokens: readonly string[]): string {
-  const url = new URL(`${base.replace(/^http/, "ws")}/api/rooms/${encodeURIComponent(code)}/ws`);
-  for (const t of tokens) url.searchParams.append("token", t);
-  url.searchParams.set("pv", String(PROTOCOL_VERSION));
-  return url.toString();
+  const origin = base.replace(/\/+$/, "").replace(/^http/, "ws");
+  return `${origin}${wsPath(code, tokens)}`;
 }
 
 /** Public join link encoded in the lobby QR. */

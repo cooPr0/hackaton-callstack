@@ -1,5 +1,6 @@
 import { CreateRoomRequest, JoinRoomRequest, PROTOCOL_VERSION, RoomCode } from "@tint/protocol";
 import type { z } from "zod";
+import { synthesize } from "./bot/tts";
 import { CLOSE, httpError, newCode, originAllowed, refuseSocket } from "./util";
 
 export { Room } from "./room";
@@ -9,7 +10,7 @@ const MAX_BODY = 4096;
 const CODE_ATTEMPTS = 3;
 
 export default {
-  async fetch(req, env): Promise<Response> {
+  async fetch(req, env, ctx): Promise<Response> {
     // Origin is browser hygiene, not auth: native iOS sends none (allowed). Seat tokens are the auth.
     const origin = req.headers.get("Origin");
     const allowed = origin === null || originAllowed(origin, env.ALLOWED_ORIGINS);
@@ -30,7 +31,7 @@ export default {
     }
     let res: Response;
     try {
-      res = await route(req, env);
+      res = await route(req, env, ctx);
     } catch (e) {
       console.error("unhandled", e);
       res = httpError(500, "INTERNAL", "internal error");
@@ -42,7 +43,10 @@ export default {
   },
 } satisfies ExportedHandler<Env>;
 
-async function route(req: Request, env: Env): Promise<Response> {
+/** Concurrent fetches of one line (every player asks at once) share a single TTS call. */
+const synthesizing = new Map<string, Promise<ArrayBuffer | null>>();
+
+async function route(req: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
   const { pathname } = new URL(req.url);
   const ip = req.headers.get("CF-Connecting-IP") ?? "unknown";
   const limited = async (rl: RateLimit) => !(await rl.limit({ key: ip })).success;
@@ -64,6 +68,36 @@ async function route(req: Request, env: Env): Promise<Response> {
       if (!r.collision) return httpError(r.status, r.code, r.message);
     }
     return httpError(503, "INTERNAL", "no free room code, retry");
+  }
+
+  // Grok's spoken line. The id is unguessable and must be a line Grok actually said in that room.
+  const say = pathname.match(/^\/api\/rooms\/([^/]+)\/say\/([a-f0-9]{32})\.mp3$/);
+  if (say && req.method === "GET") {
+    const code = (say[1] ?? "").toUpperCase();
+    const id = say[2] ?? "";
+    if (!RoomCode.safeParse(code).success) return httpError(404, "ROOM_NOT_FOUND", "unknown room");
+    if (await limited(env.SAY_LIMIT)) return httpError(429, "RATE_LIMITED", "too many requests");
+    const key = new Request(`https://say.invalid/${code}/${id}`);
+    const cached = await caches.default.match(key);
+    if (cached) return cached;
+    let job = synthesizing.get(id);
+    if (!job) {
+      job = stub(code)
+        .sayLine(id)
+        .then((line) => (line ? synthesize(env, line.text, line.lang) : null))
+        .finally(() => synthesizing.delete(id));
+      synthesizing.set(id, job);
+    }
+    const mp3 = await job;
+    if (!mp3) return httpError(404, "BAD_REQUEST", "no audio");
+    const res = new Response(mp3, {
+      headers: {
+        "content-type": "audio/mpeg",
+        "cache-control": "public, max-age=86400, immutable",
+      },
+    });
+    ctx.waitUntil(caches.default.put(key, res.clone()));
+    return res;
   }
 
   const m = pathname.match(/^\/api\/rooms\/([^/]+)\/(join|ws)$/);

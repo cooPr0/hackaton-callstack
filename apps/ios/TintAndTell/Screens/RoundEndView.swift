@@ -52,6 +52,7 @@ struct RoundCard: Equatable {
 
 struct RoundEndView: View {
     @ObserveInjection private var inject
+    @Environment(\.colorScheme) private var scheme
     var card: RoundCard
     var onDrawNext: () -> Void
 
@@ -76,16 +77,16 @@ struct RoundEndView: View {
                     VStack(alignment: .leading, spacing: 6) {
                         Text("Odcień · \(card.cueGiver) · \(PartyCopy.inHouse(card.stonesInHouse))")
                             .font(.system(size: 13, weight: .semibold))
-                            .foregroundStyle(Color.ground.opacity(0.72))
+                            .foregroundStyle(onPlate.opacity(0.72))
                         Text(card.caption)
                             .font(.system(size: 34, weight: .heavy).width(.expanded))
                             .tracking(-0.7)
-                            .foregroundStyle(Color.ground)
+                            .foregroundStyle(onPlate)
                             .fixedSize(horizontal: false, vertical: true)
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(EdgeInsets(top: 16, leading: 18, bottom: 18, trailing: 18))
-                    .background(Color.ink)
+                    .background(plate)
                 }
                 .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
                 .shadow(color: .black.opacity(0.25), radius: 0, y: 1)
@@ -148,15 +149,7 @@ struct RoundEndView: View {
                 .font(.system(size: 13, weight: .semibold))
                 .foregroundStyle(Color.ink2)
                 .frame(maxWidth: .infinity, alignment: .leading)
-            Button {} label: {
-                Image(systemName: "pause.fill")
-                    .font(.system(size: 13, weight: .semibold))
-                    .foregroundStyle(Color.ink)
-                    .frame(width: 44, height: 44)
-            }
-            .buttonStyle(.glass)
-            .buttonBorderShape(.circle)
-            .accessibilityLabel("Pauza")
+            PauseButton()
         }
         .frame(minHeight: 44)
     }
@@ -164,6 +157,13 @@ struct RoundEndView: View {
     private var scoreLine: String {
         card.scores.map { "\($0.name) \($0.score)" }.joined(separator: " · ")
     }
+
+    /// The sample strip stays a dark plate in both schemes. Cold steel type does not flip with the page.
+    private var plate: Color {
+        scheme == .dark ? Color(hex: "0F0E0C") : Color.cocoa
+    }
+
+    private var onPlate: Color { Color(hex: "F8F7F4") }
 }
 
 /// Privacy gate before the next shade. No colour: the phone changes hands first.
@@ -262,4 +262,9 @@ struct PassTurnView: View {
 
 #Preview("Teraz Ty") {
     PassTurnView(card: .cabin)
+}
+
+#Preview("Teraz Ty, ciemny") {
+    PassTurnView(card: .cabin)
+        .preferredColorScheme(.dark)
 }

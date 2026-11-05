@@ -41,6 +41,17 @@ export const langStore = createStore<{ lang: Lang; setLang(l: Lang): void }>((se
   },
 }));
 
+/**
+ * Switch the copy to the room's language (`PlayerView.lang`) without writing the saved
+ * preference. Returns the language that was showing, so the caller can restore it.
+ */
+export function setShownLang(lang: Lang): Lang {
+  const previous = langStore.getState().lang;
+  applyToDocument(lang);
+  langStore.setState({ lang });
+  return previous;
+}
+
 applyToDocument(langStore.getState().lang);
 
 export const currentLang = (): Lang => langStore.getState().lang;

@@ -129,6 +129,10 @@
   animation: think 1.2s ease-in-out infinite;
 }
 
+.turn[data-urgent] {
+  color: var(--danger-text);
+}
+
 .scores {
   display: flex;
   gap: 18px;
@@ -149,9 +153,28 @@
   color: var(--header-fg);
 }
 
+.degraded {
+  display: block;
+  max-width: 9em;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--muted);
+}
+
 .scoreValue {
   font-size: 40px;
   line-height: 0.95;
+}
+
+/* Online: one player, one screen. No hinge in the middle to keep clear. */
+.solo .clue,
+.solo .side {
+  max-width: none;
+}
+
+.solo .side {
+  max-width: 42%;
 }
 
 /* Portrait (one edge, narrow screen). */
