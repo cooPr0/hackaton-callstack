@@ -1,0 +1,12 @@
+/* Wide-window layout (laptop, desktop, the open fold ≈ 1036 × 828).
+   Phone widths keep the single 402–480 px column from the design. From 900 px wide — the same
+   threshold as OPEN_SHAPE_QUERY in posture/detect.ts — pages split into two panes: the visual
+   (display type, palette, QR, viewfinder) on the left, the controls on the right.
+   CSS can't read custom properties inside @container/@media, so the 900px literal is repeated
+   at each use with a "wide" comment. Colours stay in tokens.css; this file is sizes only. */
+:root {
+  --page-max: 1120px;
+  --col-form: 440px;
+  --gutter-wide: 48px;
+  --split-gap: 64px;
+}
