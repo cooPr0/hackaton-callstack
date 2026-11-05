@@ -8,6 +8,7 @@ import {
   type GameState,
   isOpenSeat,
   turnKey,
+  validateClue,
 } from "@tint/game-core";
 import {
   BOT_MIN_THINK_MS,
@@ -23,6 +24,7 @@ import {
 } from "@tint/protocol";
 import { fallbackClue, fallbackGuess } from "./bot/fallback";
 import { grokClue, grokDefend, grokGuess, takeCall } from "./bot/grok";
+import { grokHint, HINT_ROOM_MAX, HINT_SEAT_ROUND_MAX, hintsAvailable } from "./bot/hint";
 import { type Line, MAX_TRIES, remember } from "./bot/lines";
 import { TTS_ROOM_CHARS, ttsAvailable } from "./bot/tts";
 import { projectView } from "./projection";
@@ -48,6 +50,8 @@ interface Meta {
   /** Last lines Grok said (ids back the MP3 route) and the TTS characters spent on this room. */
   lines?: Line[];
   ttsChars?: number;
+  /** "Dopytaj Groka" usage: hints asked in total, and per seat in its current round. */
+  hints?: { total: number; seats: Record<string, { round: number; n: number }> };
 }
 /** Seats a socket controls (authenticated at upgrade); `ready` once it said hello. */
 interface Attachment {
@@ -227,6 +231,7 @@ export class Room extends DurableObject<Env> {
 
     const dedupeKey = `${a.seatIds[0]}:${m.cid}`;
     if (this.meta.cids.includes(dedupeKey)) return send(ws, { type: "ack", cid: m.cid });
+    if (m.type === "grok.ask") return this.onAsk(ws, a, m);
     const action = this.toAction(g, m, a.seatIds);
     if ("code" in action) return send(ws, errorMsg(m.cid, action.code, action.message));
     const r = apply(g, action);
@@ -293,6 +298,66 @@ export class Room extends DurableObject<Env> {
     if (!line || !now?.reveal || this.game?.phase !== "REVEAL" || now.round !== r.round) return;
     now.reveal.botLine = line;
     this.say(grok.id, line);
+  }
+
+  /**
+   * "Dopytaj Groka": a hint grounded in X posts about the PUBLIC clue words (or the cue giver's
+   * draft). Answered to the asking socket only, after the ack. Counted when asked, so failures
+   * can't be retried into a bill: 4 per seat per round, 6 per room.
+   */
+  private async onAsk(
+    ws: WebSocket,
+    a: Attachment,
+    m: Extract<ClientMessage, { type: "grok.ask" }>,
+  ) {
+    const g = this.game;
+    const r = g?.current;
+    if (!g) return;
+    const fail = (code: ErrorCode, message: string) => send(ws, errorMsg(m.cid, code, message));
+    const seat = g.seats.find((s) => s.id === m.seatId);
+    if (seat?.kind !== "human" || !a.seatIds.includes(m.seatId)) {
+      return fail("NOT_YOUR_SEAT", "you don't control that seat");
+    }
+    if (g.paused) return fail("PAUSED", "the game is paused");
+    const secret = isSecret(g.phase);
+    if (!r || !(secret || g.phase === "GUESS_1" || g.phase === "GUESS_2")) {
+      return fail("WRONG_PHASE", "Grok has no hint in this phase");
+    }
+    if (secret && r.cueGiverSeatId !== m.seatId)
+      return fail("NOT_YOUR_TURN", "only the cue giver asks now");
+    if (g.botMode !== "grok" || !hintsAvailable(this.env)) {
+      return fail("BAD_REQUEST", "Grok hints are not available in this room");
+    }
+    if (secret && !m.draft) return fail("BAD_REQUEST", "draft required while choosing a clue");
+    if (m.draft) {
+      if (!secret) return fail("BAD_REQUEST", "draft only applies while choosing a clue");
+      const v = validateClue(m.draft, g.phase as "SECRET_1" | "SECRET_2");
+      if (!v.ok) return fail(v.code, "that clue is not allowed");
+    }
+    const key = `${a.seatIds[0]}:${m.cid}`;
+    if (this.meta.cids.includes(key)) return send(ws, { type: "ack", cid: m.cid }); // retransmit
+    this.meta.hints ??= { total: 0, seats: {} };
+    const h = this.meta.hints;
+    const mine = h.seats[m.seatId]?.round === r.round ? (h.seats[m.seatId]?.n ?? 0) : 0;
+    if (h.total >= HINT_ROOM_MAX || mine >= HINT_SEAT_ROUND_MAX) {
+      return fail("RATE_LIMITED", "no more hints for now");
+    }
+    h.total++;
+    h.seats[m.seatId] = { round: r.round, n: mine + 1 };
+    this.meta.cids = [...this.meta.cids, key].slice(-CID_MEMORY);
+    await this.commit();
+    send(ws, { type: "ack", cid: m.cid });
+
+    const round = r.round;
+    const hint = await grokHint(
+      this.env,
+      { words: m.draft ? [m.draft] : r.clues, draft: Boolean(m.draft), lang: g.lang ?? "pl" },
+      this.budget(),
+    );
+    await this.commit(); // persists the xAI budget the call used
+    if (!hint) return fail("INTERNAL", "Grok has no hint right now");
+    if (this.game?.current?.round !== round) return; // the table moved on; the hint would be stale
+    send(ws, { type: "grok.hint", seatId: m.seatId, text: hint.text, citations: hint.citations });
   }
 
   /** Online only: a silent guesser is skipped; a silent cue giver gets a fallback clue. */
