@@ -81,6 +81,13 @@
 ### 7. `p1/hardening`
 - `flaky` (reconnect mid-turn, duplicate cids) and `adversary` personas (out-of-turn stones, color clues, foreign seatIds, forged tokens, oversized payloads; each must get the right `error.code`) → `pnpm playtest attack`. Fix what breaks.
 
+### 8. `p1/grok-live`
+- Spec: `docs/GROK-LIVE.md`. Do that branch after `p1/grok`. It is additive.
+- Voice: mint an ephemeral realtime secret (`voice.ticket` → `voice.ready`). Audio goes to `wss://api.x.ai/v1/realtime` from the client. The Worker does not proxy PCM and never puts the target cell in the session instructions.
+- Hints: `grok.ask` → unicast `grok.hint`, Responses API + `x_search` on the public clue only. Grok's own guess/clue may use the same search as an internal note.
+- New error codes: `VOICE_UNAVAILABLE`, `HINT_UNAVAILABLE`. Fallback mode returns them and still finishes the game.
+- Done when: the secret-leak test covers the new messages, and a real key yields `session.created` plus one cited hint.
+
 ## Checkpoints
 - T+0:45 prod smoke green.
 - T+1:15 web plays a full round vs Grok.
