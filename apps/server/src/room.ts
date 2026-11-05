@@ -46,7 +46,6 @@ const MAX_FRAME = 4096;
 const MAX_TOKENS = 8;
 const CID_MEMORY = 64;
 const RATE = { max: 20, windowMs: 5_000 };
-const CLUE_TIMEOUT_MS = 90_000;
 const IDLE_TTL_MS = 2 * 60 * 60_000;
 const GAME_OVER_TTL_MS = 10 * 60_000;
 
@@ -391,10 +390,9 @@ export class Room extends DurableObject<Env> {
       m.bot = { key, dueAt: now + BOT_MIN_THINK_MS };
       this.sendAll({ type: "bot.status", seatId: who, state: "thinking" });
     } else if (!g.local) {
-      const ms = isSecret(g.phase)
-        ? CLUE_TIMEOUT_MS
-        : Number(this.env.TURN_TIMEOUT_MS) || ONLINE_TURN_TIMEOUT_MS;
-      m.turn = { key, dueAt: now + ms };
+      // A clue gets 1.5× a stone's time (90 s at the 60 s default).
+      const stoneMs = Number(this.env.TURN_TIMEOUT_MS) || ONLINE_TURN_TIMEOUT_MS;
+      m.turn = { key, dueAt: now + (isSecret(g.phase) ? stoneMs * 1.5 : stoneMs) };
     }
     g.current.turnDeadline = m.turn?.dueAt ?? null;
   }
