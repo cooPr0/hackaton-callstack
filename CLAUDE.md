@@ -56,7 +56,7 @@ pnpm --filter @tint/protocol fixtures:gen   # regenerate fixtures (P1 only)
 pnpm --filter @tint/server dev    # wrangler dev on :8787 (once P1 adds it)
 pnpm --filter @tint/web dev       # vite on :5173 (once P2 adds it)
 pnpm playtest <smoke|fill|attack> # playtest bot (once P1 adds it)
-cd apps/ios && xcodegen           # generate TintAndTell.xcodeproj (never committed)
+# iOS project is apps/ios/TintAndTell.xcodeproj (project.xcproj, Xcode 27.2 JSON)
 ```
 
 ## Conventions

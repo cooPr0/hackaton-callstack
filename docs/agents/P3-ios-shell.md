@@ -10,21 +10,14 @@
 
 **Not yours**: `apps/ios/TintAndTell/Table/**` (P4).
 **Reads**: `CLAUDE.md`, `docs/PROTOCOL.md`, `packages/protocol/src/*.ts` (mirror these exactly), `shared/fixtures/**`, `shared/palette.json`, `design/Tint-and-Tell.pdf`.
-**Stack**: Xcode 26, iOS 26 deployment target, Swift 6 strict concurrency, SwiftUI, Observation, swift-testing, no third-party runtime deps. **The `.xcodeproj` is generated and gitignored. Commit only `project.yml`.**
+**Stack**: Xcode 27.2, iOS 27.1 deployment target, Swift 6, SwiftUI, Observation, swift-testing. **The project is `apps/ios/TintAndTell.xcodeproj` with a JSON `project.xcproj`. Do not add XcodeGen or a second project file.**
 
 ## Branches (in order; one PR each; commit every small step)
 
 ### 1. `p3/project` ⏰ **by T+0:25**
-- `apps/ios/project.yml`:
-  - App target `TintAndTell` (bundle id `com.tintandtell.app`) with a local package dependency on `TintKit`.
-  - Sources folder-globbed: `TintAndTell/**`. P4's `Table/` folder is picked up automatically.
-  - Resources: `../../shared/palette.json` by path reference.
-  - Configs/schemes **Local** and **Prod** from `Config/Local.xcconfig` / `Config/Prod.xcconfig` with `API_HOST` and `API_SCHEME`, kept separate because `//` starts an xcconfig comment. Exposed via Info.plist keys `TTApiHost` / `TTApiScheme`.
-  - URL scheme `tintandtell`. ATS `NSAllowsLocalNetworking = YES`, plus `NSLocalNetworkUsageDescription`.
-  - Supported orientations: all.
-- `apps/ios/TintKit/Package.swift`: library `TintKit` + test target `TintKitTests`, swift-tools 6.0, platforms iOS 26 / macOS 15 so `swift test` runs on a Mac.
-- Empty `TintAndTellApp.swift` showing the logo.
-- Done when: `cd apps/ios && xcodegen && xcodebuild -scheme TintAndTell -destination 'generic/platform=iOS Simulator' build` passes and `swift test` passes in TintKit.
+Already on disk: `apps/ios/TintAndTell.xcodeproj` (`project.xcproj`), app sources in `apps/ios/TintAndTell`, bundle id `com.tintandtell.app`, deployment target iOS 27.1, iPhone and iPad, synchronized folders. Do not regenerate it.
+- Add `TintCore` as a local Swift package when the engine starts. Keep new screens inside `TintAndTell/` so the synchronized folder picks them up. P4's `Table/` folder belongs there.
+- Done when: `xcodebuild -project apps/ios/TintAndTell.xcodeproj -scheme TintAndTell -destination 'generic/platform=iOS Simulator' build` passes.
 
 ### 2. `p3/tintkit-models`
 - `Config.swift`: base URL from Info.plist, plus a DEBUG override stored in UserDefaults.
