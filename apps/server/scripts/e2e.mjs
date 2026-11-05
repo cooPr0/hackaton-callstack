@@ -1,5 +1,5 @@
 // End-to-end + attack run against a live server (default: wrangler dev).
-//   pnpm --filter @tint/server dev -- --var TURN_TIMEOUT_MS:1500   # short timeouts
+//   pnpm --filter @tint/server dev --var TURN_TIMEOUT_MS:1500      # short timeouts
 //   pnpm --filter @tint/server e2e                                # BASE=https://… for prod
 // Exits non-zero on any failed check. Plays real games over real WebSockets.
 const BASE = process.env.BASE ?? "http://localhost:8787";
