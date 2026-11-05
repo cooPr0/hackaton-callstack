@@ -46,7 +46,6 @@ export const COLORS = {
 } as const;
 
 export const MODES = ["stol", "ty", "grok"] as const;
-export type Mode = (typeof MODES)[number];
 
 export const PHASES = [
   "LOBBY",
@@ -57,10 +56,7 @@ export const PHASES = [
   "REVEAL",
   "GAME_OVER",
 ] as const;
-export type Phase = (typeof PHASES)[number];
 
 export const SEAT_KINDS = ["human", "grok"] as const;
-export type SeatKind = (typeof SEAT_KINDS)[number];
 
 export const PLATFORMS = ["ios", "web", "bot"] as const;
-export type Platform = (typeof PLATFORMS)[number];
